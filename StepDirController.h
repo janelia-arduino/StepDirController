@@ -20,9 +20,9 @@
 #include "SavedVariable.h"
 #include "Functor.h"
 
-#include "IndexedContainer.h"
-#include "FunctorCallbacks.h"
-#include "EventController.h"
+// #include "IndexedContainer.h"
+// #include "FunctorCallbacks.h"
+// #include "EventController.h"
 
 #include "ModularServer.h"
 #include "ModularDevice.h"
@@ -35,42 +35,30 @@ class StepDirController : public ModularDevice
 public:
   StepDirController();
   virtual void setup();
-  void setChannelOn(const size_t channel, const ConstantString * const polarity_ptr);
-  void setChannelOff(const size_t channel);
-  void setChannelsOn(const uint32_t channels, const ConstantString * const polarity_ptr);
-  void setChannelsOff(const uint32_t channels);
-  void setAllChannelsOn(const ConstantString * const polarity_ptr);
-  void setAllChannelsOff();
-  int addPwm(const uint32_t channels,
-             const ConstantString * const polarity_ptr,
-             const long delay,
-             const long period,
-             const long on_duration,
-             const long count);
-  int startPwm(const uint32_t channels,
-               const ConstantString * const polarity_ptr,
-               const long delay,
-               const long period,
-               const long on_duration);
-  int addTogglePwm(const uint32_t channels,
-                   const ConstantString * const polarity_ptr,
-                   const long delay,
-                   const long period,
-                   const long on_duration,
-                   const long count);
-  int startTogglePwm(const uint32_t channels,
-                     const ConstantString * const polarity_ptr,
-                     const long delay,
-                     const long period,
-                     const long on_duration);
-  void stopPwm(const int pwm_index);
-  void stopAllPwm();
-  uint32_t arrayToChannels(ArduinoJson::JsonArray & channels_array);
-  ConstantString * const stringToPolarityPtr(const char * string);
+
+  void setStepDirPins(size_t step_pin, size_t dir_pin);
+
+  void start();
+  void stop();
+  bool isRunning();
+
+  void disableOutputs();
+  void enableOutputs();
+
+  long getTargetPosition();
+  void setTargetPosition(long position);
+  long getCurrentPosition();
+  void setCurrentPosition(long position);
+
+  void setPinsInverted(bool direction, bool step);
+  void setDirInverted();
+  void setDirNormal();
+
+  void zero();
 
   // Handlers
-  virtual void startPwmHandler(int index);
-  virtual void stopPwmHandler(int index);
+  // virtual void startPwmHandler(int index);
+  // virtual void stopPwmHandler(int index);
 
 private:
   modular_server::Field fields_[step_dir_controller::constants::FIELD_COUNT_MAX];
@@ -78,27 +66,16 @@ private:
   modular_server::Method methods_[step_dir_controller::constants::METHOD_COUNT_MAX];
   modular_server::Callback callbacks_[modular_device::constants::CALLBACK_COUNT_MAX];
 
-  EventController<step_dir_controller::constants::EVENT_COUNT_MAX> event_controller_;
+  // EventController<step_dir_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
-  IndexedContainer<step_dir_controller::constants::PulseInfo,
-                   step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
+  // IndexedContainer<step_dir_controller::constants::PulseInfo,
+  //                  step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
+
+  void updateDirPin();
+  void setStepPinHigh();
+  void setStepPinLow();
 
   // Handlers
-  void setChannelOnHandler();
-  void setChannelOffHandler();
-  void setChannelsOnHandler();
-  void setChannelsOffHandler();
-  void setAllChannelsOnHandler();
-  void setAllChannelsOffHandler();
-  void addPwmHandler();
-  void startPwmHandler();
-  void addTogglePwmHandler();
-  void startTogglePwmHandler();
-  void stopPwmHandler();
-  void stopAllPwmHandler();
-  void setChannelsOnHandler(int index);
-  void setChannelsOffHandler(int index);
-  void setChannelsOnReversedHandler(int index);
 
 };
 
