@@ -34,27 +34,42 @@ class StepDirController : public ModularDevice
 {
 public:
   StepDirController();
+  ~StepDirController();
   virtual void setup();
 
-  void setStepDirPins(size_t step_pin, size_t dir_pin);
+  void enable();
+  void disable();
+  bool isEnabled();
 
-  void start();
-  void stop();
-  bool isRunning();
+  void stop(unsigned int motor_index);
+  void start(unsigned int motor_index);
+  void stopAll();
+  void startAll();
+  bool areAnyRunning();
+  bool isRunning(unsigned int motor_index);
+  Array<bool,constants::MOTOR_COUNT> isRunningAll();
 
-  void disableOutputs();
-  void enableOutputs();
+  void setSpeed();
 
-  long getTargetPosition();
-  void setTargetPosition(long position);
-  long getCurrentPosition();
-  void setCurrentPosition(long position);
+  void setDirection(unsigned int motor_index, char dir);
+  void setDirectionAll(Array<char, constants::MOTOR_COUNT> dir);
 
-  void setPinsInverted(bool direction, bool step);
-  void setDirInverted();
-  void setDirNormal();
+  long getCurrentPosition(unsigned int motor_index);
+  Array<long, constants::MOTOR_COUNT> getCurrentPositionAll();
+  void setCurrentPosition(unsigned int motor_index, long pos);
+  void setCurrentPositionAll(Array<long, constants::MOTOR_COUNT> pos);
 
-  void zero();
+  long getTargetPosition(unsigned int motor_index);
+  Array<long, constants::MOTOR_COUNT> getTargetPositionAll();
+  void setTargetPosition(unsigned int motor_index, long pos);
+  void setTargetPositionAll(Array<long, constants::MOTOR_COUNT> pos);
+
+  // int getCurrentWaypoint(unsigned int motor_index);
+  // Array<int, constants::MOTOR_COUNT> getCurrentWaypointAll();
+
+  // void goToNextWaypoint(unsigned int motor_index);
+  void zero(unsigned int motor_index);
+  void zeroAll();
 
   // Handlers
   // virtual void startPwmHandler(int index);
@@ -71,9 +86,11 @@ private:
   // IndexedContainer<step_dir_controller::constants::PulseInfo,
   //                  step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
-  void updateDirPin();
-  void setStepPinHigh();
-  void setStepPinLow();
+  Array<Stepper,constants::MOTOR_COUNT> steppers_;
+  int enable_pin_;
+  bool enabled_flag_;
+
+  void update();
 
   // Handlers
 

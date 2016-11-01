@@ -13,8 +13,6 @@
 #include <WProgram.h>
 #include <wiring.h>
 #endif
-#include "Constants.h"
-#include "Globals.h"
 
 
 class Stepper
@@ -23,7 +21,7 @@ public:
   Stepper();
   ~Stepper();
 
-  void setup(uint8_t step_pin, uint8_t dir_pin);
+  void setup(size_t step_pin, size_t dir_pin);
 
   void start();
   void stop();
@@ -41,9 +39,9 @@ public:
   void setDirInverted();
   void setDirNormal();
 
-  void goToNextWaypoint();
-  int getCurrentWaypoint();
-  void setCurrentWaypoint(int waypoint);
+  // void goToNextWaypoint();
+  // int getCurrentWaypoint();
+  // void setCurrentWaypoint(int waypoint);
 
   void zero();
 
@@ -51,8 +49,8 @@ public:
   void setStepPinHigh();
   void setStepPinLow();
 private:
-  uint8_t step_pin_;
-  uint8_t dir_pin_;
+  size_t step_pin_;
+  size_t dir_pin_;
 
   volatile bool dir_inverted_;
   volatile bool step_inverted_;
@@ -67,7 +65,7 @@ private:
   volatile bool running_;
   volatile long current_pos_;   // Steps
   volatile long target_pos_;    // Steps
-  volatile int waypoint_;
+  // volatile int waypoint_;
 };
 
 inline void Stepper::updateDirPin()
@@ -133,26 +131,26 @@ inline void Stepper::setStepPinLow()
       // constants::ModeType mode;
       // globals::modular_server.getSavedVariableValue(constants::mode_name,mode);
       // if (mode == constants::WAYPOINT)
-      if (true)
-      {
-        bool reverse_direction;
-        globals::modular_server.getFieldValue(constants::reverse_direction_field_name,reverse_direction);
-        if (!reverse_direction)
-        {
-          waypoint_++;
-        }
-        else
-        {
-          waypoint_--;
-        }
-        long waypoint_count;
-        globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
-        if (abs(waypoint_) == waypoint_count)
-        {
-          waypoint_ = 0;
-          setCurrentPosition(0);
-        }
-      }
+      // if (true)
+      // {
+      //   bool reverse_direction;
+      //   globals::modular_server.getFieldValue(constants::reverse_direction_field_name,reverse_direction);
+      //   if (!reverse_direction)
+      //   {
+      //     waypoint_++;
+      //   }
+      //   else
+      //   {
+      //     waypoint_--;
+      //   }
+      //   long waypoint_count;
+      //   globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
+      //   if (abs(waypoint_) == waypoint_count)
+      //   {
+      //     waypoint_ = 0;
+      //     setCurrentPosition(0);
+      //   }
+      // }
     }
   }
 }

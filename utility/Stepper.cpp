@@ -16,7 +16,7 @@ Stepper::~Stepper()
   disableOutputs();
 }
 
-void Stepper::setup(uint8_t step_pin, uint8_t dir_pin)
+void Stepper::setup(size_t step_pin, size_t dir_pin)
 {
   step_pin_ = step_pin;
   dir_pin_ = dir_pin;
@@ -27,7 +27,7 @@ void Stepper::setup(uint8_t step_pin, uint8_t dir_pin)
   running_ = false;
   current_pos_ = 0;
   target_pos_ = 0;
-  waypoint_ = 0;
+  // waypoint_ = 0;
 
   enableOutputs();
   setPinsInverted(false,false);
@@ -111,41 +111,41 @@ void Stepper::setDirNormal()
   setPinsInverted(false,false);
 }
 
-void Stepper::goToNextWaypoint()
-{
-  if (!isRunning())
-  {
-    long micro_steps_per_step;
-    globals::modular_server.getFieldValue(constants::micro_steps_per_step_field_name,micro_steps_per_step);
-    long waypoint_count;
-    globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
-    bool reverse_direction;
-    globals::modular_server.getFieldValue(constants::reverse_direction_field_name,reverse_direction);
-    long next_waypoint_pos;
-    if (!reverse_direction)
-    {
-      next_waypoint_pos = (long(waypoint_ + 1)*constants::steps_per_rev*micro_steps_per_step)/long(waypoint_count);
-    }
-    else
-    {
-      next_waypoint_pos = (long(waypoint_ - 1)*constants::steps_per_rev*micro_steps_per_step)/long(waypoint_count);
-    }
-    setTargetPosition(next_waypoint_pos);
-    start();
-  }
-}
+// void Stepper::goToNextWaypoint()
+// {
+//   if (!isRunning())
+//   {
+//     long micro_steps_per_step;
+//     globals::modular_server.getFieldValue(constants::micro_steps_per_step_field_name,micro_steps_per_step);
+//     long waypoint_count;
+//     globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
+//     bool reverse_direction;
+//     globals::modular_server.getFieldValue(constants::reverse_direction_field_name,reverse_direction);
+//     long next_waypoint_pos;
+//     if (!reverse_direction)
+//     {
+//       next_waypoint_pos = (long(waypoint_ + 1)*constants::steps_per_rev*micro_steps_per_step)/long(waypoint_count);
+//     }
+//     else
+//     {
+//       next_waypoint_pos = (long(waypoint_ - 1)*constants::steps_per_rev*micro_steps_per_step)/long(waypoint_count);
+//     }
+//     setTargetPosition(next_waypoint_pos);
+//     start();
+//   }
+// }
 
-int Stepper::getCurrentWaypoint()
-{
-  return waypoint_;
-}
+// int Stepper::getCurrentWaypoint()
+// {
+//   return waypoint_;
+// }
 
-void Stepper::setCurrentWaypoint(int waypoint)
-{
-  noInterrupts();
-  waypoint_ = waypoint;
-  interrupts();
-}
+// void Stepper::setCurrentWaypoint(int waypoint)
+// {
+//   noInterrupts();
+//   waypoint_ = waypoint;
+//   interrupts();
+// }
 
 void Stepper::zero()
 {
@@ -153,6 +153,6 @@ void Stepper::zero()
   stop();
   setCurrentPosition(0);
   setTargetPosition(0);
-  setCurrentWaypoint(0);
+  // setCurrentWaypoint(0);
   interrupts();
 }
