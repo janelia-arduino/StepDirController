@@ -87,7 +87,6 @@ private:
   //                  step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
   Array<Stepper,constants::MOTOR_COUNT> steppers_;
-  int enable_pin_;
   bool enabled_flag_;
 
   void update();

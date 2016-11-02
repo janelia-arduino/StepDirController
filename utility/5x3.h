@@ -16,20 +16,15 @@ namespace step_dir_controller
 {
 namespace constants
 {
-enum {CHANNEL_COUNT=4};
+enum {MOTOR_COUNT=1};
 
-extern const size_t enable_pins[CHANNEL_COUNT];
-extern const size_t dir_a_pins[CHANNEL_COUNT];
-extern const size_t dir_b_pins[CHANNEL_COUNT];
-extern const size_t sense_pins[CHANNEL_COUNT];
+extern const size_t step_pins[MOTOR_COUNT];
+extern const size_t dir_pins[MOTOR_COUNT];
 
 // Units
 
 // Fields
 // Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
-extern const bool polarity_reversed_default[CHANNEL_COUNT];
-
-extern const bool channels_enabled_default[CHANNEL_COUNT];
 
 // Parameters
 

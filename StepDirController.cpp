@@ -13,7 +13,6 @@ using namespace step_dir_controller;
 StepDirController::StepDirController()
 {
   enabled_flag_ = false;
-  enable_pin_ = constants::drive_enable_pin;
 }
 
 StepDirController::~StepDirController()
@@ -30,7 +29,7 @@ void StepDirController::setup()
   // event_controller_.setup();
 
   // Pin Setup
-  pinMode(enable_pin_, OUTPUT);
+  pinMode(constants::enable_pin, OUTPUT);
 
   // Assign pins (step, dir) to motors
   for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
@@ -70,11 +69,11 @@ void StepDirController::enable()
   globals::modular_server.getFieldValue(constants::enable_polarity_high_field_name,enable_polarity_high);
   if (enable_polarity_high)
   {
-    digitalWrite(enable_pin_,HIGH);
+    digitalWrite(constants::enable_pin,HIGH);
   }
   else
   {
-    digitalWrite(enable_pin_,LOW);
+    digitalWrite(constants::enable_pin,LOW);
   }
   enabled_flag_ = true;
 }
@@ -86,11 +85,11 @@ void StepDirController::disable()
   globals::modular_server.getFieldValue(constants::enable_polarity_high_field_name,enable_polarity_high);
   if (enable_polarity_high)
   {
-    digitalWrite(enable_pin_,LOW);
+    digitalWrite(constants::enable_pin,LOW);
   }
   else
   {
-    digitalWrite(enable_pin_,HIGH);
+    digitalWrite(constants::enable_pin,HIGH);
   }
   stopAll();
 }

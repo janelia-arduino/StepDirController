@@ -18,9 +18,9 @@ namespace step_dir_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{FIELD_COUNT_MAX=1};
+enum{FIELD_COUNT_MAX=2};
 enum{PARAMETER_COUNT_MAX=1};
-enum{METHOD_COUNT_MAX=12};
+enum{METHOD_COUNT_MAX=3};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -30,6 +30,8 @@ extern const modular_server::FirmwareInfo firmware_info;
 
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
+
+extern const size_t enable_pin;
 
 // enum{EVENT_COUNT_MAX=8};
 // enum{INDEXED_PULSES_COUNT_MAX=4};
@@ -47,23 +49,20 @@ extern const modular_server::HardwareInfo hardware_info;
 
 // Fields
 // Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
-extern ConstantString polarity_reversed_field_name;
+extern ConstantString micro_steps_per_step_field_name;
+extern const long micro_steps_per_step_min;
+extern const long micro_steps_per_step_max;
+extern const long micro_steps_per_step_default;
+
+extern ConstantString enable_polarity_high_field_name;
+extern const bool enable_polarity_high_default;
 
 // Parameters
 
 // Methods
-extern ConstantString set_channel_on_method_name;
-extern ConstantString set_channel_off_method_name;
-extern ConstantString set_channels_on_method_name;
-extern ConstantString set_channels_off_method_name;
-extern ConstantString set_all_channels_on_method_name;
-extern ConstantString set_all_channels_off_method_name;
-extern ConstantString add_pwm_method_name;
-extern ConstantString start_pwm_method_name;
-extern ConstantString add_toggle_pwm_method_name;
-extern ConstantString start_toggle_pwm_method_name;
-extern ConstantString stop_pwm_method_name;
-extern ConstantString stop_all_pwm_method_name;
+extern ConstantString enable_method_name;
+extern ConstantString disable_method_name;
+extern ConstantString stop_method_name;
 
 // Callbacks
 
