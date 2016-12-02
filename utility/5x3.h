@@ -16,19 +16,27 @@ namespace step_dir_controller
 {
 namespace constants
 {
-enum {MOTOR_COUNT=1};
+//MAX values must be >= 1, >= created/copied count, < RAM limit
+enum{INTERRUPT_COUNT_MAX=2};
 
-extern const size_t step_pins[MOTOR_COUNT];
-extern const size_t dir_pins[MOTOR_COUNT];
+enum {CHANNEL_COUNT=1};
+
+extern const size_t enable_pins[CHANNEL_COUNT];
+extern const size_t step_pins[CHANNEL_COUNT];
+extern const size_t dir_pins[CHANNEL_COUNT];
+
+// Interrupts
+// extern ConstantString bnc_b_interrupt_name;
+// extern const size_t bnc_b_pin;
 
 // Units
 
-// Fields
-// Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+// Properties
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
 
 // Parameters
 
-// Methods
+// Functions
 
 // Callbacks
 

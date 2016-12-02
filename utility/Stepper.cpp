@@ -16,13 +16,14 @@ Stepper::~Stepper()
   disableOutputs();
 }
 
-void Stepper::setup(size_t step_pin, size_t dir_pin)
+void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
 {
+  enable_pin_ = enable_pin;
   step_pin_ = step_pin;
   dir_pin_ = dir_pin;
 
-  dir_inverted_ = false;
-  step_inverted_ = false;
+  setStepNormal();
+  setDirNormal();
 
   running_ = false;
   current_pos_ = 0;
@@ -30,7 +31,6 @@ void Stepper::setup(size_t step_pin, size_t dir_pin)
   // waypoint_ = 0;
 
   enableOutputs();
-  setPinsInverted(false,false);
 
   step_bit_mask_ = digitalPinToBitMask(step_pin_);
   step_port_ = digitalPinToPort(step_pin_);
@@ -101,14 +101,24 @@ void Stepper::setPinsInverted(bool direction, bool step)
   step_inverted_ = step;
 }
 
-void Stepper::setDirInverted()
+void Stepper::setStepNormal()
 {
-  setPinsInverted(true, false);
+  step_inverted_ = false;
+}
+
+void Stepper::setStepInverted()
+{
+  step_inverted_ = true;
 }
 
 void Stepper::setDirNormal()
 {
-  setPinsInverted(false,false);
+  dir_inverted_ = false;
+}
+
+void Stepper::setDirInverted()
+{
+  dir_inverted_ = true;
 }
 
 // void Stepper::goToNextWaypoint()
@@ -116,11 +126,11 @@ void Stepper::setDirNormal()
 //   if (!isRunning())
 //   {
 //     long micro_steps_per_step;
-//     globals::modular_server.getFieldValue(constants::micro_steps_per_step_field_name,micro_steps_per_step);
+//     globals::modular_server.getPropertyValue(constants::micro_steps_per_step_property_name,micro_steps_per_step);
 //     long waypoint_count;
-//     globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
+//     globals::modular_server.getPropertyValue(constants::waypoint_count_property_name,waypoint_count);
 //     bool reverse_direction;
-//     globals::modular_server.getFieldValue(constants::reverse_direction_field_name,reverse_direction);
+//     globals::modular_server.getPropertyValue(constants::reverse_direction_property_name,reverse_direction);
 //     long next_waypoint_pos;
 //     if (!reverse_direction)
 //     {

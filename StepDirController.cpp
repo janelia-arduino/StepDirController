@@ -32,30 +32,38 @@ void StepDirController::setup()
   pinMode(constants::enable_pin, OUTPUT);
 
   // Assign pins (step, dir) to motors
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    // steppers_[motor_index] = Stepper();
-    steppers_[motor_index].setup(constants::step_pins[motor_index],
-                                 constants::dir_pins[motor_index]);
+    // steppers_[channel] = Stepper();
+    steppers_[channel].setup(constants::step_pins[channel],
+                             constants::dir_pins[channel]);
   }
 
+  // Interrupts
+#if defined(__AVR_ATmega2560__)
+  // modular_server::Interrupt & bnc_b_interrupt = modular_server_.createInterrupt(constants::bnc_b_interrupt_name,
+  //                                                                               constants::bnc_b_pin);
+
+
+#endif
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
 
-  // Add Hardware Info
-  modular_server_.addHardwareInfo(constants::hardware_info);
+  // Add Hardware
+  modular_server_.addHardware(constants::hardware_info,
+                              interrupts_);
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
-                              fields_,
+                              properties_,
                               parameters_,
-                              methods_,
+                              functions_,
                               callbacks_);
-  // Fields
+  // Properties
 
   // Parameters
 
-  // Methods
+  // Functions
 
   // Callbacks
 
@@ -63,10 +71,10 @@ void StepDirController::setup()
 
 void StepDirController::enable()
 {
-  setSpeed();
+  // setSpeed();
 
   bool enable_polarity_high;
-  globals::modular_server.getFieldValue(constants::enable_polarity_high_field_name,enable_polarity_high);
+  modular_server_.property(constants::enable_polarity_high_property_name).getValue(enable_polarity_high);
   if (enable_polarity_high)
   {
     digitalWrite(constants::enable_pin,HIGH);
@@ -82,7 +90,7 @@ void StepDirController::disable()
 {
   enabled_flag_ = false;
   bool enable_polarity_high;
-  globals::modular_server.getFieldValue(constants::enable_polarity_high_field_name,enable_polarity_high);
+  modular_server_.property(constants::enable_polarity_high_property_name).getValue(enable_polarity_high);
   if (enable_polarity_high)
   {
     digitalWrite(constants::enable_pin,LOW);
@@ -99,22 +107,22 @@ bool StepDirController::isEnabled()
   return enabled_flag_;
 }
 
-void StepDirController::stop(unsigned int motor_index)
+void StepDirController::stop(const size_t channel)
 {
-  if (motor_index<constants::MOTOR_COUNT)
+  if (channel<constants::CHANNEL_COUNT)
   {
     noInterrupts();
-    steppers_[motor_index].stop();
+    steppers_[channel].stop();
     interrupts();
   }
 }
 
-void StepDirController::start(unsigned int motor_index)
+void StepDirController::start(const size_t channel)
 {
-  if (motor_index<constants::MOTOR_COUNT)
+  if (channel<constants::CHANNEL_COUNT)
   {
     noInterrupts();
-    steppers_[motor_index].start();
+    steppers_[channel].start();
     interrupts();
   }
 }
@@ -122,9 +130,9 @@ void StepDirController::start(unsigned int motor_index)
 void StepDirController::stopAll()
 {
   noInterrupts();
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    steppers_[motor_index].stop();
+    steppers_[channel].stop();
   }
   interrupts();
 }
@@ -132,19 +140,19 @@ void StepDirController::stopAll()
 void StepDirController::startAll()
 {
   noInterrupts();
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    steppers_[motor_index].start();
+    steppers_[channel].start();
   }
   interrupts();
 }
 
-bool StepDirController::areAnyRunning()
+bool StepDirController::anyRunning()
 {
   bool flag = false;
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    if (steppers_[motor_index].isRunning())
+    if (steppers_[channel].isRunning())
     {
       flag = true;
     }
@@ -152,18 +160,18 @@ bool StepDirController::areAnyRunning()
   return flag;
 }
 
-bool StepDirController::isRunning(unsigned int motor_index)
+bool StepDirController::isRunning(const size_t channel)
 {
-  return steppers_[motor_index].isRunning();
+  return steppers_[channel].isRunning();
 }
 
-Array<bool, constants::MOTOR_COUNT> StepDirController::isRunningAll()
+Array<bool, constants::CHANNEL_COUNT> StepDirController::isRunningAll()
 {
-  Array<bool, constants::MOTOR_COUNT> is_running;
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  Array<bool, constants::CHANNEL_COUNT> is_running;
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
     noInterrupts();
-    is_running[motor_index] = isRunning(motor_index);
+    is_running[channel] = isRunning(channel);
     interrupts();
   }
   return is_running;
@@ -175,131 +183,131 @@ Array<bool, constants::MOTOR_COUNT> StepDirController::isRunningAll()
 //   Timer1.setPeriod(period);
 // }
 
-void StepDirController::setDirection(unsigned int motor_index, char dir)
+void StepDirController::setDirection(const size_t channel, char dir)
 {
-  if (motor_index < constants::MOTOR_COUNT)
+  if (channel < constants::CHANNEL_COUNT)
   {
     if (dir == constants::orientation_inverted)
     {
-      steppers_[motor_index].setDirInverted();
+      steppers_[channel].setDirInverted();
     }
     else
     {
-      steppers_[motor_index].setDirNormal();
+      steppers_[channel].setDirNormal();
     }
   }
 }
-void StepDirController::setDirectionAll(Array<char,constants::MOTOR_COUNT> dir)
+void StepDirController::setDirectionAll(Array<char,constants::CHANNEL_COUNT> dir)
 {
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    setDirection(motor_index,dir[motor_index]);
+    setDirection(channel,dir[channel]);
   }
 }
 
-long StepDirController::getCurrentPosition(unsigned int motor_index)
+long StepDirController::getCurrentPosition(const size_t channel)
 {
   long rtn_val = 0;
-  if (motor_index < constants::MOTOR_COUNT)
+  if (channel < constants::CHANNEL_COUNT)
   {
     noInterrupts();
-    rtn_val = steppers_[motor_index].getCurrentPosition();
+    rtn_val = steppers_[channel].getCurrentPosition();
     interrupts();
   }
   return rtn_val;
 }
 
-Array<long, constants::MOTOR_COUNT> StepDirController::getCurrentPositionAll()
+Array<long, constants::CHANNEL_COUNT> StepDirController::getCurrentPositionAll()
 {
-  Array<long, constants::MOTOR_COUNT> position;
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  Array<long, constants::CHANNEL_COUNT> position;
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
     noInterrupts();
-    position[motor_index] = steppers_[motor_index].getCurrentPosition();
+    position[channel] = steppers_[channel].getCurrentPosition();
     interrupts();
   }
   return position;
 }
 
-void StepDirController::setCurrentPosition(unsigned int motor_index, long pos)
+void StepDirController::setCurrentPosition(const size_t channel, long pos)
 {
-  if (motor_index < constants::MOTOR_COUNT)
+  if (channel < constants::CHANNEL_COUNT)
   {
-    steppers_[motor_index].setCurrentPosition(pos);
+    steppers_[channel].setCurrentPosition(pos);
   }
 }
 
-void StepDirController::setCurrentPositionAll(Array<long, constants::MOTOR_COUNT> pos)
+void StepDirController::setCurrentPositionAll(Array<long, constants::CHANNEL_COUNT> pos)
 {
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    setCurrentPosition(motor_index,pos[motor_index]);
+    setCurrentPosition(channel,pos[channel]);
   }
 }
 
-long StepDirController::getTargetPosition(unsigned int motor_index)
+long StepDirController::getTargetPosition(const size_t channel)
 {
   long rtn_val = 0;
-  if (motor_index < constants::MOTOR_COUNT)
+  if (channel < constants::CHANNEL_COUNT)
   {
     noInterrupts();
-    rtn_val = steppers_[motor_index].getTargetPosition();
+    rtn_val = steppers_[channel].getTargetPosition();
     interrupts();
   }
   return rtn_val;
 }
 
-Array<long, constants::MOTOR_COUNT> StepDirController::getTargetPositionAll()
+Array<long, constants::CHANNEL_COUNT> StepDirController::getTargetPositionAll()
 {
-  Array<long, constants::MOTOR_COUNT> position;
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  Array<long, constants::CHANNEL_COUNT> position;
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
     noInterrupts();
-    position[motor_index] = steppers_[motor_index].getTargetPosition();
+    position[channel] = steppers_[channel].getTargetPosition();
     interrupts();
   }
   return position;
 }
 
-void StepDirController::setTargetPosition(unsigned int motor_index, long pos)
+void StepDirController::setTargetPosition(const size_t channel, long pos)
 {
-  if (motor_index < constants::MOTOR_COUNT)
+  if (channel < constants::CHANNEL_COUNT)
   {
     noInterrupts();
-    steppers_[motor_index].setTargetPosition(pos);
+    steppers_[channel].setTargetPosition(pos);
     interrupts();
   }
 }
 
-void StepDirController::setTargetPositionAll(Array<long,constants::MOTOR_COUNT> pos)
+void StepDirController::setTargetPositionAll(Array<long,constants::CHANNEL_COUNT> pos)
 {
   noInterrupts();
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    steppers_[motor_index].setTargetPosition(pos[motor_index]);
+    steppers_[channel].setTargetPosition(pos[channel]);
   }
   interrupts();
 }
 
-// int StepDirController::getCurrentWaypoint(unsigned int motor_index)
+// int StepDirController::getCurrentWaypoint(const size_t channel)
 // {
 //   int rtn_val = 0;
-//   if (motor_index < constants::MOTOR_COUNT)
+//   if (channel < constants::CHANNEL_COUNT)
 //   {
 //     noInterrupts();
-//     rtn_val = steppers_[motor_index].getCurrentWaypoint();
+//     rtn_val = steppers_[channel].getCurrentWaypoint();
 //     interrupts();
 //   }
 //   return rtn_val;
 // }
 
-// Array<int, constants::MOTOR_COUNT> StepDirController::getCurrentWaypointAll()
+// Array<int, constants::CHANNEL_COUNT> StepDirController::getCurrentWaypointAll()
 // {
-//   Array<int, constants::MOTOR_COUNT> waypoint;
-//   for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+//   Array<int, constants::CHANNEL_COUNT> waypoint;
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
 //   {
 //     noInterrupts();
-//     waypoint[motor_index] = steppers_[motor_index].getCurrentWaypoint();
+//     waypoint[channel] = steppers_[channel].getCurrentWaypoint();
 //     interrupts();
 //   }
 //   return waypoint;
@@ -308,45 +316,45 @@ void StepDirController::setTargetPositionAll(Array<long,constants::MOTOR_COUNT> 
 void StepDirController::setSpeed()
 {
   // constants::ModeType mode;
-  // globals::globals::modular_server.getSavedVariableValue(constants::mode_name,mode);
+  // modular_server_.getSavedVariableValue(constants::mode_name,mode);
   // if (mode == constants::WAYPOINT)
   if (true)
   {
-    long waypoint_travel_duration;
-    globals::modular_server.getFieldValue(constants::waypoint_travel_duration_field_name,waypoint_travel_duration);
-    long micro_steps_per_step;
-    globals::modular_server.getFieldValue(constants::micro_steps_per_step_field_name,micro_steps_per_step);
-    long waypoint_count;
-    globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
-    long timer_period = ((long)waypoint_travel_duration*waypoint_count*1000)/(constants::steps_per_rev*long(micro_steps_per_step));
-    Timer1.setPeriod(timer_period);
+    // long waypoint_travel_duration;
+    // modular_server_.property(constants::waypoint_travel_duration_property_name).getValue(waypoint_travel_duration);
+    // long micro_steps_per_step;
+    // modular_server_.property(constants::micro_steps_per_step_property_name).getValue(micro_steps_per_step);
+    // long waypoint_count;
+    // modular_server_.property(constants::waypoint_count_property_name).getValue(waypoint_count);
+    // long timer_period = ((long)waypoint_travel_duration*waypoint_count*1000)/(constants::steps_per_rev*long(micro_steps_per_step));
+    // Timer1.setPeriod(timer_period);
   }
 }
 
-// void StepDirController::goToNextWaypoint(unsigned int motor_index)
+// void StepDirController::goToNextWaypoint(const size_t channel)
 // {
 //   if (enabled_flag_)
 //   {
-//     if (motor_index < constants::MOTOR_COUNT)
+//     if (channel < constants::CHANNEL_COUNT)
 //     {
-//       steppers_[motor_index].goToNextWaypoint();
+//       steppers_[channel].goToNextWaypoint();
 //     }
 //   }
 // }
 
-void StepDirController::zero(unsigned int motor_index)
+void StepDirController::zero(const size_t channel)
 {
-  if (motor_index < constants::MOTOR_COUNT)
+  if (channel < constants::CHANNEL_COUNT)
   {
-    steppers_[motor_index].zero();
+    steppers_[channel].zero();
   }
 }
 
 void StepDirController::zeroAll()
 {
-  for (int motor_index=0; motor_index<constants::MOTOR_COUNT; motor_index++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    steppers_[motor_index].zero();
+    steppers_[channel].zero();
   }
 }
 
@@ -362,8 +370,7 @@ void StepDirController::zeroAll()
 //
 // For more info read about ArduinoJson parsing https://github.com/janelia-arduino/ArduinoJson
 //
-// modular_server_.field(field_name).getValue(value) value type must match the field default type
-// modular_server_.field(field_name).setValue(value) value type must match the field default type
-// modular_server_.field(field_name).getElementValue(value) value type must match the field array element default type
-// modular_server_.field(field_name).setElementValue(value) value type must match the field array element default type
-
+// modular_server_.property(property_name).getValue(value) value type must match the property default type
+// modular_server_.property(property_name).setValue(value) value type must match the property default type
+// modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
+// modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type

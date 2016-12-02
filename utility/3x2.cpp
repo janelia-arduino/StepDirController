@@ -22,13 +22,15 @@ const modular_server::HardwareInfo hardware_info =
     .version_minor=0,
   };
 
+// Interrupts
+
 // Units
 
-// Fields
+// Properties
 
 // Parameters
 
-// Methods
+// Functions
 
 // Callbacks
 

@@ -16,15 +16,23 @@ namespace step_dir_controller
 {
 namespace constants
 {
+//MAX values must be >= 1, >= created/copied count, < RAM limit
+enum{INTERRUPT_COUNT_MAX=1};
+
+enum {CHANNEL_COUNT=1};
+
+extern const size_t enable_pins[CHANNEL_COUNT];
+extern const size_t step_pins[CHANNEL_COUNT];
+extern const size_t dir_pins[CHANNEL_COUNT];
 
 // Units
 
-// Fields
-// Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+// Properties
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
 
 // Parameters
 
-// Methods
+// Functions
 
 // Callbacks
 

@@ -21,23 +21,25 @@ public:
   Stepper();
   ~Stepper();
 
-  void setup(size_t step_pin, size_t dir_pin);
+  void setup(size_t enable_pin, size_t step_pin, size_t dir_pin);
 
   void start();
   void stop();
   bool isRunning();
-
-  void disableOutputs();
-  void enableOutputs();
 
   long getTargetPosition();
   void setTargetPosition(long position);
   long getCurrentPosition();
   void setCurrentPosition(long position);
 
-  void setPinsInverted(bool direction, bool step);
-  void setDirInverted();
+  void setEnableNormal();
+  void setEnableInverted();
+
+  void setStepNormal();
+  void setStepInverted();
+
   void setDirNormal();
+  void setDirInverted();
 
   // void goToNextWaypoint();
   // int getCurrentWaypoint();
@@ -49,11 +51,13 @@ public:
   void setStepPinHigh();
   void setStepPinLow();
 private:
+  size_t enable_pin_;
   size_t step_pin_;
   size_t dir_pin_;
 
-  volatile bool dir_inverted_;
+  volatile bool enable_inverted_;
   volatile bool step_inverted_;
+  volatile bool dir_inverted_;
 
   uint8_t step_bit_mask_;
   uint8_t dir_bit_mask_;
@@ -66,6 +70,10 @@ private:
   volatile long current_pos_;   // Steps
   volatile long target_pos_;    // Steps
   // volatile int waypoint_;
+
+  void disableOutputs();
+  void enableOutputs();
+
 };
 
 inline void Stepper::updateDirPin()
@@ -134,7 +142,7 @@ inline void Stepper::setStepPinLow()
       // if (true)
       // {
       //   bool reverse_direction;
-      //   globals::modular_server.getFieldValue(constants::reverse_direction_field_name,reverse_direction);
+      //   globals::modular_server.getPropertyValue(constants::reverse_direction_property_name,reverse_direction);
       //   if (!reverse_direction)
       //   {
       //     waypoint_++;
@@ -144,7 +152,7 @@ inline void Stepper::setStepPinLow()
       //     waypoint_--;
       //   }
       //   long waypoint_count;
-      //   globals::modular_server.getFieldValue(constants::waypoint_count_field_name,waypoint_count);
+      //   globals::modular_server.getPropertyValue(constants::waypoint_count_property_name,waypoint_count);
       //   if (abs(waypoint_) == waypoint_count)
       //   {
       //     waypoint_ = 0;

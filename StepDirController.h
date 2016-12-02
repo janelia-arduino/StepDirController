@@ -19,15 +19,16 @@
 #include "ConstantVariable.h"
 #include "SavedVariable.h"
 #include "Functor.h"
+#include "IndexedContainer.h"
+#include "FunctorCallbacks.h"
 
-// #include "IndexedContainer.h"
-// #include "FunctorCallbacks.h"
 // #include "EventController.h"
 
 #include "ModularServer.h"
 #include "ModularDevice.h"
 
 #include "utility/Constants.h"
+#include "utility/Stepper.h"
 
 
 class StepDirController : public ModularDevice
@@ -41,34 +42,34 @@ public:
   void disable();
   bool isEnabled();
 
-  void stop(unsigned int motor_index);
-  void start(unsigned int motor_index);
+  void stop(const size_t channel);
+  void start(const size_t channel);
   void stopAll();
   void startAll();
-  bool areAnyRunning();
-  bool isRunning(unsigned int motor_index);
-  Array<bool,constants::MOTOR_COUNT> isRunningAll();
+  bool anyRunning();
+  bool isRunning(const size_t channel);
+  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> isRunningAll();
 
   void setSpeed();
 
-  void setDirection(unsigned int motor_index, char dir);
-  void setDirectionAll(Array<char, constants::MOTOR_COUNT> dir);
+  void setDirection(const size_t channel, char dir);
+  void setDirectionAll(Array<char, step_dir_controller::constants::CHANNEL_COUNT> dir);
 
-  long getCurrentPosition(unsigned int motor_index);
-  Array<long, constants::MOTOR_COUNT> getCurrentPositionAll();
-  void setCurrentPosition(unsigned int motor_index, long pos);
-  void setCurrentPositionAll(Array<long, constants::MOTOR_COUNT> pos);
+  long getCurrentPosition(const size_t channel);
+  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositionAll();
+  void setCurrentPosition(const size_t channel, long pos);
+  void setCurrentPositionAll(Array<long, step_dir_controller::constants::CHANNEL_COUNT> pos);
 
-  long getTargetPosition(unsigned int motor_index);
-  Array<long, constants::MOTOR_COUNT> getTargetPositionAll();
-  void setTargetPosition(unsigned int motor_index, long pos);
-  void setTargetPositionAll(Array<long, constants::MOTOR_COUNT> pos);
+  long getTargetPosition(const size_t channel);
+  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositionAll();
+  void setTargetPosition(const size_t channel, long pos);
+  void setTargetPositionAll(Array<long, step_dir_controller::constants::CHANNEL_COUNT> pos);
 
-  // int getCurrentWaypoint(unsigned int motor_index);
-  // Array<int, constants::MOTOR_COUNT> getCurrentWaypointAll();
+  // int getCurrentWaypoint(const size_t channel);
+  // Array<int, step_dir_controller::constants::CHANNEL_COUNT> getCurrentWaypointAll();
 
-  // void goToNextWaypoint(unsigned int motor_index);
-  void zero(unsigned int motor_index);
+  // void goToNextWaypoint(const size_t channel);
+  void zero(const size_t channel);
   void zeroAll();
 
   // Handlers
@@ -76,20 +77,20 @@ public:
   // virtual void stopPwmHandler(int index);
 
 private:
-  modular_server::Field fields_[step_dir_controller::constants::FIELD_COUNT_MAX];
+  modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
+
+  modular_server::Property properties_[step_dir_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[step_dir_controller::constants::PARAMETER_COUNT_MAX];
-  modular_server::Method methods_[step_dir_controller::constants::METHOD_COUNT_MAX];
-  modular_server::Callback callbacks_[modular_device::constants::CALLBACK_COUNT_MAX];
+  modular_server::Function functions_[step_dir_controller::constants::FUNCTION_COUNT_MAX];
+  modular_server::Callback callbacks_[step_dir_controller::constants::CALLBACK_COUNT_MAX];
 
   // EventController<step_dir_controller::constants::EVENT_COUNT_MAX> event_controller_;
 
   // IndexedContainer<step_dir_controller::constants::PulseInfo,
   //                  step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
-  Array<Stepper,constants::MOTOR_COUNT> steppers_;
+  Array<Stepper,step_dir_controller::constants::CHANNEL_COUNT> steppers_;
   bool enabled_flag_;
-
-  void update();
 
   // Handlers
 

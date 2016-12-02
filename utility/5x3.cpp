@@ -22,18 +22,19 @@ const modular_server::HardwareInfo hardware_info =
     .version_minor=0,
   };
 
-const size_t enable_pin = 49;
+const size_t enable_pins[CHANNEL_COUNT] = {49};
+const size_t step_pins[CHANNEL_COUNT] = {53};
+const size_t dir_pins[CHANNEL_COUNT] = {51};
 
-const size_t step_pins[MOTOR_COUNT] = {53};
-const size_t dir_pins[MOTOR_COUNT] = {51};
+// Interrupts
 
 // Units
 
-// Fields
+// Properties
 
 // Parameters
 
-// Methods
+// Functions
 
 // Callbacks
 

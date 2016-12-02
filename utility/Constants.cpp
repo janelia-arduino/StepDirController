@@ -26,23 +26,25 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
+// Interrupts
+
 // Units
 
-// Fields
-CONSTANT_STRING(micro_steps_per_step_field_name,"micro_steps_per_step_count");
+// Properties
+CONSTANT_STRING(micro_steps_per_step_property_name,"micro_steps_per_step_count");
 const long micro_steps_per_step_min = 1;
 const long micro_steps_per_step_max = 256;
 const long micro_steps_per_step_default = 256;
 
-CONSTANT_STRING(enable_polarity_high_field_name,"enable_polarity_high");
+CONSTANT_STRING(enable_polarity_high_property_name,"enable_polarity_high");
 const bool enable_polarity_high_default = true;
 
 // Parameters
 
-// Methods
-CONSTANT_STRING(enable_method_name,"enable");
-CONSTANT_STRING(disable_method_name,"disable");
-CONSTANT_STRING(stop_method_name,"stop");
+// Functions
+CONSTANT_STRING(enable_function_name,"enable");
+CONSTANT_STRING(disable_function_name,"disable");
+CONSTANT_STRING(stop_function_name,"stop");
 
 // Callbacks
 

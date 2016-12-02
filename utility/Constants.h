@@ -10,7 +10,7 @@
 #include "ConstantVariable.h"
 #include "ModularServer.h"
 
-#include "EventController.h"
+// #include "EventController.h"
 
 
 namespace step_dir_controller
@@ -18,9 +18,9 @@ namespace step_dir_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{FIELD_COUNT_MAX=2};
+enum{PROPERTY_COUNT_MAX=2};
 enum{PARAMETER_COUNT_MAX=1};
-enum{METHOD_COUNT_MAX=3};
+enum{FUNCTION_COUNT_MAX=3};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -30,8 +30,6 @@ extern const modular_server::FirmwareInfo firmware_info;
 
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
-
-extern const size_t enable_pin;
 
 // enum{EVENT_COUNT_MAX=8};
 // enum{INDEXED_PULSES_COUNT_MAX=4};
@@ -44,25 +42,27 @@ extern const size_t enable_pin;
 //   EventIdPair event_id_pair;
 // };
 
+// Interrupts
+
 // Units
 // extern ConstantString ms_unit;
 
-// Fields
-// Field values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
-extern ConstantString micro_steps_per_step_field_name;
+// Properties
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+extern ConstantString micro_steps_per_step_property_name;
 extern const long micro_steps_per_step_min;
 extern const long micro_steps_per_step_max;
 extern const long micro_steps_per_step_default;
 
-extern ConstantString enable_polarity_high_field_name;
-extern const bool enable_polarity_high_default;
+// extern ConstantString enable_polarity_high_property_name;
+// extern const bool enable_polarity_high_default;
 
 // Parameters
 
-// Methods
-extern ConstantString enable_method_name;
-extern ConstantString disable_method_name;
-extern ConstantString stop_method_name;
+// Functions
+extern ConstantString enable_function_name;
+extern ConstantString disable_function_name;
+extern ConstantString stop_function_name;
 
 // Callbacks
 
