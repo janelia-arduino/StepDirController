@@ -12,12 +12,11 @@ using namespace step_dir_controller;
 
 StepDirController::StepDirController()
 {
-  enabled_flag_ = false;
 }
 
 StepDirController::~StepDirController()
 {
-  disable();
+  // disable();
 }
 
 void StepDirController::setup()
@@ -29,13 +28,12 @@ void StepDirController::setup()
   // event_controller_.setup();
 
   // Pin Setup
-  pinMode(constants::enable_pin, OUTPUT);
 
-  // Assign pins (step, dir) to motors
+  // Assign pins (enable, step, dir) to motors
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    // steppers_[channel] = Stepper();
-    steppers_[channel].setup(constants::step_pins[channel],
+    steppers_[channel].setup(constants::enable_pins[channel],
+                             constants::step_pins[channel],
                              constants::dir_pins[channel]);
   }
 
@@ -67,44 +65,6 @@ void StepDirController::setup()
 
   // Callbacks
 
-}
-
-void StepDirController::enable()
-{
-  // setSpeed();
-
-  bool enable_polarity_high;
-  modular_server_.property(constants::enable_polarity_high_property_name).getValue(enable_polarity_high);
-  if (enable_polarity_high)
-  {
-    digitalWrite(constants::enable_pin,HIGH);
-  }
-  else
-  {
-    digitalWrite(constants::enable_pin,LOW);
-  }
-  enabled_flag_ = true;
-}
-
-void StepDirController::disable()
-{
-  enabled_flag_ = false;
-  bool enable_polarity_high;
-  modular_server_.property(constants::enable_polarity_high_property_name).getValue(enable_polarity_high);
-  if (enable_polarity_high)
-  {
-    digitalWrite(constants::enable_pin,LOW);
-  }
-  else
-  {
-    digitalWrite(constants::enable_pin,HIGH);
-  }
-  stopAll();
-}
-
-bool StepDirController::isEnabled()
-{
-  return enabled_flag_;
 }
 
 void StepDirController::stop(const size_t channel)
@@ -152,7 +112,7 @@ bool StepDirController::anyRunning()
   bool flag = false;
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
-    if (steppers_[channel].isRunning())
+    if (steppers_[channel].running())
     {
       flag = true;
     }
@@ -160,21 +120,21 @@ bool StepDirController::anyRunning()
   return flag;
 }
 
-bool StepDirController::isRunning(const size_t channel)
+bool StepDirController::running(const size_t channel)
 {
-  return steppers_[channel].isRunning();
+  return steppers_[channel].running();
 }
 
-Array<bool, constants::CHANNEL_COUNT> StepDirController::isRunningAll()
+Array<bool, constants::CHANNEL_COUNT> StepDirController::runningArray()
 {
-  Array<bool, constants::CHANNEL_COUNT> is_running;
+  Array<bool, constants::CHANNEL_COUNT> running_array;
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
     noInterrupts();
-    is_running[channel] = isRunning(channel);
+    running_array[channel] = running(channel);
     interrupts();
   }
-  return is_running;
+  return running_array;
 }
 
 // void StepDirController::setSpeed(unsigned int v)
@@ -183,27 +143,27 @@ Array<bool, constants::CHANNEL_COUNT> StepDirController::isRunningAll()
 //   Timer1.setPeriod(period);
 // }
 
-void StepDirController::setDirection(const size_t channel, char dir)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    if (dir == constants::orientation_inverted)
-    {
-      steppers_[channel].setDirInverted();
-    }
-    else
-    {
-      steppers_[channel].setDirNormal();
-    }
-  }
-}
-void StepDirController::setDirectionAll(Array<char,constants::CHANNEL_COUNT> dir)
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
-  {
-    setDirection(channel,dir[channel]);
-  }
-}
+// void StepDirController::setDirection(const size_t channel, char dir)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     if (dir == constants::orientation_inverted)
+//     {
+//       steppers_[channel].setDirInverted();
+//     }
+//     else
+//     {
+//       steppers_[channel].setDirNormal();
+//     }
+//   }
+// }
+// void StepDirController::setDirectionAll(Array<char,constants::CHANNEL_COUNT> dir)
+// {
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+//   {
+//     setDirection(channel,dir[channel]);
+//   }
+// }
 
 long StepDirController::getCurrentPosition(const size_t channel)
 {

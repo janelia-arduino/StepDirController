@@ -36,8 +36,8 @@ const long micro_steps_per_step_min = 1;
 const long micro_steps_per_step_max = 256;
 const long micro_steps_per_step_default = 256;
 
-CONSTANT_STRING(enable_polarity_high_property_name,"enable_polarity_high");
-const bool enable_polarity_high_default = true;
+// CONSTANT_STRING(enable_polarity_high_property_name,"enable_polarity_high");
+// const bool enable_polarity_high_default = true;
 
 // Parameters
 

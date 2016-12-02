@@ -23,15 +23,6 @@ public:
 
   void setup(size_t enable_pin, size_t step_pin, size_t dir_pin);
 
-  void start();
-  void stop();
-  bool isRunning();
-
-  long getTargetPosition();
-  void setTargetPosition(long position);
-  long getCurrentPosition();
-  void setCurrentPosition(long position);
-
   void setEnableNormal();
   void setEnableInverted();
 
@@ -41,9 +32,18 @@ public:
   void setDirNormal();
   void setDirInverted();
 
-  // void goToNextWaypoint();
-  // int getCurrentWaypoint();
-  // void setCurrentWaypoint(int waypoint);
+  void enable();
+  void disable();
+  bool enabled();
+
+  void start();
+  void stop();
+  bool running();
+
+  long getTargetPosition();
+  void setTargetPosition(long position);
+  long getCurrentPosition();
+  void setCurrentPosition(long position);
 
   void zero();
 
@@ -55,9 +55,11 @@ private:
   size_t step_pin_;
   size_t dir_pin_;
 
-  volatile bool enable_inverted_;
-  volatile bool step_inverted_;
-  volatile bool dir_inverted_;
+  bool enable_inverted_;
+  bool step_inverted_;
+  bool dir_inverted_;
+
+  bool enabled_;
 
   uint8_t step_bit_mask_;
   uint8_t dir_bit_mask_;
@@ -69,7 +71,6 @@ private:
   volatile bool running_;
   volatile long current_pos_;   // Steps
   volatile long target_pos_;    // Steps
-  // volatile int waypoint_;
 
   void disableOutputs();
   void enableOutputs();
@@ -136,29 +137,6 @@ inline void Stepper::setStepPinLow()
     if (current_pos_ == target_pos_)
     {
       running_ = false;
-      // constants::ModeType mode;
-      // globals::modular_server.getSavedVariableValue(constants::mode_name,mode);
-      // if (mode == constants::WAYPOINT)
-      // if (true)
-      // {
-      //   bool reverse_direction;
-      //   globals::modular_server.getPropertyValue(constants::reverse_direction_property_name,reverse_direction);
-      //   if (!reverse_direction)
-      //   {
-      //     waypoint_++;
-      //   }
-      //   else
-      //   {
-      //     waypoint_--;
-      //   }
-      //   long waypoint_count;
-      //   globals::modular_server.getPropertyValue(constants::waypoint_count_property_name,waypoint_count);
-      //   if (abs(waypoint_) == waypoint_count)
-      //   {
-      //     waypoint_ = 0;
-      //     setCurrentPosition(0);
-      //   }
-      // }
     }
   }
 }

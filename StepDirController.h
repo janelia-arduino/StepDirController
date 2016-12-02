@@ -38,22 +38,22 @@ public:
   ~StepDirController();
   virtual void setup();
 
-  void enable();
-  void disable();
-  bool isEnabled();
+  // void enable();
+  // void disable();
+  // bool isEnabled();
 
   void stop(const size_t channel);
   void start(const size_t channel);
   void stopAll();
   void startAll();
+  bool running(const size_t channel);
   bool anyRunning();
-  bool isRunning(const size_t channel);
-  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> isRunningAll();
+  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> runningArray();
 
   void setSpeed();
 
-  void setDirection(const size_t channel, char dir);
-  void setDirectionAll(Array<char, step_dir_controller::constants::CHANNEL_COUNT> dir);
+  // void setDirection(const size_t channel, char dir);
+  // void setDirectionAll(Array<char, step_dir_controller::constants::CHANNEL_COUNT> dir);
 
   long getCurrentPosition(const size_t channel);
   Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositionAll();
@@ -90,7 +90,7 @@ private:
   //                  step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
 
   Array<Stepper,step_dir_controller::constants::CHANNEL_COUNT> steppers_;
-  bool enabled_flag_;
+  // bool enabled_flag_;
 
   // Handlers
 

@@ -22,13 +22,13 @@ void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
   step_pin_ = step_pin;
   dir_pin_ = dir_pin;
 
+  setEnableNormal();
   setStepNormal();
   setDirNormal();
 
   running_ = false;
   current_pos_ = 0;
   target_pos_ = 0;
-  // waypoint_ = 0;
 
   enableOutputs();
 
@@ -39,6 +39,68 @@ void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
   dir_bit_mask_ = digitalPinToBitMask(dir_pin_);
   dir_port_ = digitalPinToPort(dir_pin_);
   dir_port_reg_ = portOutputRegister(dir_port_);
+}
+
+void Stepper::setEnableNormal()
+{
+  enable_inverted_ = false;
+}
+
+void Stepper::setEnableInverted()
+{
+  enable_inverted_ = true;
+}
+
+void Stepper::setStepNormal()
+{
+  step_inverted_ = false;
+}
+
+void Stepper::setStepInverted()
+{
+  step_inverted_ = true;
+}
+
+void Stepper::setDirNormal()
+{
+  dir_inverted_ = false;
+}
+
+void Stepper::setDirInverted()
+{
+  dir_inverted_ = true;
+}
+
+void Stepper::enable()
+{
+  if (enable_inverted_)
+  {
+    digitalWrite(enable_pin_,LOW);
+  }
+  else
+  {
+    digitalWrite(enable_pin_,HIGH);
+  }
+  enabled_ = true;
+}
+
+void Stepper::disable()
+{
+  stop();
+  enabled_ = false;
+  if (enable_inverted_)
+  {
+    digitalWrite(enable_pin_,HIGH);
+  }
+  else
+  {
+    digitalWrite(enable_pin_,LOW);
+  }
+}
+
+bool Stepper::enabled()
+{
+  return enabled_;
 }
 
 void Stepper::start()
@@ -53,21 +115,9 @@ void Stepper::stop()
   running_ = false;
 }
 
-bool Stepper::isRunning()
+bool Stepper::running()
 {
   return running_;
-}
-
-void Stepper::disableOutputs()
-{
-  digitalWrite(step_pin_, LOW ^ step_inverted_);
-  digitalWrite(dir_pin_, LOW ^ dir_inverted_);
-}
-
-void Stepper::enableOutputs()
-{
-  pinMode(step_pin_, OUTPUT);
-  pinMode(dir_pin_, OUTPUT);
 }
 
 long Stepper::getTargetPosition()
@@ -95,74 +145,26 @@ void Stepper::setCurrentPosition(long position)
   interrupts();
 }
 
-void Stepper::setPinsInverted(bool direction, bool step)
-{
-  dir_inverted_ = direction;
-  step_inverted_ = step;
-}
-
-void Stepper::setStepNormal()
-{
-  step_inverted_ = false;
-}
-
-void Stepper::setStepInverted()
-{
-  step_inverted_ = true;
-}
-
-void Stepper::setDirNormal()
-{
-  dir_inverted_ = false;
-}
-
-void Stepper::setDirInverted()
-{
-  dir_inverted_ = true;
-}
-
-// void Stepper::goToNextWaypoint()
-// {
-//   if (!isRunning())
-//   {
-//     long micro_steps_per_step;
-//     globals::modular_server.getPropertyValue(constants::micro_steps_per_step_property_name,micro_steps_per_step);
-//     long waypoint_count;
-//     globals::modular_server.getPropertyValue(constants::waypoint_count_property_name,waypoint_count);
-//     bool reverse_direction;
-//     globals::modular_server.getPropertyValue(constants::reverse_direction_property_name,reverse_direction);
-//     long next_waypoint_pos;
-//     if (!reverse_direction)
-//     {
-//       next_waypoint_pos = (long(waypoint_ + 1)*constants::steps_per_rev*micro_steps_per_step)/long(waypoint_count);
-//     }
-//     else
-//     {
-//       next_waypoint_pos = (long(waypoint_ - 1)*constants::steps_per_rev*micro_steps_per_step)/long(waypoint_count);
-//     }
-//     setTargetPosition(next_waypoint_pos);
-//     start();
-//   }
-// }
-
-// int Stepper::getCurrentWaypoint()
-// {
-//   return waypoint_;
-// }
-
-// void Stepper::setCurrentWaypoint(int waypoint)
-// {
-//   noInterrupts();
-//   waypoint_ = waypoint;
-//   interrupts();
-// }
-
 void Stepper::zero()
 {
   noInterrupts();
   stop();
   setCurrentPosition(0);
   setTargetPosition(0);
-  // setCurrentWaypoint(0);
   interrupts();
 }
+
+void Stepper::enableOutputs()
+{
+  pinMode(enable_pin_, OUTPUT);
+  pinMode(step_pin_, OUTPUT);
+  pinMode(dir_pin_, OUTPUT);
+}
+
+void Stepper::disableOutputs()
+{
+  pinMode(enable_pin_, INPUT);
+  pinMode(step_pin_, INPUT);
+  pinMode(dir_pin_, INPUT);
+}
+
