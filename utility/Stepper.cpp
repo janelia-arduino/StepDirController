@@ -22,9 +22,9 @@ void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
   step_pin_ = step_pin;
   dir_pin_ = dir_pin;
 
-  setEnableNormal();
-  setStepNormal();
-  setDirNormal();
+  setEnablePolarityHigh();
+  setStepPolarityHigh();
+  setDirPolarityHigh();
 
   running_ = false;
   current_pos_ = 0;
@@ -41,39 +41,39 @@ void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
   dir_port_reg_ = portOutputRegister(dir_port_);
 }
 
-void Stepper::setEnableNormal()
+void Stepper::setEnablePolarityHigh()
 {
-  enable_inverted_ = false;
+  enable_polarity_low_ = false;
 }
 
-void Stepper::setEnableInverted()
+void Stepper::setEnablePolarityLow()
 {
-  enable_inverted_ = true;
+  enable_polarity_low_ = true;
 }
 
-void Stepper::setStepNormal()
+void Stepper::setStepPolarityHigh()
 {
-  step_inverted_ = false;
+  step_polarity_low_ = false;
 }
 
-void Stepper::setStepInverted()
+void Stepper::setStepPolarityLow()
 {
-  step_inverted_ = true;
+  step_polarity_low_ = true;
 }
 
-void Stepper::setDirNormal()
+void Stepper::setDirPolarityHigh()
 {
-  dir_inverted_ = false;
+  dir_polarity_low_ = false;
 }
 
-void Stepper::setDirInverted()
+void Stepper::setDirPolarityLow()
 {
-  dir_inverted_ = true;
+  dir_polarity_low_ = true;
 }
 
 void Stepper::enable()
 {
-  if (enable_inverted_)
+  if (enable_polarity_low_)
   {
     digitalWrite(enable_pin_,LOW);
   }
@@ -88,7 +88,7 @@ void Stepper::disable()
 {
   stop();
   enabled_ = false;
-  if (enable_inverted_)
+  if (enable_polarity_low_)
   {
     digitalWrite(enable_pin_,HIGH);
   }

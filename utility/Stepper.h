@@ -23,14 +23,14 @@ public:
 
   void setup(size_t enable_pin, size_t step_pin, size_t dir_pin);
 
-  void setEnableNormal();
-  void setEnableInverted();
+  void setEnablePolarityHigh();
+  void setEnablePolarityLow();
 
-  void setStepNormal();
-  void setStepInverted();
+  void setStepPolarityHigh();
+  void setStepPolarityLow();
 
-  void setDirNormal();
-  void setDirInverted();
+  void setDirPolarityHigh();
+  void setDirPolarityLow();
 
   void enable();
   void disable();
@@ -55,9 +55,9 @@ private:
   size_t step_pin_;
   size_t dir_pin_;
 
-  bool enable_inverted_;
-  bool step_inverted_;
-  bool dir_inverted_;
+  bool enable_polarity_low_;
+  bool step_polarity_low_;
+  bool dir_polarity_low_;
 
   bool enabled_;
 
@@ -83,7 +83,7 @@ inline void Stepper::updateDirPin()
   {
     if (current_pos_ <= target_pos_)
     {
-      if (dir_inverted_)
+      if (dir_polarity_low_)
       {
         *dir_port_reg_ &= ~ dir_bit_mask_;
       }
@@ -95,7 +95,7 @@ inline void Stepper::updateDirPin()
     }
     else if (current_pos_ > target_pos_)
     {
-      if (dir_inverted_)
+      if (dir_polarity_low_)
       {
         *dir_port_reg_ |= dir_bit_mask_;
       }
@@ -112,7 +112,7 @@ inline void Stepper::setStepPinHigh()
 {
   if (running_)
   {
-    if (step_inverted_)
+    if (step_polarity_low_)
     {
       *step_port_reg_ &= ~step_bit_mask_;
     }
@@ -126,7 +126,7 @@ inline void Stepper::setStepPinLow()
 {
   if (running_)
   {
-    if (step_inverted_)
+    if (step_polarity_low_)
     {
       *step_port_reg_ |= step_bit_mask_;
     }

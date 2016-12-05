@@ -28,8 +28,6 @@ void StepDirController::setup()
   // event_controller_.setup();
 
   // Pin Setup
-
-  // Assign pins (enable, step, dir) to motors
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
   {
     steppers_[channel].setup(constants::enable_pins[channel],
@@ -65,6 +63,16 @@ void StepDirController::setup()
 
   // Callbacks
 
+}
+
+void StepDirController::stop(const size_t channel)
+{
+  if (channel<constants::CHANNEL_COUNT)
+  {
+    noInterrupts();
+    steppers_[channel].stop();
+    interrupts();
+  }
 }
 
 void StepDirController::stop(const size_t channel)

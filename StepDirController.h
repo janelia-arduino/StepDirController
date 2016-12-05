@@ -38,9 +38,9 @@ public:
   ~StepDirController();
   virtual void setup();
 
-  // void enable();
-  // void disable();
-  // bool isEnabled();
+  void enable(const size_t channel);
+  void disable(const size_t channel);
+  bool isEnabled(const size_t channel);
 
   void stop(const size_t channel);
   void start(const size_t channel);
