@@ -28,7 +28,7 @@ void StepDirController::setup()
   // event_controller_.setup();
 
   // Pin Setup
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     steppers_[channel].setup(constants::enable_pins[channel],
                              constants::step_pins[channel],
@@ -65,14 +65,54 @@ void StepDirController::setup()
 
 }
 
-void StepDirController::stop(const size_t channel)
+void StepDirController::enable(const size_t channel)
 {
   if (channel<constants::CHANNEL_COUNT)
   {
     noInterrupts();
-    steppers_[channel].stop();
+    steppers_[channel].enable();
     interrupts();
   }
+}
+
+void StepDirController::disable(const size_t channel)
+{
+  if (channel<constants::CHANNEL_COUNT)
+  {
+    noInterrupts();
+    steppers_[channel].disable();
+    interrupts();
+  }
+}
+
+bool StepDirController::enabled(const size_t channel)
+{
+  bool enabled = false;
+  if (channel<constants::CHANNEL_COUNT)
+  {
+    enabled = steppers_[channel].enabled();
+  }
+  return enabled;
+}
+
+void StepDirController::enableAll()
+{
+  noInterrupts();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    steppers_[channel].enable();
+  }
+  interrupts();
+}
+
+void StepDirController::disableAll()
+{
+  noInterrupts();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    steppers_[channel].disable();
+  }
+  interrupts();
 }
 
 void StepDirController::stop(const size_t channel)
@@ -95,10 +135,30 @@ void StepDirController::start(const size_t channel)
   }
 }
 
+void StepDirController::stop(const size_t channel)
+{
+  if (channel<constants::CHANNEL_COUNT)
+  {
+    noInterrupts();
+    steppers_[channel].stop();
+    interrupts();
+  }
+}
+
+bool StepDirController::running(const size_t channel)
+{
+  bool running = false;
+  if (channel<constants::CHANNEL_COUNT)
+  {
+    running = steppers_[channel].running();
+  }
+  return running;
+}
+
 void StepDirController::stopAll()
 {
   noInterrupts();
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     steppers_[channel].stop();
   }
@@ -108,7 +168,7 @@ void StepDirController::stopAll()
 void StepDirController::startAll()
 {
   noInterrupts();
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     steppers_[channel].start();
   }
@@ -118,7 +178,7 @@ void StepDirController::startAll()
 bool StepDirController::anyRunning()
 {
   bool flag = false;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     if (steppers_[channel].running())
     {
@@ -128,15 +188,10 @@ bool StepDirController::anyRunning()
   return flag;
 }
 
-bool StepDirController::running(const size_t channel)
-{
-  return steppers_[channel].running();
-}
-
 Array<bool, constants::CHANNEL_COUNT> StepDirController::runningArray()
 {
   Array<bool, constants::CHANNEL_COUNT> running_array;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     noInterrupts();
     running_array[channel] = running(channel);
@@ -167,7 +222,7 @@ Array<bool, constants::CHANNEL_COUNT> StepDirController::runningArray()
 // }
 // void StepDirController::setDirectionAll(Array<char,constants::CHANNEL_COUNT> dir)
 // {
-//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
 //   {
 //     setDirection(channel,dir[channel]);
 //   }
@@ -188,7 +243,7 @@ long StepDirController::getCurrentPosition(const size_t channel)
 Array<long, constants::CHANNEL_COUNT> StepDirController::getCurrentPositionAll()
 {
   Array<long, constants::CHANNEL_COUNT> position;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     noInterrupts();
     position[channel] = steppers_[channel].getCurrentPosition();
@@ -207,7 +262,7 @@ void StepDirController::setCurrentPosition(const size_t channel, long pos)
 
 void StepDirController::setCurrentPositionAll(Array<long, constants::CHANNEL_COUNT> pos)
 {
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     setCurrentPosition(channel,pos[channel]);
   }
@@ -228,7 +283,7 @@ long StepDirController::getTargetPosition(const size_t channel)
 Array<long, constants::CHANNEL_COUNT> StepDirController::getTargetPositionAll()
 {
   Array<long, constants::CHANNEL_COUNT> position;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     noInterrupts();
     position[channel] = steppers_[channel].getTargetPosition();
@@ -250,7 +305,7 @@ void StepDirController::setTargetPosition(const size_t channel, long pos)
 void StepDirController::setTargetPositionAll(Array<long,constants::CHANNEL_COUNT> pos)
 {
   noInterrupts();
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     steppers_[channel].setTargetPosition(pos[channel]);
   }
@@ -272,7 +327,7 @@ void StepDirController::setTargetPositionAll(Array<long,constants::CHANNEL_COUNT
 // Array<int, constants::CHANNEL_COUNT> StepDirController::getCurrentWaypointAll()
 // {
 //   Array<int, constants::CHANNEL_COUNT> waypoint;
-//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
 //   {
 //     noInterrupts();
 //     waypoint[channel] = steppers_[channel].getCurrentWaypoint();
@@ -320,7 +375,7 @@ void StepDirController::zero(const size_t channel)
 
 void StepDirController::zeroAll()
 {
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; channel++)
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     steppers_[channel].zero();
   }

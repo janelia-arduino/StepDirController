@@ -40,13 +40,16 @@ public:
 
   void enable(const size_t channel);
   void disable(const size_t channel);
-  bool isEnabled(const size_t channel);
+  bool enabled(const size_t channel);
+  void enableAll();
+  void disableAll();
+  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabledArray();
 
-  void stop(const size_t channel);
   void start(const size_t channel);
+  void stop(const size_t channel);
+  bool running(const size_t channel);
   void stopAll();
   void startAll();
-  bool running(const size_t channel);
   bool anyRunning();
   Array<bool,step_dir_controller::constants::CHANNEL_COUNT> runningArray();
 
