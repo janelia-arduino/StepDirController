@@ -26,6 +26,8 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
+size_t step_half_period_us_max = 100;
+
 // Interrupts
 
 // Units

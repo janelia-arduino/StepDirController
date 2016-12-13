@@ -31,16 +31,7 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
-// enum{EVENT_COUNT_MAX=8};
-// enum{INDEXED_PULSES_COUNT_MAX=4};
-// extern const int bad_index;
-
-// struct PulseInfo
-// {
-//   uint32_t channels;
-//   ConstantString * polarity_ptr;
-//   EventIdPair event_id_pair;
-// };
+extern size_t step_half_period_us_max;
 
 // Interrupts
 

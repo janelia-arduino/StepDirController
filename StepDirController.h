@@ -22,7 +22,7 @@
 #include "IndexedContainer.h"
 #include "FunctorCallbacks.h"
 
-// #include "EventController.h"
+#include "TimerThree.h"
 
 #include "ModularServer.h"
 #include "ModularDevice.h"
@@ -38,6 +38,26 @@ public:
   ~StepDirController();
   virtual void setup();
 
+  void setEnablePolarityHigh(const size_t channel);
+  void setEnablePolarityLow(const size_t channel);
+  void setEnablePolarityHighAll();
+  void setEnablePolarityLowAll();
+
+  void setStepPolarityHigh(const size_t channel);
+  void setStepPolarityLow(const size_t channel);
+  void setStepPolarityHighAll();
+  void setStepPolarityLowAll();
+
+  void setDirPolarityHigh(const size_t channel);
+  void setDirPolarityLow(const size_t channel);
+  void setDirPolarityHighAll();
+  void setDirPolarityLowAll();
+
+  void setPositionMode(const size_t channel);
+  void setVelocityMode(const size_t channel);
+  void setPositionModeAll();
+  void setVelocityModeAll();
+
   void enable(const size_t channel);
   void disable(const size_t channel);
   bool enabled(const size_t channel);
@@ -48,36 +68,25 @@ public:
   void start(const size_t channel);
   void stop(const size_t channel);
   bool running(const size_t channel);
-  void stopAll();
   void startAll();
+  void stopAll();
   bool anyRunning();
   Array<bool,step_dir_controller::constants::CHANNEL_COUNT> runningArray();
 
-  void setSpeed();
-
-  // void setDirection(const size_t channel, char dir);
-  // void setDirectionAll(Array<char, step_dir_controller::constants::CHANNEL_COUNT> dir);
+  void setVelocity(const size_t channel, const long steps_per_second);
 
   long getCurrentPosition(const size_t channel);
-  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositionAll();
-  void setCurrentPosition(const size_t channel, long pos);
-  void setCurrentPositionAll(Array<long, step_dir_controller::constants::CHANNEL_COUNT> pos);
+  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositions();
+  void setCurrentPosition(const size_t channel, const long position);
+  void setCurrentPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
 
   long getTargetPosition(const size_t channel);
-  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositionAll();
-  void setTargetPosition(const size_t channel, long pos);
-  void setTargetPositionAll(Array<long, step_dir_controller::constants::CHANNEL_COUNT> pos);
+  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositions();
+  void setTargetPosition(const size_t channel, const long position);
+  void setTargetPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
 
-  // int getCurrentWaypoint(const size_t channel);
-  // Array<int, step_dir_controller::constants::CHANNEL_COUNT> getCurrentWaypointAll();
-
-  // void goToNextWaypoint(const size_t channel);
   void zero(const size_t channel);
   void zeroAll();
-
-  // Handlers
-  // virtual void startPwmHandler(int index);
-  // virtual void stopPwmHandler(int index);
 
 private:
   modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
@@ -87,15 +96,11 @@ private:
   modular_server::Function functions_[step_dir_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[step_dir_controller::constants::CALLBACK_COUNT_MAX];
 
-  // EventController<step_dir_controller::constants::EVENT_COUNT_MAX> event_controller_;
-
-  // IndexedContainer<step_dir_controller::constants::PulseInfo,
-  //                  step_dir_controller::constants::INDEXED_PULSES_COUNT_MAX> indexed_pulses_;
-
   Array<Stepper,step_dir_controller::constants::CHANNEL_COUNT> steppers_;
-  // bool enabled_flag_;
+  FunctorCallbacks::Callback isr_;
 
   // Handlers
+  void isrHandler();
 
 };
 

@@ -7,6 +7,8 @@
 #include "Stepper.h"
 
 
+using namespace step_dir_controller;
+
 Stepper::Stepper()
 {
 }
@@ -16,7 +18,7 @@ Stepper::~Stepper()
   disableOutputs();
 }
 
-void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
+void Stepper::setup(const size_t enable_pin, const size_t step_pin, const size_t dir_pin)
 {
   enable_pin_ = enable_pin;
   step_pin_ = step_pin;
@@ -26,9 +28,14 @@ void Stepper::setup(size_t enable_pin, size_t step_pin, size_t dir_pin)
   setStepPolarityHigh();
   setDirPolarityHigh();
 
+  setPositionMode();
+  setDirPositive();
+
+  update_inc_ = 0;
+  step_positive_ = true;
   running_ = false;
-  current_pos_ = 0;
-  target_pos_ = 0;
+  position_current_ = 0;
+  position_target_ = 0;
 
   enableOutputs();
 
@@ -69,6 +76,24 @@ void Stepper::setDirPolarityHigh()
 void Stepper::setDirPolarityLow()
 {
   dir_polarity_low_ = true;
+}
+
+void Stepper::setPositionMode()
+{
+  mode_position_ = true;
+}
+
+void Stepper::setVelocityMode()
+{
+  mode_position_ = false;
+  if (velocity_ >= 0)
+  {
+    setDirPositive();
+  }
+  else
+  {
+    setDirNegative();
+  }
 }
 
 void Stepper::enable()
@@ -120,28 +145,52 @@ bool Stepper::running()
   return running_;
 }
 
-long Stepper::getTargetPosition()
+void Stepper::setVelocity(const long steps_per_second)
 {
-  return target_pos_;
+  if (steps_per_second == 0)
+  {
+    stop();
+    return;
+  }
+  velocity_ = steps_per_second;
+  long speed = abs(velocity_);
+  // (1000000/speed)*(1/2)*(1/constants::step_half_period_us_max)
+  update_count_ = 500000/(constants::step_half_period_us_max*speed);
+  if (!mode_position_)
+  {
+    if (velocity_ >= 0)
+    {
+      setDirPositive();
+    }
+    else
+    {
+      setDirNegative();
+    }
+  }
 }
 
-void Stepper::setTargetPosition(long position)
+long Stepper::getTargetPosition()
+{
+  return position_target_;
+}
+
+void Stepper::setTargetPosition(const long position)
 {
   noInterrupts();
-  target_pos_ = position;
+  position_target_ = position;
   interrupts();
 }
 
 long Stepper::getCurrentPosition()
 {
-  return current_pos_;
+  return position_current_;
 }
 
-void Stepper::setCurrentPosition(long position)
+void Stepper::setCurrentPosition(const long position)
 {
   noInterrupts();
-  target_pos_ = position;
-  current_pos_ = position;
+  position_target_ = position;
+  position_current_ = position;
   interrupts();
 }
 

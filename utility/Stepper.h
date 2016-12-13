@@ -14,6 +14,8 @@
 #include <wiring.h>
 #endif
 
+#include "Constants.h"
+
 
 class Stepper
 {
@@ -21,7 +23,8 @@ public:
   Stepper();
   ~Stepper();
 
-  void setup(size_t enable_pin, size_t step_pin, size_t dir_pin);
+  void setup(const size_t enable_pin, const size_t step_pin, const size_t dir_pin);
+  void update();
 
   void setEnablePolarityHigh();
   void setEnablePolarityLow();
@@ -32,6 +35,9 @@ public:
   void setDirPolarityHigh();
   void setDirPolarityLow();
 
+  void setPositionMode();
+  void setVelocityMode();
+
   void enable();
   void disable();
   bool enabled();
@@ -40,16 +46,15 @@ public:
   void stop();
   bool running();
 
+  void setVelocity(const long steps_per_second);
+
   long getTargetPosition();
-  void setTargetPosition(long position);
+  void setTargetPosition(const long position);
   long getCurrentPosition();
-  void setCurrentPosition(long position);
+  void setCurrentPosition(const long position);
 
   void zero();
 
-  void updateDirPin();
-  void setStepPinHigh();
-  void setStepPinLow();
 private:
   size_t enable_pin_;
   size_t step_pin_;
@@ -59,7 +64,12 @@ private:
   bool step_polarity_low_;
   bool dir_polarity_low_;
 
+  bool mode_position_;
+
   bool enabled_;
+
+  long velocity_;
+  long update_count_;
 
   uint8_t step_bit_mask_;
   uint8_t dir_bit_mask_;
@@ -68,76 +78,119 @@ private:
   volatile uint8_t *dir_port_reg_;
   volatile uint8_t *step_port_reg_;
 
+  volatile long update_inc_;
+  volatile bool step_positive_;
   volatile bool running_;
-  volatile long current_pos_;   // Steps
-  volatile long target_pos_;    // Steps
+  volatile bool dir_positive_;
+  volatile long position_current_;
+  volatile long position_target_;
 
   void disableOutputs();
   void enableOutputs();
 
+  void setDirPositive();
+  void setDirNegative();
+  void updateDirPin();
+  void setStepPinPositive();
+  void setStepPinNegative();
+
 };
+
+inline void Stepper::update()
+{
+  if (running_)
+  {
+    ++update_inc_;
+    if (update_inc_ >= update_count_)
+    {
+      update_inc_ = 0;
+      if (step_positive_)
+      {
+        updateDirPin();
+        setStepPinPositive();
+      }
+      else
+      {
+        setStepPinNegative();
+      }
+      step_positive_ = !step_positive_;
+    }
+  }
+}
+
+inline void Stepper::setDirPositive()
+{
+  if (dir_polarity_low_)
+  {
+    *dir_port_reg_ &= ~ dir_bit_mask_;
+  }
+  else
+  {
+    *dir_port_reg_ |= dir_bit_mask_;
+  }
+  dir_positive_ = true;
+}
+
+inline void Stepper::setDirNegative()
+{
+  if (dir_polarity_low_)
+  {
+    *dir_port_reg_ |= dir_bit_mask_;
+  }
+  else
+  {
+    *dir_port_reg_ &= ~ dir_bit_mask_;
+  }
+  dir_positive_ = false;
+}
 
 inline void Stepper::updateDirPin()
 {
-  if (running_)
+  if (mode_position_)
   {
-    if (current_pos_ <= target_pos_)
+    if (position_current_ <= position_target_)
     {
-      if (dir_polarity_low_)
-      {
-        *dir_port_reg_ &= ~ dir_bit_mask_;
-      }
-      else
-      {
-        *dir_port_reg_ |= dir_bit_mask_;
-      }
-      current_pos_ += 1;
+      setDirPositive();
     }
-    else if (current_pos_ > target_pos_)
+    else if (position_current_ > position_target_)
     {
-      if (dir_polarity_low_)
-      {
-        *dir_port_reg_ |= dir_bit_mask_;
-      }
-      else
-      {
-        *dir_port_reg_ &= ~ dir_bit_mask_;
-      }
-      current_pos_ -= 1;
+      setDirNegative();
     }
   }
 }
 
-inline void Stepper::setStepPinHigh()
+inline void Stepper::setStepPinPositive()
 {
-  if (running_)
+  if (step_polarity_low_)
   {
-    if (step_polarity_low_)
-    {
-      *step_port_reg_ &= ~step_bit_mask_;
-    }
-    else {
-      *step_port_reg_ |= step_bit_mask_;
-    }
+    *step_port_reg_ &= ~step_bit_mask_;
+  }
+  else {
+    *step_port_reg_ |= step_bit_mask_;
+  }
+  if (dir_positive_)
+  {
+    ++position_current_;
+  }
+  else
+  {
+    --position_current_;
   }
 }
 
-inline void Stepper::setStepPinLow()
+inline void Stepper::setStepPinNegative()
 {
-  if (running_)
+  if (step_polarity_low_)
   {
-    if (step_polarity_low_)
-    {
-      *step_port_reg_ |= step_bit_mask_;
-    }
-    else
-    {
-      *step_port_reg_ &= ~step_bit_mask_;
-    }
-    if (current_pos_ == target_pos_)
-    {
-      running_ = false;
-    }
+    *step_port_reg_ |= step_bit_mask_;
+  }
+  else
+  {
+    *step_port_reg_ &= ~step_bit_mask_;
+  }
+  if (mode_position_ && (position_current_ == position_target_))
+  {
+    running_ = false;
   }
 }
 
