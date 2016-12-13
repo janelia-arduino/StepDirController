@@ -31,17 +31,38 @@ size_t step_half_period_us_max = 100;
 // Interrupts
 
 // Units
+CONSTANT_STRING(steps_unit,"steps");
+CONSTANT_STRING(steps_per_second_unit,"steps/s");
 
 // Properties
-CONSTANT_STRING(micro_steps_per_step_property_name,"micro_steps_per_step_count");
-const long micro_steps_per_step_min = 1;
-const long micro_steps_per_step_max = 256;
-const long micro_steps_per_step_default = 256;
+CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
+CONSTANT_STRING(polarity_high,"HIGH");
+CONSTANT_STRING(polarity_low,"LOW");
+modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
+  {
+    {.cs_ptr=&polarity_high},
+    {.cs_ptr=&polarity_low},
+  };
 
-// CONSTANT_STRING(enable_polarity_high_property_name,"enable_polarity_high");
-// const bool enable_polarity_high_default = true;
+CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
+
+CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
+
+CONSTANT_STRING(mode_property_name,"mode");
+CONSTANT_STRING(mode_position,"POSITION");
+CONSTANT_STRING(mode_velocity,"VELOCITY");
+modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
+  {
+    {.cs_ptr=&mode_position},
+    {.cs_ptr=&mode_velocity},
+  };
 
 // Parameters
+CONSTANT_STRING(channel_parameter_name,"channel");
+
+CONSTANT_STRING(position_parameter_name,"position");
+
+CONSTANT_STRING(velocity_parameter_name,"velocity");
 
 // Functions
 CONSTANT_STRING(enable_function_name,"enable");

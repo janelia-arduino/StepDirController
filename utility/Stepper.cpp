@@ -149,6 +149,7 @@ void Stepper::setVelocity(const long steps_per_second)
 {
   if (steps_per_second == 0)
   {
+    velocity_ = 0;
     stop();
     return;
   }

@@ -31,6 +31,10 @@ const size_t dir_pins[CHANNEL_COUNT] = {51};
 // Units
 
 // Properties
+const ConstantString * const enable_polarity_ptrs_default[CHANNEL_COUNT] =
+  {
+    &mode_position;
+  };
 
 // Parameters
 

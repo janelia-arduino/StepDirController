@@ -18,8 +18,8 @@ namespace step_dir_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=2};
-enum{PARAMETER_COUNT_MAX=1};
+enum{PROPERTY_COUNT_MAX=4};
+enum{PARAMETER_COUNT_MAX=3};
 enum{FUNCTION_COUNT_MAX=3};
 enum{CALLBACK_COUNT_MAX=1};
 
@@ -36,19 +36,33 @@ extern size_t step_half_period_us_max;
 // Interrupts
 
 // Units
-// extern ConstantString ms_unit;
+extern ConstantString steps_unit;
+extern ConstantString steps_per_second_unit;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
-extern ConstantString micro_steps_per_step_property_name;
-extern const long micro_steps_per_step_min;
-extern const long micro_steps_per_step_max;
-extern const long micro_steps_per_step_default;
+extern ConstantString enable_polarity_property_name;
+enum{POLARITY_SUBSET_LENGTH=2};
+extern ConstantString polarity_high;
+extern ConstantString polarity_low;
+extern modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH];
 
-// extern ConstantString enable_polarity_high_property_name;
-// extern const bool enable_polarity_high_default;
+extern ConstantString step_polarity_property_name;
+
+extern ConstantString dir_polarity_property_name;
+
+extern ConstantString mode_property_name;
+enum{MODE_SUBSET_LENGTH=2};
+extern ConstantString mode_position;
+extern ConstantString mode_velocity;
+extern modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH];
 
 // Parameters
+extern ConstantString channel_parameter_name;
+
+extern ConstantString position_parameter_name;
+
+extern ConstantString velocity_parameter_name;
 
 // Functions
 extern ConstantString enable_function_name;
