@@ -101,6 +101,15 @@ private:
 
   // Handlers
   void isrHandler();
+  void setEnablePolarityHandler(const size_t index);
+  void setStepPolarityHandler(const size_t index);
+  void setDirPolarityHandler(const size_t index);
+  void setModeHandler(const size_t index);
+  void enableHandler();
+  void disableHandler();
+  void enableAllHandler();
+  void disableAllHandler();
+  void enabledHandler();
 
 };
 

@@ -20,7 +20,7 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=3};
-enum{FUNCTION_COUNT_MAX=3};
+enum{FUNCTION_COUNT_MAX=6};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -40,7 +40,7 @@ extern ConstantString steps_unit;
 extern ConstantString steps_per_second_unit;
 
 // Properties
-// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *
+// Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 extern ConstantString enable_polarity_property_name;
 enum{POLARITY_SUBSET_LENGTH=2};
 extern ConstantString polarity_high;
@@ -63,10 +63,15 @@ extern ConstantString channel_parameter_name;
 extern ConstantString position_parameter_name;
 
 extern ConstantString velocity_parameter_name;
+extern const long velocity_min;
+extern const long velocity_max;
 
 // Functions
 extern ConstantString enable_function_name;
 extern ConstantString disable_function_name;
+extern ConstantString enable_all_function_name;
+extern ConstantString disable_all_function_name;
+extern ConstantString enabled_function_name;
 extern ConstantString stop_function_name;
 
 // Callbacks

@@ -62,10 +62,58 @@ void StepDirController::setup()
                               functions_,
                               callbacks_);
   // Properties
+  modular_server::Property & enable_polarity_property = modular_server_.createProperty(constants::enable_polarity_property_name,constants::enable_polarity_default);
+  enable_polarity_property.setSubset(constants::polarity_ptr_subset);
+  enable_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setEnablePolarityHandler));
+
+  modular_server::Property & step_polarity_property = modular_server_.createProperty(constants::step_polarity_property_name,constants::step_polarity_default);
+  step_polarity_property.setSubset(constants::polarity_ptr_subset);
+  step_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setStepPolarityHandler));
+
+  modular_server::Property & dir_polarity_property = modular_server_.createProperty(constants::dir_polarity_property_name,constants::dir_polarity_default);
+  dir_polarity_property.setSubset(constants::polarity_ptr_subset);
+  dir_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setDirPolarityHandler));
+
+  modular_server::Property & mode_property = modular_server_.createProperty(constants::mode_property_name,constants::mode_default);
+  mode_property.setSubset(constants::mode_ptr_subset);
+  mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setModeHandler));
+
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    setEnablePolarityHandler(channel);
+    setStepPolarityHandler(channel);
+    setDirPolarityHandler(channel);
+    setModeHandler(channel);
+  }
 
   // Parameters
+  modular_server::Parameter & channel_parameter = modular_server_.createParameter(constants::channel_parameter_name);
+  channel_parameter.setRange(0,constants::CHANNEL_COUNT-1);
+
+  modular_server::Parameter & position_parameter = modular_server_.createParameter(constants::position_parameter_name);
+  position_parameter.setTypeLong();
+
+  modular_server::Parameter & velocity_parameter = modular_server_.createParameter(constants::velocity_parameter_name);
+  velocity_parameter.setRange(constants::velocity_min,constants::velocity_max);
 
   // Functions
+  modular_server::Function & enable_function = modular_server_.createFunction(constants::enable_function_name);
+  enable_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enableHandler));
+  enable_function.addParameter(channel_parameter);
+
+  modular_server::Function & disable_function = modular_server_.createFunction(constants::disable_function_name);
+  disable_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::disableHandler));
+  disable_function.addParameter(channel_parameter);
+
+  modular_server::Function & enable_all_function = modular_server_.createFunction(constants::enable_all_function_name);
+  enable_all_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enableAllHandler));
+
+  modular_server::Function & disable_all_function = modular_server_.createFunction(constants::disable_all_function_name);
+  disable_all_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::disableAllHandler));
+
+  modular_server::Function & enabled_function = modular_server_.createFunction(constants::enabled_function_name);
+  enabled_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enabledHandler));
+  enabled_function.setReturnTypeArray();
 
   // Callbacks
 
@@ -460,4 +508,96 @@ void StepDirController::isrHandler()
   {
     steppers_[channel].update();
   }
+}
+
+void StepDirController::setEnablePolarityHandler(const size_t index)
+{
+  const ConstantString * polarity_ptr;
+  modular_server_.property(constants::enable_polarity_property_name).getElementValue(index,polarity_ptr);
+  if (polarity_ptr == &constants::polarity_high)
+  {
+    setEnablePolarityHigh(index);
+  }
+  else if (polarity_ptr == &constants::polarity_low)
+  {
+    setEnablePolarityLow(index);
+  }
+}
+
+void StepDirController::setStepPolarityHandler(const size_t index)
+{
+  const ConstantString * polarity_ptr;
+  modular_server_.property(constants::step_polarity_property_name).getElementValue(index,polarity_ptr);
+  if (polarity_ptr == &constants::polarity_high)
+  {
+    setStepPolarityHigh(index);
+  }
+  else if (polarity_ptr == &constants::polarity_low)
+  {
+    setStepPolarityLow(index);
+  }
+}
+
+void StepDirController::setDirPolarityHandler(const size_t index)
+{
+  const ConstantString * polarity_ptr;
+  modular_server_.property(constants::dir_polarity_property_name).getElementValue(index,polarity_ptr);
+  if (polarity_ptr == &constants::polarity_high)
+  {
+    setDirPolarityHigh(index);
+  }
+  else if (polarity_ptr == &constants::polarity_low)
+  {
+    setDirPolarityLow(index);
+  }
+}
+
+void StepDirController::setModeHandler(const size_t index)
+{
+  const ConstantString * mode_ptr;
+  modular_server_.property(constants::mode_property_name).getElementValue(index,mode_ptr);
+  if (mode_ptr == &constants::mode_position)
+  {
+    setPositionMode(index);
+  }
+  else if (mode_ptr == &constants::mode_velocity)
+  {
+    setVelocityMode(index);
+  }
+}
+
+void StepDirController::enableHandler()
+{
+  long channel;
+  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  enable(channel);
+}
+
+void StepDirController::disableHandler()
+{
+  long channel;
+  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  disable(channel);
+}
+
+void StepDirController::enableAllHandler()
+{
+  enableAll();
+}
+
+void StepDirController::disableAllHandler()
+{
+  disableAll();
+}
+
+void StepDirController::enabledHandler()
+{
+  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabled = enabledArray();
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    modular_server_.response().write(enabled[channel]);
+  }
+  modular_server_.response().endArray();
 }
