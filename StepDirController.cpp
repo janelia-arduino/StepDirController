@@ -85,6 +85,7 @@ void StepDirController::setup()
     setDirPolarityHandler(channel);
     // setModeHandler(channel);
   }
+  disableAll();
 
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.createParameter(constants::channel_parameter_name);
@@ -138,7 +139,6 @@ void StepDirController::setup()
 
   modular_server::Function & stop_all_function = modular_server_.createFunction(constants::stop_all_function_name);
   stop_all_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::stopAllHandler));
-  stop_all_function.addParameter(channel_parameter);
 
   // Callbacks
 
@@ -249,12 +249,13 @@ void StepDirController::move(const size_t channel, const long position, const lo
   if (channel < constants::CHANNEL_COUNT)
   {
     Stepper & stepper = steppers_[channel];
-    noInterrupts();
+    // noInterrupts();
+    stepper.stop();
     stepper.setPositionMode();
     stepper.setVelocity(speed);
     stepper.setTargetPositionRelative(position);
     stepper.start();
-    interrupts();
+    // interrupts();
   }
 }
 
@@ -263,12 +264,13 @@ void StepDirController::moveTo(const size_t channel, const long position, const 
   if (channel < constants::CHANNEL_COUNT)
   {
     Stepper & stepper = steppers_[channel];
-    noInterrupts();
+    // noInterrupts();
+    stepper.stop();
     stepper.setPositionMode();
     stepper.setVelocity(speed);
     stepper.setTargetPosition(position);
     stepper.start();
-    interrupts();
+    // interrupts();
   }
 }
 
@@ -277,11 +279,12 @@ void StepDirController::moveAt(const size_t channel, const long velocity)
   if (channel < constants::CHANNEL_COUNT)
   {
     Stepper & stepper = steppers_[channel];
-    noInterrupts();
+    // noInterrupts();
+    stepper.stop();
     stepper.setVelocityMode();
     stepper.setVelocity(velocity);
     stepper.start();
-    interrupts();
+    // interrupts();
   }
 }
 
@@ -596,38 +599,38 @@ void StepDirController::enabledHandler()
 void StepDirController::moveHandler()
 {
   long channel;
-  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
   long position;
-  modular_server_.property(constants::position_parameter_name).getValue(position);
+  modular_server_.parameter(constants::position_parameter_name).getValue(position);
   long velocity;
-  modular_server_.property(constants::velocity_parameter_name).getValue(velocity);
+  modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
   move(channel,position,velocity);
 }
 
 void StepDirController::moveToHandler()
 {
   long channel;
-  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
   long position;
-  modular_server_.property(constants::position_parameter_name).getValue(position);
+  modular_server_.parameter(constants::position_parameter_name).getValue(position);
   long velocity;
-  modular_server_.property(constants::velocity_parameter_name).getValue(velocity);
+  modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
   moveTo(channel,position,velocity);
 }
 
 void StepDirController::moveAtHandler()
 {
   long channel;
-  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
   long velocity;
-  modular_server_.property(constants::velocity_parameter_name).getValue(velocity);
+  modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
   moveAt(channel,velocity);
 }
 
 void StepDirController::stopHandler()
 {
   long channel;
-  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
   stop(channel);
 }
 
