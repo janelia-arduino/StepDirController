@@ -14,6 +14,8 @@
 #include <wiring.h>
 #endif
 
+#include "ConstantVariable.h"
+
 #include "Constants.h"
 
 
@@ -26,14 +28,9 @@ public:
   void setup(const size_t enable_pin, const size_t step_pin, const size_t dir_pin);
   void update();
 
-  void setEnablePolarityHigh();
-  void setEnablePolarityLow();
-
-  void setStepPolarityHigh();
-  void setStepPolarityLow();
-
-  void setDirPolarityHigh();
-  void setDirPolarityLow();
+  void setEnablePolarity(const ConstantString * const polarity_ptr);
+  void setStepPolarity(const ConstantString * const polarity_ptr);
+  void setDirPolarity(const ConstantString * const polarity_ptr);
 
   void setPositionMode();
   void setVelocityMode();

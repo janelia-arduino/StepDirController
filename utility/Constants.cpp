@@ -28,6 +28,9 @@ CONSTANT_STRING(hardware_name,"step_dir_controller");
 
 size_t step_half_period_us_max = 100;
 
+CONSTANT_STRING(mode_position,"POSITION");
+CONSTANT_STRING(mode_velocity,"VELOCITY");
+
 // Interrupts
 
 // Units
@@ -48,14 +51,14 @@ CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
 
 CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
 
-CONSTANT_STRING(mode_property_name,"mode");
-CONSTANT_STRING(mode_position,"POSITION");
-CONSTANT_STRING(mode_velocity,"VELOCITY");
-modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
-  {
-    {.cs_ptr=&mode_position},
-    {.cs_ptr=&mode_velocity},
-  };
+// CONSTANT_STRING(mode_property_name,"mode");
+// CONSTANT_STRING(mode_position,"POSITION");
+// CONSTANT_STRING(mode_velocity,"VELOCITY");
+// modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
+//   {
+//     {.cs_ptr=&mode_position},
+//     {.cs_ptr=&mode_velocity},
+//   };
 
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");

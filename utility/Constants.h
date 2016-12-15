@@ -33,6 +33,9 @@ extern const modular_server::HardwareInfo hardware_info;
 
 extern size_t step_half_period_us_max;
 
+extern ConstantString mode_position;
+extern ConstantString mode_velocity;
+
 // Interrupts
 
 // Units
@@ -51,11 +54,11 @@ extern ConstantString step_polarity_property_name;
 
 extern ConstantString dir_polarity_property_name;
 
-extern ConstantString mode_property_name;
-enum{MODE_SUBSET_LENGTH=2};
-extern ConstantString mode_position;
-extern ConstantString mode_velocity;
-extern modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH];
+// extern ConstantString mode_property_name;
+// enum{MODE_SUBSET_LENGTH=2};
+// extern ConstantString mode_position;
+// extern ConstantString mode_velocity;
+// extern modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH];
 
 // Parameters
 extern ConstantString channel_parameter_name;

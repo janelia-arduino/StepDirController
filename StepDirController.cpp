@@ -74,16 +74,16 @@ void StepDirController::setup()
   dir_polarity_property.setSubset(constants::polarity_ptr_subset);
   dir_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setDirPolarityHandler));
 
-  modular_server::Property & mode_property = modular_server_.createProperty(constants::mode_property_name,constants::mode_default);
-  mode_property.setSubset(constants::mode_ptr_subset);
-  mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setModeHandler));
+  // modular_server::Property & mode_property = modular_server_.createProperty(constants::mode_property_name,constants::mode_default);
+  // mode_property.setSubset(constants::mode_ptr_subset);
+  // mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setModeHandler));
 
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
     setEnablePolarityHandler(channel);
     setStepPolarityHandler(channel);
     setDirPolarityHandler(channel);
-    setModeHandler(channel);
+    // setModeHandler(channel);
   }
 
   // Parameters
@@ -119,131 +119,51 @@ void StepDirController::setup()
 
 }
 
-void StepDirController::setEnablePolarityHigh(const size_t channel)
+void StepDirController::setEnablePolarity(const size_t channel, const ConstantString * const polarity_ptr)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    steppers_[channel].setEnablePolarityHigh();
+    steppers_[channel].setEnablePolarity(polarity_ptr);
   }
 }
 
-void StepDirController::setEnablePolarityLow(const size_t channel)
+void StepDirController::setEnablePolarityAll(const ConstantString * const polarity_ptr)
+{
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    steppers_[channel].setEnablePolarity(polarity_ptr);
+  }
+}
+
+void StepDirController::setStepPolarity(const size_t channel, const ConstantString * const polarity_ptr)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    steppers_[channel].setEnablePolarityLow();
+    steppers_[channel].setStepPolarity(polarity_ptr);
   }
 }
 
-void StepDirController::setEnablePolarityHighAll()
+void StepDirController::setStepPolarityAll(const ConstantString * const polarity_ptr)
 {
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
-    steppers_[channel].setEnablePolarityHigh();
+    steppers_[channel].setStepPolarity(polarity_ptr);
   }
 }
 
-void StepDirController::setEnablePolarityLowAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setEnablePolarityLow();
-  }
-}
-
-void StepDirController::setStepPolarityHigh(const size_t channel)
+void StepDirController::setDirPolarity(const size_t channel, const ConstantString * const polarity_ptr)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    steppers_[channel].setStepPolarityHigh();
+    steppers_[channel].setDirPolarity(polarity_ptr);
   }
 }
 
-void StepDirController::setStepPolarityLow(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setStepPolarityLow();
-  }
-}
-
-void StepDirController::setStepPolarityHighAll()
+void StepDirController::setDirPolarityAll(const ConstantString * const polarity_ptr)
 {
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
-    steppers_[channel].setStepPolarityHigh();
-  }
-}
-
-void StepDirController::setStepPolarityLowAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setStepPolarityLow();
-  }
-}
-
-void StepDirController::setDirPolarityHigh(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setDirPolarityHigh();
-  }
-}
-
-void StepDirController::setDirPolarityLow(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setDirPolarityLow();
-  }
-}
-
-void StepDirController::setDirPolarityHighAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setDirPolarityHigh();
-  }
-}
-
-void StepDirController::setDirPolarityLowAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setDirPolarityLow();
-  }
-}
-
-void StepDirController::setPositionMode(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setPositionMode();
-  }
-}
-
-void StepDirController::setVelocityMode(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setVelocityMode();
-  }
-}
-
-void StepDirController::setPositionModeAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setPositionMode();
-  }
-}
-
-void StepDirController::setVelocityModeAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setVelocityMode();
+    steppers_[channel].setDirPolarity(polarity_ptr);
   }
 }
 
@@ -305,185 +225,185 @@ Array<bool, constants::CHANNEL_COUNT> StepDirController::enabledArray()
   return enabled_array;
 }
 
-void StepDirController::start(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    noInterrupts();
-    steppers_[channel].start();
-    interrupts();
-  }
-}
+// void StepDirController::start(const size_t channel)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     noInterrupts();
+//     steppers_[channel].start();
+//     interrupts();
+//   }
+// }
 
-void StepDirController::stop(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    noInterrupts();
-    steppers_[channel].stop();
-    interrupts();
-  }
-}
+// void StepDirController::stop(const size_t channel)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     noInterrupts();
+//     steppers_[channel].stop();
+//     interrupts();
+//   }
+// }
 
-bool StepDirController::running(const size_t channel)
-{
-  bool running = false;
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    running = steppers_[channel].running();
-  }
-  return running;
-}
+// bool StepDirController::running(const size_t channel)
+// {
+//   bool running = false;
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     running = steppers_[channel].running();
+//   }
+//   return running;
+// }
 
-void StepDirController::startAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].start();
-  }
-}
+// void StepDirController::startAll()
+// {
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     steppers_[channel].start();
+//   }
+// }
 
-void StepDirController::stopAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].stop();
-  }
-}
+// void StepDirController::stopAll()
+// {
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     steppers_[channel].stop();
+//   }
+// }
 
-bool StepDirController::anyRunning()
-{
-  bool flag = false;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    if (steppers_[channel].running())
-    {
-      flag = true;
-      break;
-    }
-  }
-  return flag;
-}
+// bool StepDirController::anyRunning()
+// {
+//   bool flag = false;
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     if (steppers_[channel].running())
+//     {
+//       flag = true;
+//       break;
+//     }
+//   }
+//   return flag;
+// }
 
-Array<bool, constants::CHANNEL_COUNT> StepDirController::runningArray()
-{
-  Array<bool, constants::CHANNEL_COUNT> running_array;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    noInterrupts();
-    running_array.push_back(running(channel));
-    interrupts();
-  }
-  return running_array;
-}
+// Array<bool, constants::CHANNEL_COUNT> StepDirController::runningArray()
+// {
+//   Array<bool, constants::CHANNEL_COUNT> running_array;
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     noInterrupts();
+//     running_array.push_back(running(channel));
+//     interrupts();
+//   }
+//   return running_array;
+// }
 
-void StepDirController::setVelocity(const size_t channel, const long steps_per_second)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setVelocity(steps_per_second);
-  }
-}
+// void StepDirController::setVelocity(const size_t channel, const long steps_per_second)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     steppers_[channel].setVelocity(steps_per_second);
+//   }
+// }
 
-long StepDirController::getCurrentPosition(const size_t channel)
-{
-  long position = 0;
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    noInterrupts();
-    position = steppers_[channel].getCurrentPosition();
-    interrupts();
-  }
-  return position;
-}
+// long StepDirController::getCurrentPosition(const size_t channel)
+// {
+//   long position = 0;
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     noInterrupts();
+//     position = steppers_[channel].getCurrentPosition();
+//     interrupts();
+//   }
+//   return position;
+// }
 
-Array<long, constants::CHANNEL_COUNT> StepDirController::getCurrentPositions()
-{
-  Array<long, constants::CHANNEL_COUNT> positions;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    noInterrupts();
-    positions.push_back(steppers_[channel].getCurrentPosition());
-    interrupts();
-  }
-  return positions;
-}
+// Array<long, constants::CHANNEL_COUNT> StepDirController::getCurrentPositions()
+// {
+//   Array<long, constants::CHANNEL_COUNT> positions;
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     noInterrupts();
+//     positions.push_back(steppers_[channel].getCurrentPosition());
+//     interrupts();
+//   }
+//   return positions;
+// }
 
-void StepDirController::setCurrentPosition(const size_t channel, long position)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].setCurrentPosition(position);
-  }
-}
+// void StepDirController::setCurrentPosition(const size_t channel, long position)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     steppers_[channel].setCurrentPosition(position);
+//   }
+// }
 
-void StepDirController::setCurrentPositions(Array<long, constants::CHANNEL_COUNT> positions)
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    setCurrentPosition(channel,positions[channel]);
-  }
-}
+// void StepDirController::setCurrentPositions(Array<long, constants::CHANNEL_COUNT> positions)
+// {
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     setCurrentPosition(channel,positions[channel]);
+//   }
+// }
 
-long StepDirController::getTargetPosition(const size_t channel)
-{
-  long position = 0;
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    noInterrupts();
-    position = steppers_[channel].getTargetPosition();
-    interrupts();
-  }
-  return position;
-}
+// long StepDirController::getTargetPosition(const size_t channel)
+// {
+//   long position = 0;
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     noInterrupts();
+//     position = steppers_[channel].getTargetPosition();
+//     interrupts();
+//   }
+//   return position;
+// }
 
-Array<long, constants::CHANNEL_COUNT> StepDirController::getTargetPositions()
-{
-  Array<long, constants::CHANNEL_COUNT> positions;
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    noInterrupts();
-    positions.push_back(steppers_[channel].getTargetPosition());
-    interrupts();
-  }
-  return positions;
-}
+// Array<long, constants::CHANNEL_COUNT> StepDirController::getTargetPositions()
+// {
+//   Array<long, constants::CHANNEL_COUNT> positions;
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     noInterrupts();
+//     positions.push_back(steppers_[channel].getTargetPosition());
+//     interrupts();
+//   }
+//   return positions;
+// }
 
-void StepDirController::setTargetPosition(const size_t channel, long position)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    noInterrupts();
-    steppers_[channel].setTargetPosition(position);
-    interrupts();
-  }
-}
+// void StepDirController::setTargetPosition(const size_t channel, long position)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     noInterrupts();
+//     steppers_[channel].setTargetPosition(position);
+//     interrupts();
+//   }
+// }
 
-void StepDirController::setTargetPositions(Array<long,constants::CHANNEL_COUNT> positions)
-{
-  noInterrupts();
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].setTargetPosition(positions[channel]);
-  }
-  interrupts();
-}
+// void StepDirController::setTargetPositions(Array<long,constants::CHANNEL_COUNT> positions)
+// {
+//   noInterrupts();
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     steppers_[channel].setTargetPosition(positions[channel]);
+//   }
+//   interrupts();
+// }
 
-void StepDirController::zero(const size_t channel)
-{
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    steppers_[channel].zero();
-  }
-}
+// void StepDirController::zero(const size_t channel)
+// {
+//   if (channel < constants::CHANNEL_COUNT)
+//   {
+//     steppers_[channel].zero();
+//   }
+// }
 
-void StepDirController::zeroAll()
-{
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    steppers_[channel].zero();
-  }
-}
+// void StepDirController::zeroAll()
+// {
+//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+//   {
+//     steppers_[channel].zero();
+//   }
+// }
 
 // Handlers must be non-blocking (avoid 'delay')
 //
@@ -514,57 +434,36 @@ void StepDirController::setEnablePolarityHandler(const size_t index)
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::enable_polarity_property_name).getElementValue(index,polarity_ptr);
-  if (polarity_ptr == &constants::polarity_high)
-  {
-    setEnablePolarityHigh(index);
-  }
-  else if (polarity_ptr == &constants::polarity_low)
-  {
-    setEnablePolarityLow(index);
-  }
+  setEnablePolarity(index,polarity_ptr);
 }
 
 void StepDirController::setStepPolarityHandler(const size_t index)
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::step_polarity_property_name).getElementValue(index,polarity_ptr);
-  if (polarity_ptr == &constants::polarity_high)
-  {
-    setStepPolarityHigh(index);
-  }
-  else if (polarity_ptr == &constants::polarity_low)
-  {
-    setStepPolarityLow(index);
-  }
+  setStepPolarity(index,polarity_ptr);
 }
 
 void StepDirController::setDirPolarityHandler(const size_t index)
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::dir_polarity_property_name).getElementValue(index,polarity_ptr);
-  if (polarity_ptr == &constants::polarity_high)
-  {
-    setDirPolarityHigh(index);
-  }
-  else if (polarity_ptr == &constants::polarity_low)
-  {
-    setDirPolarityLow(index);
-  }
+  setDirPolarity(index,polarity_ptr);
 }
 
-void StepDirController::setModeHandler(const size_t index)
-{
-  const ConstantString * mode_ptr;
-  modular_server_.property(constants::mode_property_name).getElementValue(index,mode_ptr);
-  if (mode_ptr == &constants::mode_position)
-  {
-    setPositionMode(index);
-  }
-  else if (mode_ptr == &constants::mode_velocity)
-  {
-    setVelocityMode(index);
-  }
-}
+// void StepDirController::setModeHandler(const size_t index)
+// {
+//   const ConstantString * mode_ptr;
+//   modular_server_.property(constants::mode_property_name).getElementValue(index,mode_ptr);
+//   if (mode_ptr == &constants::mode_position)
+//   {
+//     setPositionMode(index);
+//   }
+//   else if (mode_ptr == &constants::mode_velocity)
+//   {
+//     setVelocityMode(index);
+//   }
+// }
 
 void StepDirController::enableHandler()
 {

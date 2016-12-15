@@ -38,25 +38,12 @@ public:
   ~StepDirController();
   virtual void setup();
 
-  void setEnablePolarityHigh(const size_t channel);
-  void setEnablePolarityLow(const size_t channel);
-  void setEnablePolarityHighAll();
-  void setEnablePolarityLowAll();
-
-  void setStepPolarityHigh(const size_t channel);
-  void setStepPolarityLow(const size_t channel);
-  void setStepPolarityHighAll();
-  void setStepPolarityLowAll();
-
-  void setDirPolarityHigh(const size_t channel);
-  void setDirPolarityLow(const size_t channel);
-  void setDirPolarityHighAll();
-  void setDirPolarityLowAll();
-
-  void setPositionMode(const size_t channel);
-  void setVelocityMode(const size_t channel);
-  void setPositionModeAll();
-  void setVelocityModeAll();
+  void setEnablePolarity(const size_t channel, const ConstantString * const polarity_ptr);
+  void setEnablePolarityAll(const ConstantString * const polarity_ptr);
+  void setStepPolarity(const size_t channel, const ConstantString * const polarity_ptr);
+  void setStepPolarityAll(const ConstantString * const polarity_ptr);
+  void setDirPolarity(const size_t channel, const ConstantString * const polarity_ptr);
+  void setDirPolarityAll(const ConstantString * const polarity_ptr);
 
   void enable(const size_t channel);
   void disable(const size_t channel);
@@ -65,28 +52,28 @@ public:
   void disableAll();
   Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabledArray();
 
-  void start(const size_t channel);
-  void stop(const size_t channel);
-  bool running(const size_t channel);
-  void startAll();
-  void stopAll();
-  bool anyRunning();
-  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> runningArray();
+  // void start(const size_t channel);
+  // void stop(const size_t channel);
+  // bool running(const size_t channel);
+  // void startAll();
+  // void stopAll();
+  // bool anyRunning();
+  // Array<bool,step_dir_controller::constants::CHANNEL_COUNT> runningArray();
 
-  void setVelocity(const size_t channel, const long steps_per_second);
+  // void setVelocity(const size_t channel, const long steps_per_second);
 
-  long getCurrentPosition(const size_t channel);
-  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositions();
-  void setCurrentPosition(const size_t channel, const long position);
-  void setCurrentPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
+  // long getCurrentPosition(const size_t channel);
+  // Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositions();
+  // void setCurrentPosition(const size_t channel, const long position);
+  // void setCurrentPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
 
-  long getTargetPosition(const size_t channel);
-  Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositions();
-  void setTargetPosition(const size_t channel, const long position);
-  void setTargetPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
+  // long getTargetPosition(const size_t channel);
+  // Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositions();
+  // void setTargetPosition(const size_t channel, const long position);
+  // void setTargetPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
 
-  void zero(const size_t channel);
-  void zeroAll();
+  // void zero(const size_t channel);
+  // void zeroAll();
 
 private:
   modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
@@ -104,7 +91,7 @@ private:
   void setEnablePolarityHandler(const size_t index);
   void setStepPolarityHandler(const size_t index);
   void setDirPolarityHandler(const size_t index);
-  void setModeHandler(const size_t index);
+  // void setModeHandler(const size_t index);
   void enableHandler();
   void disableHandler();
   void enableAllHandler();
