@@ -28,9 +28,9 @@ public:
   void setup(const size_t enable_pin, const size_t step_pin, const size_t dir_pin);
   void update();
 
-  void setEnablePolarity(const ConstantString * const polarity_ptr);
-  void setStepPolarity(const ConstantString * const polarity_ptr);
-  void setDirPolarity(const ConstantString * const polarity_ptr);
+  void setEnablePolarity(const ConstantString & polarity);
+  void setStepPolarity(const ConstantString & polarity);
+  void setDirPolarity(const ConstantString & polarity);
 
   void setPositionMode();
   void setVelocityMode();
@@ -47,6 +47,7 @@ public:
 
   long getTargetPosition();
   void setTargetPosition(const long position);
+  void setTargetPositionRelative(const long position);
   long getCurrentPosition();
   void setCurrentPosition(const long position);
 

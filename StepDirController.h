@@ -38,20 +38,25 @@ public:
   ~StepDirController();
   virtual void setup();
 
-  void setEnablePolarity(const size_t channel, const ConstantString * const polarity_ptr);
-  void setEnablePolarityAll(const ConstantString * const polarity_ptr);
-  void setStepPolarity(const size_t channel, const ConstantString * const polarity_ptr);
-  void setStepPolarityAll(const ConstantString * const polarity_ptr);
-  void setDirPolarity(const size_t channel, const ConstantString * const polarity_ptr);
-  void setDirPolarityAll(const ConstantString * const polarity_ptr);
+  void setEnablePolarity(const size_t channel, const ConstantString & polarity);
+  void setEnablePolarityAll(const ConstantString & polarity);
+  void setStepPolarity(const size_t channel, const ConstantString & polarity);
+  void setStepPolarityAll(const ConstantString & polarity);
+  void setDirPolarity(const size_t channel, const ConstantString & polarity);
+  void setDirPolarityAll(const ConstantString & polarity);
 
   void enable(const size_t channel);
   void disable(const size_t channel);
-  bool enabled(const size_t channel);
   void enableAll();
   void disableAll();
-  Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabledArray();
+  uint32_t enabled();
+  // Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabledArray();
 
+  void move(const size_t channel, const long position, const long speed);
+  void moveTo(const size_t channel, const long position, const long speed);
+  void moveAt(const size_t channel, const long velocity);
+  void stop(const size_t channel);
+  void stopAll();
   // void start(const size_t channel);
   // void stop(const size_t channel);
   // bool running(const size_t channel);
@@ -97,6 +102,11 @@ private:
   void enableAllHandler();
   void disableAllHandler();
   void enabledHandler();
+  void moveHandler();
+  void moveToHandler();
+  void moveAtHandler();
+  void stopHandler();
+  void stopAllHandler();
 
 };
 

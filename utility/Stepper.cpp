@@ -24,9 +24,9 @@ void Stepper::setup(const size_t enable_pin, const size_t step_pin, const size_t
   step_pin_ = step_pin;
   dir_pin_ = dir_pin;
 
-  setEnablePolarity(&constants::polarity_high);
-  setStepPolarity(&constants::polarity_high);
-  setDirPolarity(&constants::polarity_high);
+  setEnablePolarity(constants::polarity_high);
+  setStepPolarity(constants::polarity_high);
+  setDirPolarity(constants::polarity_high);
 
   setPositionMode();
   setDirPositive();
@@ -48,9 +48,9 @@ void Stepper::setup(const size_t enable_pin, const size_t step_pin, const size_t
   dir_port_reg_ = portOutputRegister(dir_port_);
 }
 
-void Stepper::setEnablePolarity(const ConstantString * const polarity_ptr)
+void Stepper::setEnablePolarity(const ConstantString & polarity)
 {
-  if (polarity_ptr == &constants::polarity_low)
+  if (&polarity == &constants::polarity_low)
   {
     enable_polarity_low_ = true;
   }
@@ -60,9 +60,9 @@ void Stepper::setEnablePolarity(const ConstantString * const polarity_ptr)
   }
 }
 
-void Stepper::setStepPolarity(const ConstantString * const polarity_ptr)
+void Stepper::setStepPolarity(const ConstantString & polarity)
 {
-  if (polarity_ptr == &constants::polarity_low)
+  if (&polarity == &constants::polarity_low)
   {
     step_polarity_low_ = true;
   }
@@ -72,9 +72,9 @@ void Stepper::setStepPolarity(const ConstantString * const polarity_ptr)
   }
 }
 
-void Stepper::setDirPolarity(const ConstantString * const polarity_ptr)
+void Stepper::setDirPolarity(const ConstantString & polarity)
 {
-  if (polarity_ptr == &constants::polarity_low)
+  if (&polarity == &constants::polarity_low)
   {
     dir_polarity_low_ = true;
   }
@@ -185,6 +185,13 @@ void Stepper::setTargetPosition(const long position)
 {
   noInterrupts();
   position_target_ = position;
+  interrupts();
+}
+
+void Stepper::setTargetPositionRelative(const long position)
+{
+  noInterrupts();
+  position_target_ += position;
   interrupts();
 }
 
