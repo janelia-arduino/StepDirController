@@ -102,9 +102,11 @@ private:
   void enableAllHandler();
   void disableAllHandler();
   void enabledHandler();
-  void moveHandler();
+  void moveByHandler();
   void moveToHandler();
   void moveAtHandler();
+  void moveByAtHandler();
+  void moveToAtHandler();
   void stopHandler();
   void stopAllHandler();
 

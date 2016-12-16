@@ -75,9 +75,11 @@ CONSTANT_STRING(disable_function_name,"disable");
 CONSTANT_STRING(enable_all_function_name,"enableAll");
 CONSTANT_STRING(disable_all_function_name,"disableAll");
 CONSTANT_STRING(enabled_function_name,"enabled");
-CONSTANT_STRING(move_function_name,"move");
+CONSTANT_STRING(move_by_function_name,"moveBy");
 CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");
+CONSTANT_STRING(move_at_function_name,"moveByAt");
+CONSTANT_STRING(move_at_function_name,"moveToAt");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(stop_all_function_name,"stopAll");
 
