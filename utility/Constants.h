@@ -80,9 +80,9 @@ extern ConstantString move_to_function_name;
 extern ConstantString move_at_function_name;
 extern ConstantString move_by_at_function_name;
 extern ConstantString move_to_at_function_name;
-extern ConstantString get_positions_function_name;
 extern ConstantString stop_function_name;
 extern ConstantString stop_all_function_name;
+extern ConstantString get_positions_function_name;
 
 // Callbacks
 

@@ -52,11 +52,15 @@ public:
   uint32_t enabled();
   // Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabledArray();
 
-  void move(const size_t channel, const long position, const long speed);
-  void moveTo(const size_t channel, const long position, const long speed);
+  void moveBy(const size_t channel, const long position);
+  void moveTo(const size_t channel, const long position);
   void moveAt(const size_t channel, const long velocity);
+  void moveByAt(const size_t channel, const long position, const long speed);
+  void moveToAt(const size_t channel, const long position, const long speed);
   void stop(const size_t channel);
   void stopAll();
+
+  long getPosition(const size_t channel);
   // void start(const size_t channel);
   // void stop(const size_t channel);
   // bool running(const size_t channel);
@@ -107,9 +111,9 @@ private:
   void moveAtHandler();
   void moveByAtHandler();
   void moveToAtHandler();
-  void getPositionsHandler();
   void stopHandler();
   void stopAllHandler();
+  void getPositionsHandler();
 
 };
 

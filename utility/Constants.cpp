@@ -76,11 +76,11 @@ CONSTANT_STRING(enabled_function_name,"enabled");
 CONSTANT_STRING(move_by_function_name,"moveBy");
 CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");
-CONSTANT_STRING(move_at_function_name,"moveByAt");
-CONSTANT_STRING(move_at_function_name,"moveToAt");
-CONSTANT_STRING(get_positions_function_name,"getPositions");
+CONSTANT_STRING(move_by_at_function_name,"moveByAt");
+CONSTANT_STRING(move_to_at_function_name,"moveToAt");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(stop_all_function_name,"stopAll");
+CONSTANT_STRING(get_positions_function_name,"getPositions");
 
 // Callbacks
 

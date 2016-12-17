@@ -29,6 +29,12 @@ extern const size_t dir_pins[CHANNEL_COUNT];
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT];
+
+extern const ConstantString * const step_polarity_default[CHANNEL_COUNT];
+
+extern const ConstantString * const dir_polarity_default[CHANNEL_COUNT];
+
 
 // Parameters
 
