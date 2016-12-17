@@ -78,6 +78,7 @@ CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");
 CONSTANT_STRING(move_at_function_name,"moveByAt");
 CONSTANT_STRING(move_at_function_name,"moveToAt");
+CONSTANT_STRING(get_positions_function_name,"getPositions");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(stop_all_function_name,"stopAll");
 

@@ -107,6 +107,7 @@ private:
   void moveAtHandler();
   void moveByAtHandler();
   void moveToAtHandler();
+  void getPositionsHandler();
   void stopHandler();
   void stopAllHandler();
 

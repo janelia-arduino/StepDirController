@@ -137,11 +137,15 @@ void StepDirController::setup()
   move_by_at_function.addParameter(position_parameter);
   move_by_at_function.addParameter(velocity_parameter);
 
-  modular_server::Function & move_to_function = modular_server_.createFunction(constants::move_to_function_name);
-  move_to_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveToAtHandler));
-  move_to_function.addParameter(channel_parameter);
-  move_to_function.addParameter(position_parameter);
-  move_to_function.addParameter(velocity_parameter);
+  modular_server::Function & move_to_at_function = modular_server_.createFunction(constants::move_to_at_function_name);
+  move_to_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveToAtHandler));
+  move_to_at_function.addParameter(channel_parameter);
+  move_to_at_function.addParameter(position_parameter);
+  move_to_at_function.addParameter(velocity_parameter);
+
+  modular_server::Function & get_positions_function = modular_server_.createFunction(constants::get_positions_function_name);
+  get_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getPositionsHandler));
+  get_positions_function.setReturnTypeArray();
 
   modular_server::Function & stop_function = modular_server_.createFunction(constants::stop_function_name);
   stop_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::stopHandler));
