@@ -22,6 +22,8 @@ const modular_server::HardwareInfo hardware_info =
     .version_minor=0,
   };
 
+size_t step_half_period_us_max = 20;
+
 // Interrupts
 
 // Units

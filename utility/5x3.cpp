@@ -26,6 +26,8 @@ const size_t enable_pins[CHANNEL_COUNT] = {49};
 const size_t step_pins[CHANNEL_COUNT] = {53};
 const size_t dir_pins[CHANNEL_COUNT] = {51};
 
+size_t step_half_period_us_max = 20;
+
 // Interrupts
 
 // Units
