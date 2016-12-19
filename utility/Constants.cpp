@@ -64,8 +64,8 @@ CONSTANT_STRING(channel_parameter_name,"channel");
 CONSTANT_STRING(position_parameter_name,"position");
 
 CONSTANT_STRING(velocity_parameter_name,"velocity");
-const long velocity_min = -500000/step_half_period_us_max;
-const long velocity_max = 500000/step_half_period_us_max;
+const long velocity_min = (long)-500000/(long)step_half_period_us_max;
+const long velocity_max = (long)500000/(long)step_half_period_us_max;
 
 // Functions
 CONSTANT_STRING(enable_function_name,"enable");

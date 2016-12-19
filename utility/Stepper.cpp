@@ -163,7 +163,7 @@ void Stepper::setVelocity(const long steps_per_second)
   velocity_ = steps_per_second;
   long speed = abs(velocity_);
   // (1000000/speed)*(1/2)*(1/constants::step_half_period_us_max)
-  update_count_ = 500000/(constants::step_half_period_us_max*speed);
+  update_count_ = (long)500000/((long)constants::step_half_period_us_max*speed);
   if (!mode_position_)
   {
     if (velocity_ >= 0)
