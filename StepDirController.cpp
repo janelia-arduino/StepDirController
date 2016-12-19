@@ -42,12 +42,12 @@ void StepDirController::setup()
   }
 
   // Interrupts
-// #if defined(__AVR_ATmega2560__)
+  // #if defined(__AVR_ATmega2560__)
   // modular_server::Interrupt & bnc_b_interrupt = modular_server_.createInterrupt(constants::bnc_b_interrupt_name,
   //                                                                               constants::bnc_b_pin);
 
 
-// #endif
+  // #endif
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
 
@@ -584,21 +584,30 @@ void StepDirController::setEnablePolarityHandler(const size_t index)
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::enable_polarity_property_name).getElementValue(index,polarity_ptr);
-  setEnablePolarity(index,*polarity_ptr);
+  if ((polarity_ptr == &constants::polarity_high) || (polarity_ptr == &constants::polarity_high))
+  {
+    setEnablePolarity(index,*polarity_ptr);
+  }
 }
 
 void StepDirController::setStepPolarityHandler(const size_t index)
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::step_polarity_property_name).getElementValue(index,polarity_ptr);
-  setStepPolarity(index,*polarity_ptr);
+  if ((polarity_ptr == &constants::polarity_high) || (polarity_ptr == &constants::polarity_high))
+  {
+    setStepPolarity(index,*polarity_ptr);
+  }
 }
 
 void StepDirController::setDirPolarityHandler(const size_t index)
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::dir_polarity_property_name).getElementValue(index,polarity_ptr);
-  setDirPolarity(index,*polarity_ptr);
+  if ((polarity_ptr == &constants::polarity_high) || (polarity_ptr == &constants::polarity_high))
+  {
+    setDirPolarity(index,*polarity_ptr);
+  }
 }
 
 // void StepDirController::setModeHandler(const size_t index)
@@ -726,4 +735,3 @@ void StepDirController::getPositionsHandler()
   }
   modular_server_.response().endArray();
 }
-

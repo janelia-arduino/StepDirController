@@ -28,9 +28,6 @@ void Stepper::setup(const size_t enable_pin, const size_t step_pin, const size_t
   setStepPolarity(constants::polarity_high);
   setDirPolarity(constants::polarity_high);
 
-  setPositionMode();
-  setDirPositive();
-
   update_inc_ = 0;
   step_positive_ = true;
   running_ = false;
@@ -46,6 +43,10 @@ void Stepper::setup(const size_t enable_pin, const size_t step_pin, const size_t
   dir_bit_mask_ = digitalPinToBitMask(dir_pin_);
   dir_port_ = digitalPinToPort(dir_pin_);
   dir_port_reg_ = portOutputRegister(dir_port_);
+
+  setPositionMode();
+  setDirPositive();
+
 }
 
 void Stepper::setEnablePolarity(const ConstantString & polarity)
