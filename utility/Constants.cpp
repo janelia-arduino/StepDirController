@@ -80,6 +80,8 @@ CONSTANT_STRING(move_by_at_function_name,"moveByAt");
 CONSTANT_STRING(move_to_at_function_name,"moveToAt");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(stop_all_function_name,"stopAll");
+CONSTANT_STRING(zero_function_name,"zero");
+CONSTANT_STRING(zero_all_function_name,"zeroAll");
 CONSTANT_STRING(get_positions_function_name,"getPositions");
 
 // Callbacks

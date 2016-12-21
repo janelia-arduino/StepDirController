@@ -150,6 +150,13 @@ void StepDirController::setup()
   modular_server::Function & stop_all_function = modular_server_.createFunction(constants::stop_all_function_name);
   stop_all_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::stopAllHandler));
 
+  modular_server::Function & zero_function = modular_server_.createFunction(constants::zero_function_name);
+  zero_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::zeroHandler));
+  zero_function.addParameter(channel_parameter);
+
+  modular_server::Function & zero_all_function = modular_server_.createFunction(constants::zero_all_function_name);
+  zero_all_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::zeroAllHandler));
+
   modular_server::Function & get_positions_function = modular_server_.createFunction(constants::get_positions_function_name);
   get_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getPositionsHandler));
   get_positions_function.setReturnTypeArray();
@@ -350,6 +357,22 @@ void StepDirController::stopAll()
   }
 }
 
+void StepDirController::zero(const size_t channel)
+{
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    steppers_[channel].zero();
+  }
+}
+
+void StepDirController::zeroAll()
+{
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    steppers_[channel].zero();
+  }
+}
+
 long StepDirController::getPosition(const size_t channel)
 {
   long position = 0;
@@ -539,22 +562,6 @@ long StepDirController::getPosition(const size_t channel)
 //   interrupts();
 // }
 
-// void StepDirController::zero(const size_t channel)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     steppers_[channel].zero();
-//   }
-// }
-
-// void StepDirController::zeroAll()
-// {
-//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-//   {
-//     steppers_[channel].zero();
-//   }
-// }
-
 // Handlers must be non-blocking (avoid 'delay')
 //
 // modular_server_.parameter(parameter_name).getValue(value) value type must be either:
@@ -721,6 +728,18 @@ void StepDirController::stopHandler()
 void StepDirController::stopAllHandler()
 {
   stopAll();
+}
+
+void StepDirController::zeroHandler()
+{
+  long channel;
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
+  zero(channel);
+}
+
+void StepDirController::zeroAllHandler()
+{
+  zeroAll();
 }
 
 void StepDirController::getPositionsHandler()

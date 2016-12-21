@@ -59,6 +59,9 @@ public:
   void moveToAt(const size_t channel, const long position, const long speed);
   void stop(const size_t channel);
   void stopAll();
+  void zero(const size_t channel);
+  void zeroAll();
+
 
   long getPosition(const size_t channel);
   // void start(const size_t channel);
@@ -80,9 +83,6 @@ public:
   // Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositions();
   // void setTargetPosition(const size_t channel, const long position);
   // void setTargetPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
-
-  // void zero(const size_t channel);
-  // void zeroAll();
 
 private:
   modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
@@ -113,6 +113,8 @@ private:
   void moveToAtHandler();
   void stopHandler();
   void stopAllHandler();
+  void zeroHandler();
+  void zeroAllHandler();
   void getPositionsHandler();
 
 };
