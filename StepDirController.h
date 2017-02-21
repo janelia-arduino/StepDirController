@@ -22,13 +22,13 @@
 #include "IndexedContainer.h"
 #include "FunctorCallbacks.h"
 
-#include "TimerThree.h"
+#include "SPI.h"
+#include "TMC429.h"
 
 #include "ModularServer.h"
 #include "ModularDevice.h"
 
 #include "utility/Constants.h"
-#include "utility/Stepper.h"
 
 
 class StepDirController : public ModularDevice
@@ -38,19 +38,18 @@ public:
   ~StepDirController();
   virtual void setup();
 
-  void setEnablePolarity(const size_t channel, const ConstantString & polarity);
-  void setEnablePolarityAll(const ConstantString & polarity);
-  void setStepPolarity(const size_t channel, const ConstantString & polarity);
-  void setStepPolarityAll(const ConstantString & polarity);
-  void setDirPolarity(const size_t channel, const ConstantString & polarity);
-  void setDirPolarityAll(const ConstantString & polarity);
+  // void setEnablePolarity(const size_t channel, const ConstantString & polarity);
+  // void setEnablePolarityAll(const ConstantString & polarity);
+  // void setStepPolarity(const size_t channel, const ConstantString & polarity);
+  // void setStepPolarityAll(const ConstantString & polarity);
+  // void setDirPolarity(const size_t channel, const ConstantString & polarity);
+  // void setDirPolarityAll(const ConstantString & polarity);
 
-  void enable(const size_t channel);
-  void disable(const size_t channel);
-  void enableAll();
-  void disableAll();
-  uint32_t enabled();
-  // Array<bool,step_dir_controller::constants::CHANNEL_COUNT> enabledArray();
+  // void enable(const size_t channel);
+  // void disable(const size_t channel);
+  // void enableAll();
+  // void disableAll();
+  // uint32_t enabled();
 
   void moveBy(const size_t channel, const long position);
   void moveTo(const size_t channel, const long position);
@@ -64,25 +63,6 @@ public:
 
 
   long getPosition(const size_t channel);
-  // void start(const size_t channel);
-  // void stop(const size_t channel);
-  // bool running(const size_t channel);
-  // void startAll();
-  // void stopAll();
-  // bool anyRunning();
-  // Array<bool,step_dir_controller::constants::CHANNEL_COUNT> runningArray();
-
-  // void setVelocity(const size_t channel, const long steps_per_second);
-
-  // long getCurrentPosition(const size_t channel);
-  // Array<long, step_dir_controller::constants::CHANNEL_COUNT> getCurrentPositions();
-  // void setCurrentPosition(const size_t channel, const long position);
-  // void setCurrentPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
-
-  // long getTargetPosition(const size_t channel);
-  // Array<long, step_dir_controller::constants::CHANNEL_COUNT> getTargetPositions();
-  // void setTargetPosition(const size_t channel, const long position);
-  // void setTargetPositions(Array<long, step_dir_controller::constants::CHANNEL_COUNT> positions);
 
 private:
   modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
@@ -92,20 +72,19 @@ private:
   modular_server::Function functions_[step_dir_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[step_dir_controller::constants::CALLBACK_COUNT_MAX];
 
-  Array<Stepper,step_dir_controller::constants::CHANNEL_COUNT> steppers_;
-  FunctorCallbacks::Callback isr_;
+  TMC429 tmc429s_[step_dir_controller::constants::TMC429_COUNT];
+  // bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
 
   // Handlers
-  void isrHandler();
-  void setEnablePolarityHandler(const size_t index);
-  void setStepPolarityHandler(const size_t index);
-  void setDirPolarityHandler(const size_t index);
-  // void setModeHandler(const size_t index);
-  void enableHandler();
-  void disableHandler();
-  void enableAllHandler();
-  void disableAllHandler();
-  void enabledHandler();
+  // void setEnablePolarityHandler(const size_t index);
+  // void setStepPolarityHandler(const size_t index);
+  // void setDirPolarityHandler(const size_t index);
+  void setModeHandler(const size_t index);
+  // void enableHandler();
+  // void disableHandler();
+  // void enableAllHandler();
+  // void disableAllHandler();
+  // void enabledHandler();
   void moveByHandler();
   void moveToHandler();
   void moveAtHandler();

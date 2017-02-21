@@ -13,7 +13,8 @@
 #include "IndexedContainer.h"
 #include "FunctorCallbacks.h"
 
-#include "TimerThree.h"
+#include "SPI.h"
+#include "TMC429.h"
 
 #include "ModularServer.h"
 #include "ModularDevice.h"

@@ -22,32 +22,35 @@ const modular_server::HardwareInfo hardware_info =
     .version_minor=0,
   };
 
-const size_t enable_pins[CHANNEL_COUNT] = {2};
-const size_t step_pins[CHANNEL_COUNT] = {3};
-const size_t dir_pins[CHANNEL_COUNT] = {4};
-
-size_t step_half_period_us_max = 5;
+const size_t cs_pins[TMC429_COUNT] = {10};
+// const size_t enable_pins[CHANNEL_COUNT] = {2,3,4};
 
 // Interrupts
 
 // Units
 
 // Properties
-const ConstantString * const enable_polarity_default[CHANNEL_COUNT] =
-  {
-    &polarity_high,
-  };
+// const ConstantString * const enable_polarity_default[CHANNEL_COUNT] =
+//   {
+//     &polarity_high,
+//   };
 
-const ConstantString * const step_polarity_default[CHANNEL_COUNT] =
-  {
-    &polarity_high,
-  };
+// const ConstantString * const step_polarity_default[CHANNEL_COUNT] =
+//   {
+//     &polarity_high,
+//   };
 
-const ConstantString * const dir_polarity_default[CHANNEL_COUNT] =
-  {
-    &polarity_high,
-  };
+// const ConstantString * const dir_polarity_default[CHANNEL_COUNT] =
+//   {
+//     &polarity_high,
+//   };
 
+const ConstantString * const mode_default[CHANNEL_COUNT] =
+  {
+    &mode_ramp,
+    &mode_ramp,
+    &mode_ramp,
+  };
 
 // Parameters
 

@@ -19,22 +19,23 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{INTERRUPT_COUNT_MAX=1};
 
-enum {CHANNEL_COUNT=1};
+enum {TMC429_COUNT=1};
+enum {CHANNEL_COUNT=3};
 
-extern const size_t enable_pins[CHANNEL_COUNT];
-extern const size_t step_pins[CHANNEL_COUNT];
-extern const size_t dir_pins[CHANNEL_COUNT];
+extern const size_t cs_pins[TMC429_COUNT];
+// extern const size_t enable_pins[CHANNEL_COUNT];
 
 // Units
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
-extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT];
+// extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT];
 
-extern const ConstantString * const step_polarity_default[CHANNEL_COUNT];
+// extern const ConstantString * const step_polarity_default[CHANNEL_COUNT];
 
-extern const ConstantString * const dir_polarity_default[CHANNEL_COUNT];
+// extern const ConstantString * const dir_polarity_default[CHANNEL_COUNT];
 
+extern const ConstantString * const mode_default[CHANNEL_COUNT];
 
 // Parameters
 

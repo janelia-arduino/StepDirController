@@ -26,37 +26,41 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
-CONSTANT_STRING(mode_position,"POSITION");
-CONSTANT_STRING(mode_velocity,"VELOCITY");
+const size_t clock_frequency_mhz = 16;
 
 // Interrupts
 
 // Units
 CONSTANT_STRING(steps_unit,"steps");
 CONSTANT_STRING(steps_per_second_unit,"steps/s");
+CONSTANT_STRING(steps_per_second_per_second_unit,"steps/s/s");
 
 // Properties
-CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
-CONSTANT_STRING(polarity_high,"HIGH");
-CONSTANT_STRING(polarity_low,"LOW");
-modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
-  {
-    {.cs_ptr=&polarity_high},
-    {.cs_ptr=&polarity_low},
-  };
-
-CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
-
-CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
-
-// CONSTANT_STRING(mode_property_name,"mode");
-// CONSTANT_STRING(mode_position,"POSITION");
-// CONSTANT_STRING(mode_velocity,"VELOCITY");
-// modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
+// CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
+// CONSTANT_STRING(polarity_high,"HIGH");
+// CONSTANT_STRING(polarity_low,"LOW");
+// modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
 //   {
-//     {.cs_ptr=&mode_position},
-//     {.cs_ptr=&mode_velocity},
+//     {.cs_ptr=&polarity_high},
+//     {.cs_ptr=&polarity_low},
 //   };
+
+// CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
+
+// CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
+
+CONSTANT_STRING(mode_property_name,"mode");
+CONSTANT_STRING(mode_ramp,"RAMP");
+CONSTANT_STRING(mode_soft,"SOFT");
+CONSTANT_STRING(mode_velocity,"VELOCITY");
+CONSTANT_STRING(mode_hold,"HOLD");
+modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
+  {
+    {.cs_ptr=&mode_ramp},
+    {.cs_ptr=&mode_soft},
+    {.cs_ptr=&mode_velocity},
+    {.cs_ptr=&mode_hold},
+  };
 
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");
@@ -64,15 +68,13 @@ CONSTANT_STRING(channel_parameter_name,"channel");
 CONSTANT_STRING(position_parameter_name,"position");
 
 CONSTANT_STRING(velocity_parameter_name,"velocity");
-const long velocity_min = (long)-500000/(long)step_half_period_us_max;
-const long velocity_max = (long)500000/(long)step_half_period_us_max;
 
 // Functions
-CONSTANT_STRING(enable_function_name,"enable");
-CONSTANT_STRING(disable_function_name,"disable");
-CONSTANT_STRING(enable_all_function_name,"enableAll");
-CONSTANT_STRING(disable_all_function_name,"disableAll");
-CONSTANT_STRING(enabled_function_name,"enabled");
+// CONSTANT_STRING(enable_function_name,"enable");
+// CONSTANT_STRING(disable_function_name,"disable");
+// CONSTANT_STRING(enable_all_function_name,"enableAll");
+// CONSTANT_STRING(disable_all_function_name,"disableAll");
+// CONSTANT_STRING(enabled_function_name,"enabled");
 CONSTANT_STRING(move_by_function_name,"moveBy");
 CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");
