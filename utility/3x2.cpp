@@ -30,6 +30,27 @@ const size_t cs_pins[TMC429_COUNT] = {10};
 // Units
 
 // Properties
+const long velocity_max_default[CHANNEL_COUNT] =
+  {
+    velocity_max_element_default,
+    velocity_max_element_default,
+    velocity_max_element_default,
+  };
+
+const long velocity_min_default[CHANNEL_COUNT] =
+  {
+    velocity_min_element_default,
+    velocity_min_element_default,
+    velocity_min_element_default,
+  };
+
+const long acceleration_max_default[CHANNEL_COUNT] =
+  {
+    acceleration_max_element_default,
+    acceleration_max_element_default,
+    acceleration_max_element_default,
+  };
+
 // const ConstantString * const enable_polarity_default[CHANNEL_COUNT] =
 //   {
 //     &polarity_high,
@@ -45,14 +66,15 @@ const size_t cs_pins[TMC429_COUNT] = {10};
 //     &polarity_high,
 //   };
 
-const ConstantString * const mode_default[CHANNEL_COUNT] =
-  {
-    &mode_ramp,
-    &mode_ramp,
-    &mode_ramp,
-  };
+// const ConstantString * const mode_default[CHANNEL_COUNT] =
+//   {
+//     &mode_ramp,
+//     &mode_ramp,
+//     &mode_ramp,
+//   };
 
 // Parameters
+const long channel_max = CHANNEL_COUNT - 1;
 
 // Functions
 

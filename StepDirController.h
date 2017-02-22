@@ -51,11 +51,11 @@ public:
   // void disableAll();
   // uint32_t enabled();
 
-  void moveBy(const size_t channel, const long position);
-  void moveTo(const size_t channel, const long position);
+  // void moveBy(const size_t channel, const long position);
+  // void moveTo(const size_t channel, const long position);
   void moveAt(const size_t channel, const long velocity);
-  void moveByAt(const size_t channel, const long position, const long speed);
-  void moveToAt(const size_t channel, const long position, const long speed);
+  // void moveByAt(const size_t channel, const long position, const long speed);
+  // void moveToAt(const size_t channel, const long position, const long speed);
   void stop(const size_t channel);
   void stopAll();
   void zero(const size_t channel);
@@ -63,6 +63,9 @@ public:
 
 
   long getPosition(const size_t channel);
+  long getPositionTarget(const size_t channel);
+  long getVelocity(const size_t channel);
+  long getVelocityTarget(const size_t channel);
 
 private:
   modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
@@ -75,26 +78,34 @@ private:
   TMC429 tmc429s_[step_dir_controller::constants::TMC429_COUNT];
   // bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
 
+  // TMC429 & getTmc429(const size_t channel);
+  size_t channelToTmc429Index(const size_t channel);
+  size_t channelToMotorIndex(const size_t channel);
+
   // Handlers
+  void setLimitsHandler(const size_t channel);
   // void setEnablePolarityHandler(const size_t index);
   // void setStepPolarityHandler(const size_t index);
   // void setDirPolarityHandler(const size_t index);
-  void setModeHandler(const size_t index);
+  // void setModeHandler(const size_t index);
   // void enableHandler();
   // void disableHandler();
   // void enableAllHandler();
   // void disableAllHandler();
   // void enabledHandler();
-  void moveByHandler();
-  void moveToHandler();
+  // void moveByHandler();
+  // void moveToHandler();
   void moveAtHandler();
-  void moveByAtHandler();
-  void moveToAtHandler();
+  // void moveByAtHandler();
+  // void moveToAtHandler();
   void stopHandler();
   void stopAllHandler();
   void zeroHandler();
   void zeroAllHandler();
   void getPositionsHandler();
+  void getPositionTargetsHandler();
+  void getVelocitiesHandler();
+  void getVelocityTargetsHandler();
 
 };
 

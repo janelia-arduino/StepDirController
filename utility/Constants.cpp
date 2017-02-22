@@ -27,6 +27,7 @@ const modular_server::FirmwareInfo firmware_info =
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
 const size_t clock_frequency_mhz = 16;
+const size_t channels_per_tmc429_count = 3;
 
 // Interrupts
 
@@ -36,6 +37,21 @@ CONSTANT_STRING(steps_per_second_unit,"steps/s");
 CONSTANT_STRING(steps_per_second_per_second_unit,"steps/s/s");
 
 // Properties
+CONSTANT_STRING(velocity_max_property_name,"velocityMax");
+extern const long velocity_max_min = 1;
+extern const long velocity_max_max = 1000000;
+extern const long velocity_max_element_default = 100000;
+
+CONSTANT_STRING(velocity_min_property_name,"velocityMin");
+extern const long velocity_min_min = 1;
+extern const long velocity_min_max = 200000;
+extern const long velocity_min_element_default = 10000;
+
+CONSTANT_STRING(acceleration_max_property_name,"accelerationMax");
+extern const long acceleration_max_min = 1;
+extern const long acceleration_max_max = 10000000;
+extern const long acceleration_max_element_default = 100000;
+
 // CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
 // CONSTANT_STRING(polarity_high,"HIGH");
 // CONSTANT_STRING(polarity_low,"LOW");
@@ -49,25 +65,28 @@ CONSTANT_STRING(steps_per_second_per_second_unit,"steps/s/s");
 
 // CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
 
-CONSTANT_STRING(mode_property_name,"mode");
-CONSTANT_STRING(mode_ramp,"RAMP");
-CONSTANT_STRING(mode_soft,"SOFT");
-CONSTANT_STRING(mode_velocity,"VELOCITY");
-CONSTANT_STRING(mode_hold,"HOLD");
-modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
-  {
-    {.cs_ptr=&mode_ramp},
-    {.cs_ptr=&mode_soft},
-    {.cs_ptr=&mode_velocity},
-    {.cs_ptr=&mode_hold},
-  };
+// CONSTANT_STRING(mode_property_name,"mode");
+// CONSTANT_STRING(mode_ramp,"RAMP");
+// CONSTANT_STRING(mode_soft,"SOFT");
+// CONSTANT_STRING(mode_velocity,"VELOCITY");
+// CONSTANT_STRING(mode_hold,"HOLD");
+// modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
+//   {
+//     {.cs_ptr=&mode_ramp},
+//     {.cs_ptr=&mode_soft},
+//     {.cs_ptr=&mode_velocity},
+//     {.cs_ptr=&mode_hold},
+//   };
 
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");
+const long channel_min = 0;
 
 CONSTANT_STRING(position_parameter_name,"position");
 
 CONSTANT_STRING(velocity_parameter_name,"velocity");
+const long velocity_parameter_min = 0;
+const long velocity_parameter_max = velocity_max_max;
 
 // Functions
 // CONSTANT_STRING(enable_function_name,"enable");
@@ -85,6 +104,9 @@ CONSTANT_STRING(stop_all_function_name,"stopAll");
 CONSTANT_STRING(zero_function_name,"zero");
 CONSTANT_STRING(zero_all_function_name,"zeroAll");
 CONSTANT_STRING(get_positions_function_name,"getPositions");
+CONSTANT_STRING(get_position_targets_function_name,"getPositionTargets");
+CONSTANT_STRING(get_velocities_function_name,"getVelocities");
+CONSTANT_STRING(get_velocity_targets_function_name,"getVelocityTargets");
 
 // Callbacks
 

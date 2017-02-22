@@ -30,6 +30,7 @@ extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
 extern const size_t clock_frequency_mhz;
+extern const size_t channels_per_tmc429_count;
 
 // Interrupts
 
@@ -40,6 +41,21 @@ extern ConstantString steps_per_second_per_second_unit;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern ConstantString velocity_max_property_name;
+extern const long velocity_max_min;
+extern const long velocity_max_max;
+extern const long velocity_max_element_default;
+
+extern ConstantString velocity_min_property_name;
+extern const long velocity_min_min;
+extern const long velocity_min_max;
+extern const long velocity_min_element_default;
+
+extern ConstantString acceleration_max_property_name;
+extern const long acceleration_max_min;
+extern const long acceleration_max_max;
+extern const long acceleration_max_element_default;
+
 // extern ConstantString enable_polarity_property_name;
 // enum{POLARITY_SUBSET_LENGTH=2};
 // extern ConstantString polarity_high;
@@ -50,20 +66,24 @@ extern ConstantString steps_per_second_per_second_unit;
 
 // extern ConstantString dir_polarity_property_name;
 
-extern ConstantString mode_property_name;
-enum{MODE_SUBSET_LENGTH=4};
-extern ConstantString mode_ramp;
-extern ConstantString mode_soft;
-extern ConstantString mode_velocity;
-extern ConstantString mode_hold;
-extern modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH];
+// extern ConstantString mode_property_name;
+// enum{MODE_SUBSET_LENGTH=4};
+// extern ConstantString mode_ramp;
+// extern ConstantString mode_soft;
+// extern ConstantString mode_velocity;
+// extern ConstantString mode_hold;
+// extern modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH];
 
 // Parameters
 extern ConstantString channel_parameter_name;
+extern const long channel_min;
+extern const long channel_max;
 
 extern ConstantString position_parameter_name;
 
 extern ConstantString velocity_parameter_name;
+extern const long velocity_parameter_min;
+extern const long velocity_parameter_max;
 
 // Functions
 // extern ConstantString enable_function_name;
@@ -81,6 +101,9 @@ extern ConstantString stop_all_function_name;
 extern ConstantString zero_function_name;
 extern ConstantString zero_all_function_name;
 extern ConstantString get_positions_function_name;
+extern ConstantString get_position_targets_function_name;
+extern ConstantString get_velocities_function_name;
+extern ConstantString get_velocity_targets_function_name;
 
 // Callbacks
 

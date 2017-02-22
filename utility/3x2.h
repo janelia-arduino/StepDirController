@@ -29,13 +29,19 @@ extern const size_t cs_pins[TMC429_COUNT];
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern const long velocity_max_default[CHANNEL_COUNT];
+
+extern const long velocity_min_default[CHANNEL_COUNT];
+
+extern const long acceleration_max_default[CHANNEL_COUNT];
+
 // extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT];
 
 // extern const ConstantString * const step_polarity_default[CHANNEL_COUNT];
 
 // extern const ConstantString * const dir_polarity_default[CHANNEL_COUNT];
 
-extern const ConstantString * const mode_default[CHANNEL_COUNT];
+// extern const ConstantString * const mode_default[CHANNEL_COUNT];
 
 // Parameters
 
