@@ -85,7 +85,7 @@ const long channel_min = 0;
 CONSTANT_STRING(position_parameter_name,"position");
 
 CONSTANT_STRING(velocity_parameter_name,"velocity");
-const long velocity_parameter_min = 0;
+const long velocity_parameter_min = -velocity_max_max;
 const long velocity_parameter_max = velocity_max_max;
 
 // Functions
