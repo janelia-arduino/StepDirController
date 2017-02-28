@@ -31,25 +31,28 @@ const size_t clock_frequency_mhz = 16;
 // Interrupts
 
 // Units
-CONSTANT_STRING(steps_unit,"steps");
-CONSTANT_STRING(steps_per_second_unit,"steps/s");
-CONSTANT_STRING(steps_per_second_per_second_unit,"steps/s/s");
+CONSTANT_STRING(position_unit,"position_unit");
+CONSTANT_STRING(position_units_per_second_unit,"position_units/s");
+CONSTANT_STRING(position_units_per_second_per_second_unit,"position_units/s/s");
 
 // Properties
+CONSTANT_STRING(steps_per_position_unit_property_name,"stepsPerPositionUnit");
+extern const double steps_per_position_unit_element_default = 1;
+
 CONSTANT_STRING(velocity_max_property_name,"velocityMax");
-extern const long velocity_max_min = 1;
-extern const long velocity_max_max = 1000000;
-extern const long velocity_max_element_default = 100000;
+extern const double velocity_max_min = 0.000001;
+extern const double velocity_max_max = 1000000;
+extern const double velocity_max_element_default = 200000;
 
 CONSTANT_STRING(velocity_min_property_name,"velocityMin");
-extern const long velocity_min_min = 1;
-extern const long velocity_min_max = 200000;
-extern const long velocity_min_element_default = 10000;
+extern const double velocity_min_min = 0.000001;
+extern const double velocity_min_max = 1000000;
+extern const double velocity_min_element_default = 20000;
 
 CONSTANT_STRING(acceleration_max_property_name,"accelerationMax");
-extern const long acceleration_max_min = 1;
-extern const long acceleration_max_max = 10000000;
-extern const long acceleration_max_element_default = 100000;
+extern const double acceleration_max_min = 0.000001;
+extern const double acceleration_max_max = 1000000;
+extern const double acceleration_max_element_default = 200000;
 
 // CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
 // CONSTANT_STRING(polarity_high,"HIGH");
@@ -84,8 +87,6 @@ const long channel_min = 0;
 CONSTANT_STRING(position_parameter_name,"position");
 
 CONSTANT_STRING(velocity_parameter_name,"velocity");
-const long velocity_parameter_min = -velocity_max_max;
-const long velocity_parameter_max = velocity_max_max;
 
 // Functions
 CONSTANT_STRING(reinitialize_function_name,"reinitialize");

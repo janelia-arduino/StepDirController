@@ -30,21 +30,28 @@ const size_t cs_pins[TMC429_COUNT] = {10};
 // Units
 
 // Properties
-const long velocity_max_default[CHANNEL_COUNT] =
+const double steps_per_position_unit_default[CHANNEL_COUNT] =
+  {
+    steps_per_position_unit_element_default,
+    steps_per_position_unit_element_default,
+    steps_per_position_unit_element_default,
+  };
+
+const double velocity_max_default[CHANNEL_COUNT] =
   {
     velocity_max_element_default,
     velocity_max_element_default,
     velocity_max_element_default,
   };
 
-const long velocity_min_default[CHANNEL_COUNT] =
+const double velocity_min_default[CHANNEL_COUNT] =
   {
     velocity_min_element_default,
     velocity_min_element_default,
     velocity_min_element_default,
   };
 
-const long acceleration_max_default[CHANNEL_COUNT] =
+const double acceleration_max_default[CHANNEL_COUNT] =
   {
     acceleration_max_element_default,
     acceleration_max_element_default,

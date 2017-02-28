@@ -36,26 +36,29 @@ extern const size_t clock_frequency_mhz;
 // Interrupts
 
 // Units
-extern ConstantString steps_unit;
-extern ConstantString steps_per_second_unit;
-extern ConstantString steps_per_second_per_second_unit;
+extern ConstantString position_unit;
+extern ConstantString position_units_per_second_unit;
+extern ConstantString position_units_per_second_per_second_unit;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern ConstantString steps_per_position_unit_property_name;
+extern const double steps_per_position_unit_element_default;
+
 extern ConstantString velocity_max_property_name;
-extern const long velocity_max_min;
-extern const long velocity_max_max;
-extern const long velocity_max_element_default;
+extern const double velocity_max_min;
+extern const double velocity_max_max;
+extern const double velocity_max_element_default;
 
 extern ConstantString velocity_min_property_name;
-extern const long velocity_min_min;
-extern const long velocity_min_max;
-extern const long velocity_min_element_default;
+extern const double velocity_min_min;
+extern const double velocity_min_max;
+extern const double velocity_min_element_default;
 
 extern ConstantString acceleration_max_property_name;
-extern const long acceleration_max_min;
-extern const long acceleration_max_max;
-extern const long acceleration_max_element_default;
+extern const double acceleration_max_min;
+extern const double acceleration_max_max;
+extern const double acceleration_max_element_default;
 
 // extern ConstantString enable_polarity_property_name;
 // enum{POLARITY_SUBSET_LENGTH=2};
@@ -83,8 +86,6 @@ extern const long channel_max;
 extern ConstantString position_parameter_name;
 
 extern ConstantString velocity_parameter_name;
-extern const long velocity_parameter_min;
-extern const long velocity_parameter_max;
 
 // Functions
 extern ConstantString reinitialize_function_name;

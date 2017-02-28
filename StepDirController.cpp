@@ -59,18 +59,22 @@ void StepDirController::setup()
                               functions_,
                               callbacks_);
   // Properties
+  modular_server::Property & steps_per_position_unit_property = modular_server_.createProperty(constants::steps_per_position_unit_property_name,constants::steps_per_position_unit_default);
+  steps_per_position_unit_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateLimitsHandler));
+  steps_per_position_unit_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateLimitsHandler));
+
   modular_server::Property & velocity_max_property = modular_server_.createProperty(constants::velocity_max_property_name,constants::velocity_max_default);
-  velocity_max_property.setUnits(constants::steps_per_second_unit);
+  velocity_max_property.setUnits(constants::position_units_per_second_unit);
   velocity_max_property.setRange(constants::velocity_max_min,constants::velocity_max_max);
   velocity_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & velocity_min_property = modular_server_.createProperty(constants::velocity_min_property_name,constants::velocity_min_default);
-  velocity_min_property.setUnits(constants::steps_per_second_unit);
+  velocity_min_property.setUnits(constants::position_units_per_second_unit);
   velocity_min_property.setRange(constants::velocity_min_min,constants::velocity_min_max);
   velocity_min_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & acceleration_max_property = modular_server_.createProperty(constants::acceleration_max_property_name,constants::acceleration_max_default);
-  acceleration_max_property.setUnits(constants::steps_per_second_per_second_unit);
+  acceleration_max_property.setUnits(constants::position_units_per_second_per_second_unit);
   acceleration_max_property.setRange(constants::acceleration_max_min,constants::acceleration_max_max);
   acceleration_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
@@ -101,7 +105,6 @@ void StepDirController::setup()
   position_parameter.setTypeLong();
 
   modular_server::Parameter & velocity_parameter = modular_server_.createParameter(constants::velocity_parameter_name);
-  velocity_parameter.setRange(constants::velocity_parameter_min,constants::velocity_parameter_max);
 
   // Functions
   modular_server::Function & reinitialize_function = modular_server_.createFunction(constants::reinitialize_function_name);
@@ -330,7 +333,7 @@ void StepDirController::reinitialize()
 //   }
 // }
 
-void StepDirController::moveAt(const size_t channel, const long velocity)
+void StepDirController::moveAt(const size_t channel, const double velocity)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
@@ -338,7 +341,7 @@ void StepDirController::moveAt(const size_t channel, const long velocity)
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setMode(motor_i,TMC429::VELOCITY_MODE);
-    tmc429.setVelocityTargetInHz(motor_i,velocity);
+    tmc429.setVelocityTargetInHz(motor_i,positionUnitsToSteps(channel,velocity));
   }
 }
 
@@ -408,9 +411,9 @@ void StepDirController::zeroAll()
   }
 }
 
-long StepDirController::getPosition(const size_t channel)
+double StepDirController::getPosition(const size_t channel)
 {
-  long position = 0;
+  double position = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
     size_t tmc429_i = channelToTmc429Index(channel);
@@ -418,12 +421,12 @@ long StepDirController::getPosition(const size_t channel)
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     position = tmc429.getPositionActual(motor_i);
   }
-  return position;
+  return stepsToPositionUnits(channel,position);
 }
 
-long StepDirController::getPositionTarget(const size_t channel)
+double StepDirController::getPositionTarget(const size_t channel)
 {
-  long position = 0;
+  double position = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
     size_t tmc429_i = channelToTmc429Index(channel);
@@ -431,12 +434,12 @@ long StepDirController::getPositionTarget(const size_t channel)
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     position = tmc429.getPositionTarget(motor_i);
   }
-  return position;
+  return stepsToPositionUnits(channel,position);
 }
 
-long StepDirController::getVelocity(const size_t channel)
+double StepDirController::getVelocity(const size_t channel)
 {
-  long velocity = 0;
+  double velocity = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
     size_t tmc429_i = channelToTmc429Index(channel);
@@ -444,12 +447,12 @@ long StepDirController::getVelocity(const size_t channel)
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     velocity = tmc429.getVelocityActualInHz(motor_i);
   }
-  return velocity;
+  return stepsToPositionUnits(channel,velocity);
 }
 
-long StepDirController::getVelocityTarget(const size_t channel)
+double StepDirController::getVelocityTarget(const size_t channel)
 {
-  long velocity = 0;
+  double velocity = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
     size_t tmc429_i = channelToTmc429Index(channel);
@@ -457,15 +460,26 @@ long StepDirController::getVelocityTarget(const size_t channel)
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     velocity = tmc429.getVelocityTargetInHz(motor_i);
   }
-  return velocity;
+  return stepsToPositionUnits(channel,velocity);
 }
 
-// TMC429 & StepDirController::getTmc429(const size_t channel)
-// {
-//   size_t tmc429_i = channelToTmc429Index(channel);
-//   size_t motor_i = channelToMotorIndex(channel);
-//   TMC429 & tmc429 = tmc429s_[tmc429_i];
-// }
+double StepDirController::stepsToPositionUnits(const size_t channel, const double steps)
+{
+  modular_server::Property & steps_per_position_unit_property = modular_server_.property(constants::steps_per_position_unit_property_name);
+  double steps_per_position_unit;
+  steps_per_position_unit_property.getElementValue(channel,steps_per_position_unit);
+
+  return steps/steps_per_position_unit;
+}
+
+double StepDirController::positionUnitsToSteps(const size_t channel, const double position_units)
+{
+  modular_server::Property & steps_per_position_unit_property = modular_server_.property(constants::steps_per_position_unit_property_name);
+  double steps_per_position_unit;
+  steps_per_position_unit_property.getElementValue(channel,steps_per_position_unit);
+
+  return position_units*steps_per_position_unit;
+}
 
 size_t StepDirController::channelToTmc429Index(const size_t channel)
 {
@@ -494,20 +508,80 @@ size_t StepDirController::channelToMotorIndex(const size_t channel)
 // modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type
 
+void StepDirController::preUpdateLimitsHandler(const size_t channel)
+{
+  modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
+  double velocity_min;
+  velocity_min_property.getElementValue(channel,velocity_min);
+
+  modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
+  double velocity_max;
+  velocity_max_property.getElementValue(channel,velocity_max);
+
+  modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
+  double acceleration_max;
+  acceleration_max_property.getElementValue(channel,acceleration_max);
+
+  velocity_min_property.disableFunctors();
+  velocity_max_property.disableFunctors();
+  acceleration_max_property.disableFunctors();
+
+  velocity_min_property.setElementValue(channel,positionUnitsToSteps(channel,velocity_min));
+
+  velocity_max_property.setElementValue(channel,positionUnitsToSteps(channel,velocity_max));
+
+  acceleration_max_property.setElementValue(channel,positionUnitsToSteps(channel,acceleration_max));
+
+  velocity_min_property.reenableFunctors();
+  velocity_max_property.reenableFunctors();
+  acceleration_max_property.reenableFunctors();
+}
+
+void StepDirController::postUpdateLimitsHandler(const size_t channel)
+{
+  modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
+  double velocity_min;
+  velocity_min_property.getElementValue(channel,velocity_min);
+
+  modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
+  double velocity_max;
+  velocity_max_property.getElementValue(channel,velocity_max);
+
+  modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
+  double acceleration_max;
+  acceleration_max_property.getElementValue(channel,acceleration_max);
+
+  velocity_min_property.disableFunctors();
+  velocity_max_property.disableFunctors();
+  acceleration_max_property.disableFunctors();
+
+  velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min));
+
+  velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max));
+
+  acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max));
+
+  velocity_min_property.reenableFunctors();
+  velocity_max_property.reenableFunctors();
+  acceleration_max_property.reenableFunctors();
+
+  setLimitsHandler(channel);
+}
+
 void StepDirController::setLimitsHandler(const size_t channel)
 {
   stopAll();
 
   modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
-  long velocity_min;
+  double velocity_min;
   velocity_min_property.getElementValue(channel,velocity_min);
 
   modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
-  long velocity_max;
+  double velocity_max;
   velocity_max_property.getElementValue(channel,velocity_max);
 
   modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
-  long acceleration_max;
+  double acceleration_max;
   acceleration_max_property.getElementValue(channel,acceleration_max);
 
   size_t tmc429_i = channelToTmc429Index(channel);
@@ -515,22 +589,22 @@ void StepDirController::setLimitsHandler(const size_t channel)
   TMC429 & tmc429 = tmc429s_[tmc429_i];
 
   tmc429.setLimitsInHz(motor_i,
-                       velocity_min,
-                       velocity_max,
-                       acceleration_max);
+                       positionUnitsToSteps(channel,velocity_min),
+                       positionUnitsToSteps(channel,velocity_max),
+                       positionUnitsToSteps(channel,acceleration_max));
 
   velocity_min_property.disableFunctors();
   velocity_max_property.disableFunctors();
   acceleration_max_property.disableFunctors();
 
   velocity_min = tmc429.getVelocityMinInHz(motor_i);
-  velocity_min_property.setElementValue(channel,velocity_min);
+  velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min));
 
   velocity_max = tmc429.getVelocityMaxInHz(motor_i);
-  velocity_max_property.setElementValue(channel,velocity_max);
+  velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max));
 
   acceleration_max = tmc429.getAccelerationMaxInHzPerS(motor_i);
-  acceleration_max_property.setElementValue(channel,acceleration_max);
+  acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max));
 
   velocity_min_property.reenableFunctors();
   velocity_max_property.reenableFunctors();
@@ -646,7 +720,7 @@ void StepDirController::moveAtHandler()
 {
   long channel;
   modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
-  long velocity;
+  double velocity;
   modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
   moveAt(channel,velocity);
 }
@@ -699,7 +773,7 @@ void StepDirController::zeroAllHandler()
 
 void StepDirController::getPositionsHandler()
 {
-  long position;
+  double position;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
@@ -712,7 +786,7 @@ void StepDirController::getPositionsHandler()
 
 void StepDirController::getPositionTargetsHandler()
 {
-  long position;
+  double position;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
@@ -725,7 +799,7 @@ void StepDirController::getPositionTargetsHandler()
 
 void StepDirController::getVelocitiesHandler()
 {
-  long velocity;
+  double velocity;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
@@ -738,7 +812,7 @@ void StepDirController::getVelocitiesHandler()
 
 void StepDirController::getVelocityTargetsHandler()
 {
-  long velocity;
+  double velocity;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
