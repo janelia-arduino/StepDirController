@@ -29,8 +29,9 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
+enum{CHANNELS_PER_TMC429_COUNT=3};
+
 extern const size_t clock_frequency_mhz;
-extern const size_t channels_per_tmc429_count;
 
 // Interrupts
 
@@ -86,6 +87,7 @@ extern const long velocity_parameter_min;
 extern const long velocity_parameter_max;
 
 // Functions
+extern ConstantString reinitialize_function_name;
 // extern ConstantString enable_function_name;
 // extern ConstantString disable_function_name;
 // extern ConstantString enable_all_function_name;

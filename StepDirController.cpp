@@ -29,7 +29,6 @@ void StepDirController::setup()
   {
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setup(constants::cs_pins[tmc429_i],constants::clock_frequency_mhz);
-    tmc429.setStepDirOutput();
   }
 
   // Pin Setup
@@ -91,14 +90,7 @@ void StepDirController::setup()
   // mode_property.setSubset(constants::mode_ptr_subset);
   // mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setModeHandler));
 
-  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-  {
-    setLimitsHandler(channel);
-    // setEnablePolarityHandler(channel);
-    // setStepPolarityHandler(channel);
-    // setDirPolarityHandler(channel);
-    // setModeHandler(channel);
-  }
+  reinitialize();
   // disableAll();
 
   // Parameters
@@ -112,6 +104,9 @@ void StepDirController::setup()
   velocity_parameter.setRange(constants::velocity_parameter_min,constants::velocity_parameter_max);
 
   // Functions
+  modular_server::Function & reinitialize_function = modular_server_.createFunction(constants::reinitialize_function_name);
+  reinitialize_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::reinitializeHandler));
+
   // modular_server::Function & enable_function = modular_server_.createFunction(constants::enable_function_name);
   // enable_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enableHandler));
   // enable_function.addParameter(channel_parameter);
@@ -189,6 +184,24 @@ void StepDirController::setup()
 
   // Callbacks
 
+}
+
+void StepDirController::reinitialize()
+{
+  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  {
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    tmc429.setStepDirOutput();
+    for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_TMC429_COUNT; ++motor_i)
+    {
+      tmc429.disableLeftSwitchStop(motor_i);
+      tmc429.disableRightSwitchStop(motor_i);
+    }
+  }
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    setLimitsHandler(channel);
+  }
 }
 
 // void StepDirController::setEnablePolarity(const size_t channel, const ConstantString & polarity)
@@ -456,12 +469,12 @@ long StepDirController::getVelocityTarget(const size_t channel)
 
 size_t StepDirController::channelToTmc429Index(const size_t channel)
 {
-  return channel/constants::channels_per_tmc429_count;
+  return channel/constants::CHANNELS_PER_TMC429_COUNT;
 }
 
 size_t StepDirController::channelToMotorIndex(const size_t channel)
 {
-  return channel%constants::channels_per_tmc429_count;
+  return channel%constants::CHANNELS_PER_TMC429_COUNT;
 }
 
 // Handlers must be non-blocking (avoid 'delay')
@@ -522,6 +535,11 @@ void StepDirController::setLimitsHandler(const size_t channel)
   velocity_min_property.reenableFunctors();
   velocity_max_property.reenableFunctors();
   acceleration_max_property.reenableFunctors();
+}
+
+void StepDirController::reinitializeHandler()
+{
+  reinitialize();
 }
 
 // void StepDirController::setEnablePolarityHandler(const size_t index)

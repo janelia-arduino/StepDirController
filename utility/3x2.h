@@ -20,6 +20,8 @@ namespace constants
 enum{INTERRUPT_COUNT_MAX=1};
 
 enum {TMC429_COUNT=1};
+// CHANNEL_COUNT = TMC429_COUNT*CHANNELS_PER_TMC429_COUNT
+// CHANNELS_PER_TMC429_COUNT = 3
 enum {CHANNEL_COUNT=3};
 
 extern const size_t cs_pins[TMC429_COUNT];

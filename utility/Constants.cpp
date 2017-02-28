@@ -27,7 +27,6 @@ const modular_server::FirmwareInfo firmware_info =
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
 const size_t clock_frequency_mhz = 16;
-const size_t channels_per_tmc429_count = 3;
 
 // Interrupts
 
@@ -89,6 +88,7 @@ const long velocity_parameter_min = -velocity_max_max;
 const long velocity_parameter_max = velocity_max_max;
 
 // Functions
+CONSTANT_STRING(reinitialize_function_name,"reinitialize");
 // CONSTANT_STRING(enable_function_name,"enable");
 // CONSTANT_STRING(disable_function_name,"disable");
 // CONSTANT_STRING(enable_all_function_name,"enableAll");

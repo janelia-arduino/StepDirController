@@ -38,6 +38,8 @@ public:
   ~StepDirController();
   virtual void setup();
 
+  virtual void reinitialize();
+
   // void setEnablePolarity(const size_t channel, const ConstantString & polarity);
   // void setEnablePolarityAll(const ConstantString & polarity);
   // void setStepPolarity(const size_t channel, const ConstantString & polarity);
@@ -84,6 +86,7 @@ private:
 
   // Handlers
   void setLimitsHandler(const size_t channel);
+  void reinitializeHandler();
   // void setEnablePolarityHandler(const size_t index);
   // void setStepPolarityHandler(const size_t index);
   // void setDirPolarityHandler(const size_t index);
