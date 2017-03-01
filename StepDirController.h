@@ -53,8 +53,8 @@ public:
   // void disableAll();
   // uint32_t enabled();
 
-  // void moveBy(const size_t channel, const long position);
-  // void moveTo(const size_t channel, const long position);
+  void moveBy(const size_t channel, const double position);
+  void moveTo(const size_t channel, const double position);
   void moveAt(const size_t channel, const double velocity);
   // void moveByAt(const size_t channel, const long position, const long speed);
   // void moveToAt(const size_t channel, const long position, const long speed);
@@ -66,8 +66,11 @@ public:
 
   double getPosition(const size_t channel);
   double getPositionTarget(const size_t channel);
+  // bool atTargetPosition(const size_t channel);
+
   double getVelocity(const size_t channel);
   double getVelocityTarget(const size_t channel);
+  // bool atTargetVelocity(const size_t channel);
 
 protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
@@ -103,8 +106,8 @@ private:
   // void enableAllHandler();
   // void disableAllHandler();
   // void enabledHandler();
-  // void moveByHandler();
-  // void moveToHandler();
+  void moveByHandler();
+  void moveToHandler();
   void moveAtHandler();
   // void moveByAtHandler();
   // void moveToAtHandler();
@@ -114,6 +117,7 @@ private:
   void zeroAllHandler();
   void getPositionsHandler();
   void getPositionTargetsHandler();
+  void getStatusHandler();
   void getVelocitiesHandler();
   void getVelocityTargetsHandler();
 

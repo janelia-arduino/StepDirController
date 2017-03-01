@@ -102,9 +102,10 @@ void StepDirController::setup()
   channel_parameter.setRange(constants::channel_min,constants::channel_max);
 
   modular_server::Parameter & position_parameter = modular_server_.createParameter(constants::position_parameter_name);
-  position_parameter.setTypeLong();
+  position_parameter.setTypeDouble();
 
   modular_server::Parameter & velocity_parameter = modular_server_.createParameter(constants::velocity_parameter_name);
+  velocity_parameter.setTypeDouble();
 
   // Functions
   modular_server::Function & reinitialize_function = modular_server_.createFunction(constants::reinitialize_function_name);
@@ -128,15 +129,15 @@ void StepDirController::setup()
   // enabled_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enabledHandler));
   // enabled_function.setReturnTypeArray();
 
-  // modular_server::Function & move_by_function = modular_server_.createFunction(constants::move_by_function_name);
-  // move_by_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveByHandler));
-  // move_by_function.addParameter(channel_parameter);
-  // move_by_function.addParameter(position_parameter);
+  modular_server::Function & move_by_function = modular_server_.createFunction(constants::move_by_function_name);
+  move_by_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveByHandler));
+  move_by_function.addParameter(channel_parameter);
+  move_by_function.addParameter(position_parameter);
 
-  // modular_server::Function & move_to_function = modular_server_.createFunction(constants::move_to_function_name);
-  // move_to_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveToHandler));
-  // move_to_function.addParameter(channel_parameter);
-  // move_to_function.addParameter(position_parameter);
+  modular_server::Function & move_to_function = modular_server_.createFunction(constants::move_to_function_name);
+  move_to_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveToHandler));
+  move_to_function.addParameter(channel_parameter);
+  move_to_function.addParameter(position_parameter);
 
   modular_server::Function & move_at_function = modular_server_.createFunction(constants::move_at_function_name);
   move_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveAtHandler));
@@ -307,31 +308,31 @@ void StepDirController::reinitialize()
 //   return channels_enabled;
 // }
 
-// void StepDirController::moveBy(const size_t channel, const long position)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     Stepper & stepper = steppers_[channel];
-//     stepper.stop();
-//     stepper.setPositionMode();
-//     stepper.setVelocity(10000);
-//     stepper.setTargetPositionRelative(position);
-//     stepper.start();
-//   }
-// }
+void StepDirController::moveBy(const size_t channel, const double position)
+{
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    tmc429.setMode(motor_i,TMC429::RAMP_MODE);
+    long position_actual = tmc429.getPositionActual(motor_i);
+    long position_target = positionUnitsToSteps(channel,position) + position_actual;
+    tmc429.setPositionTarget(motor_i,position_target);
+  }
+}
 
-// void StepDirController::moveTo(const size_t channel, const long position)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     Stepper & stepper = steppers_[channel];
-//     stepper.stop();
-//     stepper.setPositionMode();
-//     stepper.setVelocity(10000);
-//     stepper.setTargetPosition(position);
-//     stepper.start();
-//   }
-// }
+void StepDirController::moveTo(const size_t channel, const double position)
+{
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    tmc429.setMode(motor_i,TMC429::RAMP_MODE);
+    tmc429.setPositionTarget(motor_i,positionUnitsToSteps(channel,position));
+  }
+}
 
 void StepDirController::moveAt(const size_t channel, const double velocity)
 {
@@ -436,6 +437,12 @@ double StepDirController::getPositionTarget(const size_t channel)
   }
   return stepsToPositionUnits(channel,position);
 }
+
+// bool StepDirController::atTargetPosition(const size_t channel)
+// {
+//   TMC429 & tmc429 = tmc429s_[tmc429_i];
+//   TMC429::Status = tmc429.getStatus();
+// }
 
 double StepDirController::getVelocity(const size_t channel)
 {
@@ -698,23 +705,23 @@ void StepDirController::reinitializeHandler()
 //   modular_server_.response().endArray();
 // }
 
-// void StepDirController::moveByHandler()
-// {
-//   long channel;
-//   modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
-//   long position;
-//   modular_server_.parameter(constants::position_parameter_name).getValue(position);
-//   moveBy(channel,position);
-// }
+void StepDirController::moveByHandler()
+{
+  long channel;
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
+  double position;
+  modular_server_.parameter(constants::position_parameter_name).getValue(position);
+  moveBy(channel,position);
+}
 
-// void StepDirController::moveToHandler()
-// {
-//   long channel;
-//   modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
-//   long position;
-//   modular_server_.parameter(constants::position_parameter_name).getValue(position);
-//   moveTo(channel,position);
-// }
+void StepDirController::moveToHandler()
+{
+  long channel;
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
+  double position;
+  modular_server_.parameter(constants::position_parameter_name).getValue(position);
+  moveTo(channel,position);
+}
 
 void StepDirController::moveAtHandler()
 {
