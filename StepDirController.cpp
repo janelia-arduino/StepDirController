@@ -174,17 +174,25 @@ void StepDirController::setup()
   get_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getPositionsHandler));
   get_positions_function.setReturnTypeArray();
 
-  modular_server::Function & get_position_targets_function = modular_server_.createFunction(constants::get_position_targets_function_name);
-  get_position_targets_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getPositionTargetsHandler));
-  get_position_targets_function.setReturnTypeArray();
+  modular_server::Function & get_target_positions_function = modular_server_.createFunction(constants::get_target_positions_function_name);
+  get_target_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getTargetPositionsHandler));
+  get_target_positions_function.setReturnTypeArray();
+
+  modular_server::Function & at_target_positions_function = modular_server_.createFunction(constants::at_target_positions_function_name);
+  at_target_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::atTargetPositionsHandler));
+  at_target_positions_function.setReturnTypeArray();
 
   modular_server::Function & get_velocities_function = modular_server_.createFunction(constants::get_velocities_function_name);
   get_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getVelocitiesHandler));
   get_velocities_function.setReturnTypeArray();
 
-  modular_server::Function & get_velocity_targets_function = modular_server_.createFunction(constants::get_velocity_targets_function_name);
-  get_velocity_targets_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getVelocityTargetsHandler));
-  get_velocity_targets_function.setReturnTypeArray();
+  modular_server::Function & get_target_velocities_function = modular_server_.createFunction(constants::get_target_velocities_function_name);
+  get_target_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getTargetVelocitiesHandler));
+  get_target_velocities_function.setReturnTypeArray();
+
+  modular_server::Function & at_target_velocities_function = modular_server_.createFunction(constants::at_target_velocities_function_name);
+  at_target_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::atTargetVelocitiesHandler));
+  at_target_velocities_function.setReturnTypeArray();
 
   // Callbacks
 
@@ -316,9 +324,9 @@ void StepDirController::moveBy(const size_t channel, const double position)
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setMode(motor_i,TMC429::RAMP_MODE);
-    long position_actual = tmc429.getPositionActual(motor_i);
+    long position_actual = tmc429.getActualPosition(motor_i);
     long position_target = positionUnitsToSteps(channel,position) + position_actual;
-    tmc429.setPositionTarget(motor_i,position_target);
+    tmc429.setTargetPosition(motor_i,position_target);
   }
 }
 
@@ -330,7 +338,7 @@ void StepDirController::moveTo(const size_t channel, const double position)
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setMode(motor_i,TMC429::RAMP_MODE);
-    tmc429.setPositionTarget(motor_i,positionUnitsToSteps(channel,position));
+    tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
   }
 }
 
@@ -342,7 +350,7 @@ void StepDirController::moveAt(const size_t channel, const double velocity)
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setMode(motor_i,TMC429::VELOCITY_MODE);
-    tmc429.setVelocityTargetInHz(motor_i,positionUnitsToSteps(channel,velocity));
+    tmc429.setTargetVelocityInHz(motor_i,positionUnitsToSteps(channel,velocity));
   }
 }
 
@@ -400,7 +408,8 @@ void StepDirController::zero(const size_t channel)
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setMode(motor_i,TMC429::VELOCITY_MODE);
-    tmc429.setPositionActual(motor_i,0);
+    tmc429.setActualPosition(motor_i,0);
+    tmc429.setTargetPosition(motor_i,0);
   }
 }
 
@@ -420,12 +429,12 @@ double StepDirController::getPosition(const size_t channel)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    position = tmc429.getPositionActual(motor_i);
+    position = tmc429.getActualPosition(motor_i);
   }
   return stepsToPositionUnits(channel,position);
 }
 
-double StepDirController::getPositionTarget(const size_t channel)
+double StepDirController::getTargetPosition(const size_t channel)
 {
   double position = 0;
   if (channel < constants::CHANNEL_COUNT)
@@ -433,16 +442,23 @@ double StepDirController::getPositionTarget(const size_t channel)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    position = tmc429.getPositionTarget(motor_i);
+    position = tmc429.getTargetPosition(motor_i);
   }
   return stepsToPositionUnits(channel,position);
 }
 
-// bool StepDirController::atTargetPosition(const size_t channel)
-// {
-//   TMC429 & tmc429 = tmc429s_[tmc429_i];
-//   TMC429::Status = tmc429.getStatus();
-// }
+bool StepDirController::atTargetPosition(const size_t channel)
+{
+  bool at_target_position = true;
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    at_target_position = tmc429.atTargetPosition(motor_i);
+  }
+  return at_target_position;
+}
 
 double StepDirController::getVelocity(const size_t channel)
 {
@@ -452,12 +468,12 @@ double StepDirController::getVelocity(const size_t channel)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    velocity = tmc429.getVelocityActualInHz(motor_i);
+    velocity = tmc429.getActualVelocityInHz(motor_i);
   }
   return stepsToPositionUnits(channel,velocity);
 }
 
-double StepDirController::getVelocityTarget(const size_t channel)
+double StepDirController::getTargetVelocity(const size_t channel)
 {
   double velocity = 0;
   if (channel < constants::CHANNEL_COUNT)
@@ -465,9 +481,22 @@ double StepDirController::getVelocityTarget(const size_t channel)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    velocity = tmc429.getVelocityTargetInHz(motor_i);
+    velocity = tmc429.getTargetVelocityInHz(motor_i);
   }
   return stepsToPositionUnits(channel,velocity);
+}
+
+bool StepDirController::atTargetVelocity(const size_t channel)
+{
+  bool at_target_velocity = true;
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    at_target_velocity = tmc429.atTargetVelocity(motor_i);
+  }
+  return at_target_velocity;
 }
 
 double StepDirController::stepsToPositionUnits(const size_t channel, const double steps)
@@ -791,7 +820,7 @@ void StepDirController::getPositionsHandler()
   modular_server_.response().endArray();
 }
 
-void StepDirController::getPositionTargetsHandler()
+void StepDirController::getTargetPositionsHandler()
 {
   double position;
   modular_server_.response().writeResultKey();
@@ -800,6 +829,19 @@ void StepDirController::getPositionTargetsHandler()
   {
     position = getPosition(channel);
     modular_server_.response().write(position);
+  }
+  modular_server_.response().endArray();
+}
+
+void StepDirController::atTargetPositionsHandler()
+{
+  bool at_target_position;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    at_target_position = atTargetPosition(channel);
+    modular_server_.response().write(at_target_position);
   }
   modular_server_.response().endArray();
 }
@@ -817,15 +859,29 @@ void StepDirController::getVelocitiesHandler()
   modular_server_.response().endArray();
 }
 
-void StepDirController::getVelocityTargetsHandler()
+void StepDirController::getTargetVelocitiesHandler()
 {
   double velocity;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
-    velocity = getVelocityTarget(channel);
+    velocity = getTargetVelocity(channel);
     modular_server_.response().write(velocity);
   }
   modular_server_.response().endArray();
 }
+
+void StepDirController::atTargetVelocitiesHandler()
+{
+  bool at_target_velocity;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    at_target_velocity = atTargetVelocity(channel);
+    modular_server_.response().write(at_target_velocity);
+  }
+  modular_server_.response().endArray();
+}
+

@@ -18,7 +18,7 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=4};
 enum{PARAMETER_COUNT_MAX=3};
-enum{FUNCTION_COUNT_MAX=15};
+enum{FUNCTION_COUNT_MAX=16};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -104,9 +104,11 @@ extern ConstantString stop_all_function_name;
 extern ConstantString zero_function_name;
 extern ConstantString zero_all_function_name;
 extern ConstantString get_positions_function_name;
-extern ConstantString get_position_targets_function_name;
+extern ConstantString get_target_positions_function_name;
+extern ConstantString at_target_positions_function_name;
 extern ConstantString get_velocities_function_name;
-extern ConstantString get_velocity_targets_function_name;
+extern ConstantString get_target_velocities_function_name;
+extern ConstantString at_target_velocities_function_name;
 
 // Callbacks
 

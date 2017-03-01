@@ -105,9 +105,11 @@ CONSTANT_STRING(stop_all_function_name,"stopAll");
 CONSTANT_STRING(zero_function_name,"zero");
 CONSTANT_STRING(zero_all_function_name,"zeroAll");
 CONSTANT_STRING(get_positions_function_name,"getPositions");
-CONSTANT_STRING(get_position_targets_function_name,"getPositionTargets");
+CONSTANT_STRING(get_target_positions_function_name,"getTargetPositions");
+CONSTANT_STRING(at_target_positions_function_name,"atTargetPositions");
 CONSTANT_STRING(get_velocities_function_name,"getVelocities");
-CONSTANT_STRING(get_velocity_targets_function_name,"getVelocityTargets");
+CONSTANT_STRING(get_target_velocities_function_name,"getTargetVelocities");
+CONSTANT_STRING(at_target_velocities_function_name,"atTargetVelocities");
 
 // Callbacks
 

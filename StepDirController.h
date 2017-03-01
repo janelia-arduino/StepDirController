@@ -65,12 +65,12 @@ public:
 
 
   double getPosition(const size_t channel);
-  double getPositionTarget(const size_t channel);
-  // bool atTargetPosition(const size_t channel);
+  double getTargetPosition(const size_t channel);
+  bool atTargetPosition(const size_t channel);
 
   double getVelocity(const size_t channel);
-  double getVelocityTarget(const size_t channel);
-  // bool atTargetVelocity(const size_t channel);
+  double getTargetVelocity(const size_t channel);
+  bool atTargetVelocity(const size_t channel);
 
 protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
@@ -116,10 +116,11 @@ private:
   void zeroHandler();
   void zeroAllHandler();
   void getPositionsHandler();
-  void getPositionTargetsHandler();
-  void getStatusHandler();
+  void getTargetPositionsHandler();
+  void atTargetPositionsHandler();
   void getVelocitiesHandler();
-  void getVelocityTargetsHandler();
+  void getTargetVelocitiesHandler();
+  void atTargetVelocitiesHandler();
 
 };
 
