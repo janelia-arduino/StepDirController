@@ -629,22 +629,22 @@ void StepDirController::setLimitsHandler(const size_t channel)
                        positionUnitsToSteps(channel,velocity_max),
                        positionUnitsToSteps(channel,acceleration_max));
 
-  velocity_min_property.disableFunctors();
-  velocity_max_property.disableFunctors();
-  acceleration_max_property.disableFunctors();
+  // velocity_min_property.disableFunctors();
+  // velocity_max_property.disableFunctors();
+  // acceleration_max_property.disableFunctors();
 
-  velocity_min = tmc429.getVelocityMinInHz(motor_i);
-  velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min));
+  // velocity_min = tmc429.getVelocityMinInHz(motor_i);
+  // velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min));
 
-  velocity_max = tmc429.getVelocityMaxInHz(motor_i);
-  velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max));
+  // velocity_max = tmc429.getVelocityMaxInHz(motor_i);
+  // velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max));
 
-  acceleration_max = tmc429.getAccelerationMaxInHzPerS(motor_i);
-  acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max));
+  // acceleration_max = tmc429.getAccelerationMaxInHzPerS(motor_i);
+  // acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max));
 
-  velocity_min_property.reenableFunctors();
-  velocity_max_property.reenableFunctors();
-  acceleration_max_property.reenableFunctors();
+  // velocity_min_property.reenableFunctors();
+  // velocity_max_property.reenableFunctors();
+  // acceleration_max_property.reenableFunctors();
 }
 
 void StepDirController::reinitializeHandler()
