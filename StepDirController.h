@@ -72,6 +72,9 @@ public:
   double getTargetVelocity(const size_t channel);
   bool atTargetVelocity(const size_t channel);
 
+  bool leftSwitchActive(const size_t channel);
+  bool rightSwitchActive(const size_t channel);
+
 protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
   virtual double positionUnitsToSteps(const size_t channel, const double position_units);
@@ -100,7 +103,11 @@ private:
   // void setEnablePolarityHandler(const size_t index);
   // void setStepPolarityHandler(const size_t index);
   // void setDirPolarityHandler(const size_t index);
-  // void setModeHandler(const size_t index);
+  void setSwitchActivePolarityHandler();
+  void setLeftSwitchStopEnabledHandler(const size_t channel);
+  void setRightSwitchesEnabledHandler();
+  void setRightSwitchStopEnabledHandler(const size_t channel);
+  void setSwitchSoftStopEnabledHandler(const size_t channel);
   // void enableHandler();
   // void disableHandler();
   // void enableAllHandler();
@@ -121,6 +128,7 @@ private:
   void getVelocitiesHandler();
   void getTargetVelocitiesHandler();
   void atTargetVelocitiesHandler();
+  void switchesActiveHandler();
 
 };
 

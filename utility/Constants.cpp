@@ -28,6 +28,9 @@ CONSTANT_STRING(hardware_name,"step_dir_controller");
 
 const size_t clock_frequency_mhz = 16;
 
+CONSTANT_STRING(left_constant_string,"left");
+CONSTANT_STRING(right_constant_string,"right");
+
 // Interrupts
 
 // Units
@@ -54,31 +57,30 @@ extern const double acceleration_max_min = 0.000001;
 extern const double acceleration_max_max = 1000000;
 extern const double acceleration_max_element_default = 200000;
 
-// CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
-// CONSTANT_STRING(polarity_high,"HIGH");
-// CONSTANT_STRING(polarity_low,"LOW");
-// modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
-//   {
-//     {.cs_ptr=&polarity_high},
-//     {.cs_ptr=&polarity_low},
-//   };
+CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
+CONSTANT_STRING(polarity_high,"HIGH");
+CONSTANT_STRING(polarity_low,"LOW");
+modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
+  {
+    {.cs_ptr=&polarity_high},
+    {.cs_ptr=&polarity_low},
+  };
 
-// CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
+CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
 
-// CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
+CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
 
-// CONSTANT_STRING(mode_property_name,"mode");
-// CONSTANT_STRING(mode_ramp,"RAMP");
-// CONSTANT_STRING(mode_soft,"SOFT");
-// CONSTANT_STRING(mode_velocity,"VELOCITY");
-// CONSTANT_STRING(mode_hold,"HOLD");
-// modular_server::SubsetMemberType mode_ptr_subset[MODE_SUBSET_LENGTH] =
-//   {
-//     {.cs_ptr=&mode_ramp},
-//     {.cs_ptr=&mode_soft},
-//     {.cs_ptr=&mode_velocity},
-//     {.cs_ptr=&mode_hold},
-//   };
+CONSTANT_STRING(switch_active_polarity_property_name,"switchActivePolarity");
+const ConstantString * const switch_active_polarity_default = &polarity_low;
+
+CONSTANT_STRING(left_switch_stop_enabled_property_name,"leftSwitchStopEnabled");
+
+CONSTANT_STRING(right_switches_enabled_property_name,"rightSwitchesEnabled");
+const bool right_switches_enabled_default = false;
+
+CONSTANT_STRING(right_switch_stop_enabled_property_name,"rightSwitchStopEnabled");
+
+CONSTANT_STRING(switch_soft_stop_enabled_property_name,"switchSoftStopEnabled");
 
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");
@@ -110,6 +112,7 @@ CONSTANT_STRING(at_target_positions_function_name,"atTargetPositions");
 CONSTANT_STRING(get_velocities_function_name,"getVelocities");
 CONSTANT_STRING(get_target_velocities_function_name,"getTargetVelocities");
 CONSTANT_STRING(at_target_velocities_function_name,"atTargetVelocities");
+CONSTANT_STRING(switches_active_function_name,"switchesActive");
 
 // Callbacks
 

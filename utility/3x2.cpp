@@ -58,27 +58,47 @@ const double acceleration_max_default[CHANNEL_COUNT] =
     acceleration_max_element_default,
   };
 
-// const ConstantString * const enable_polarity_default[CHANNEL_COUNT] =
-//   {
-//     &polarity_high,
-//   };
+const ConstantString * const enable_polarity_default[CHANNEL_COUNT] =
+  {
+    &polarity_high,
+    &polarity_high,
+    &polarity_high,
+  };
 
-// const ConstantString * const step_polarity_default[CHANNEL_COUNT] =
-//   {
-//     &polarity_high,
-//   };
+const ConstantString * const step_polarity_default[CHANNEL_COUNT] =
+  {
+    &polarity_high,
+    &polarity_high,
+    &polarity_high,
+  };
 
-// const ConstantString * const dir_polarity_default[CHANNEL_COUNT] =
-//   {
-//     &polarity_high,
-//   };
+const ConstantString * const dir_polarity_default[CHANNEL_COUNT] =
+  {
+    &polarity_high,
+    &polarity_high,
+    &polarity_high,
+  };
 
-// const ConstantString * const mode_default[CHANNEL_COUNT] =
-//   {
-//     &mode_ramp,
-//     &mode_ramp,
-//     &mode_ramp,
-//   };
+const bool left_switch_stop_enabled_default[CHANNEL_COUNT] =
+  {
+    false,
+    false,
+    false,
+  };
+
+const bool right_switch_stop_enabled_default[CHANNEL_COUNT] =
+  {
+    false,
+    false,
+    false,
+  };
+
+const bool switch_soft_stop_enabled_default[CHANNEL_COUNT] =
+  {
+    false,
+    false,
+    false,
+  };
 
 // Parameters
 const long channel_max = CHANNEL_COUNT - 1;

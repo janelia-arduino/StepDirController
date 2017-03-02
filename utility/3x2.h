@@ -39,13 +39,17 @@ extern const double velocity_min_default[CHANNEL_COUNT];
 
 extern const double acceleration_max_default[CHANNEL_COUNT];
 
-// extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT];
+extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT];
 
-// extern const ConstantString * const step_polarity_default[CHANNEL_COUNT];
+extern const ConstantString * const step_polarity_default[CHANNEL_COUNT];
 
-// extern const ConstantString * const dir_polarity_default[CHANNEL_COUNT];
+extern const ConstantString * const dir_polarity_default[CHANNEL_COUNT];
 
-// extern const ConstantString * const mode_default[CHANNEL_COUNT];
+extern const bool left_switch_stop_enabled_default[CHANNEL_COUNT];
+
+extern const bool right_switch_stop_enabled_default[CHANNEL_COUNT];
+
+extern const bool switch_soft_stop_enabled_default[CHANNEL_COUNT];
 
 // Parameters
 

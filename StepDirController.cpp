@@ -90,9 +90,21 @@ void StepDirController::setup()
   // dir_polarity_property.setSubset(constants::polarity_ptr_subset);
   // dir_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setDirPolarityHandler));
 
-  // modular_server::Property & mode_property = modular_server_.createProperty(constants::mode_property_name,constants::mode_default);
-  // mode_property.setSubset(constants::mode_ptr_subset);
-  // mode_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setModeHandler));
+  modular_server::Property & switch_active_polarity_property = modular_server_.createProperty(constants::switch_active_polarity_property_name,constants::switch_active_polarity_default);
+  switch_active_polarity_property.setSubset(constants::polarity_ptr_subset);
+  switch_active_polarity_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setSwitchActivePolarityHandler));
+
+  modular_server::Property & left_switch_stop_enabled_property = modular_server_.createProperty(constants::left_switch_stop_enabled_property_name,constants::left_switch_stop_enabled_default);
+  left_switch_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLeftSwitchStopEnabledHandler));
+
+  modular_server::Property & right_switches_enabled_property = modular_server_.createProperty(constants::right_switches_enabled_property_name,constants::right_switches_enabled_default);
+  right_switches_enabled_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setRightSwitchesEnabledHandler));
+
+  modular_server::Property & right_switch_stop_enabled_property = modular_server_.createProperty(constants::right_switch_stop_enabled_property_name,constants::right_switch_stop_enabled_default);
+  right_switch_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setRightSwitchStopEnabledHandler));
+
+  modular_server::Property & switch_soft_stop_enabled_property = modular_server_.createProperty(constants::switch_soft_stop_enabled_property_name,constants::switch_soft_stop_enabled_default);
+  switch_soft_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setSwitchSoftStopEnabledHandler));
 
   reinitialize();
   // disableAll();
@@ -194,6 +206,10 @@ void StepDirController::setup()
   at_target_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::atTargetVelocitiesHandler));
   at_target_velocities_function.setReturnTypeArray();
 
+  modular_server::Function & switches_active_function = modular_server_.createFunction(constants::switches_active_function_name);
+  switches_active_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::switchesActiveHandler));
+  switches_active_function.setReturnTypeArray();
+
   // Callbacks
 
 }
@@ -206,8 +222,7 @@ void StepDirController::reinitialize()
     tmc429.setStepDirOutput();
     for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_TMC429_COUNT; ++motor_i)
     {
-      tmc429.disableLeftSwitchStop(motor_i);
-      tmc429.disableRightSwitchStop(motor_i);
+      tmc429.disableSwitchSoftStop(motor_i);
     }
   }
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
@@ -323,7 +338,7 @@ void StepDirController::moveBy(const size_t channel, const double position)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setMode(motor_i,TMC429::RAMP_MODE);
+    tmc429.setRampMode(motor_i);
     long position_actual = tmc429.getActualPosition(motor_i);
     long position_target = positionUnitsToSteps(channel,position) + position_actual;
     tmc429.setTargetPosition(motor_i,position_target);
@@ -337,7 +352,7 @@ void StepDirController::moveTo(const size_t channel, const double position)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setMode(motor_i,TMC429::RAMP_MODE);
+    tmc429.setRampMode(motor_i);
     tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
   }
 }
@@ -349,7 +364,7 @@ void StepDirController::moveAt(const size_t channel, const double velocity)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setMode(motor_i,TMC429::VELOCITY_MODE);
+    tmc429.setVelocityMode(motor_i);
     tmc429.setTargetVelocityInHz(motor_i,positionUnitsToSteps(channel,velocity));
   }
 }
@@ -407,7 +422,7 @@ void StepDirController::zero(const size_t channel)
     size_t tmc429_i = channelToTmc429Index(channel);
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setMode(motor_i,TMC429::VELOCITY_MODE);
+    tmc429.setVelocityMode(motor_i);
     tmc429.setActualPosition(motor_i,0);
     tmc429.setTargetPosition(motor_i,0);
   }
@@ -497,6 +512,32 @@ bool StepDirController::atTargetVelocity(const size_t channel)
     at_target_velocity = tmc429.atTargetVelocity(motor_i);
   }
   return at_target_velocity;
+}
+
+bool StepDirController::leftSwitchActive(const size_t channel)
+{
+  bool left_switch_active = false;
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    left_switch_active = tmc429.leftSwitchActive(motor_i);
+  }
+  return left_switch_active;
+}
+
+bool StepDirController::rightSwitchActive(const size_t channel)
+{
+  bool right_switch_active = false;
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    right_switch_active = tmc429.rightSwitchActive(motor_i);
+  }
+  return right_switch_active;
 }
 
 double StepDirController::stepsToPositionUnits(const size_t channel, const double steps)
@@ -682,19 +723,92 @@ void StepDirController::reinitializeHandler()
 //   }
 // }
 
-// void StepDirController::setModeHandler(const size_t index)
-// {
-//   const ConstantString * mode_ptr;
-//   modular_server_.property(constants::mode_property_name).getElementValue(index,mode_ptr);
-//   if (mode_ptr == &constants::mode_position)
-//   {
-//     setPositionMode(index);
-//   }
-//   else if (mode_ptr == &constants::mode_velocity)
-//   {
-//     setVelocityMode(index);
-//   }
-// }
+void StepDirController::setSwitchActivePolarityHandler()
+{
+  const ConstantString * polarity_ptr;
+  modular_server_.property(constants::switch_active_polarity_property_name).getValue(polarity_ptr);
+  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  {
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    if (polarity_ptr == &constants::polarity_high)
+    {
+      tmc429.setSwitchesActiveHigh();
+    }
+    else if (polarity_ptr == &constants::polarity_low)
+    {
+      tmc429.setSwitchesActiveLow();
+    }
+  }
+}
+
+void StepDirController::setLeftSwitchStopEnabledHandler(const size_t channel)
+{
+  bool enabled;
+  modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,enabled);
+  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t motor_i = channelToMotorIndex(channel);
+  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  if (enabled)
+  {
+    tmc429.enableLeftSwitchStop(motor_i);
+  }
+  else
+  {
+    tmc429.disableLeftSwitchStop(motor_i);
+  }
+}
+
+void StepDirController::setRightSwitchesEnabledHandler()
+{
+  bool enabled;
+  modular_server_.property(constants::right_switches_enabled_property_name).getValue(enabled);
+  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  {
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    if (enabled)
+    {
+      tmc429.enableRightSwitches();
+    }
+    else
+    {
+      tmc429.disableRightSwitches();
+    }
+  }
+}
+
+void StepDirController::setRightSwitchStopEnabledHandler(const size_t channel)
+{
+  bool enabled;
+  modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,enabled);
+  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t motor_i = channelToMotorIndex(channel);
+  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  if (enabled)
+  {
+    tmc429.enableRightSwitchStop(motor_i);
+  }
+  else
+  {
+    tmc429.disableRightSwitchStop(motor_i);
+  }
+}
+
+void StepDirController::setSwitchSoftStopEnabledHandler(const size_t channel)
+{
+  bool enabled;
+  modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,enabled);
+  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t motor_i = channelToMotorIndex(channel);
+  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  if (enabled)
+  {
+    tmc429.enableSwitchSoftStop(motor_i);
+  }
+  else
+  {
+    tmc429.disableSwitchSoftStop(motor_i);
+  }
+}
 
 // void StepDirController::enableHandler()
 // {
@@ -885,3 +999,22 @@ void StepDirController::atTargetVelocitiesHandler()
   modular_server_.response().endArray();
 }
 
+void StepDirController::switchesActiveHandler()
+{
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  {
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_TMC429_COUNT; ++motor_i)
+    {
+      modular_server_.response().beginObject();
+      bool left_switch_active = tmc429.leftSwitchActive(motor_i);
+      modular_server_.response().write(constants::left_constant_string,left_switch_active);
+      bool right_switch_active = tmc429.rightSwitchActive(motor_i);
+      modular_server_.response().write(constants::right_constant_string,right_switch_active);
+      modular_server_.response().endObject();
+    }
+  }
+  modular_server_.response().endArray();
+}
