@@ -40,11 +40,11 @@ public:
 
   virtual void reinitialize();
 
-  // void enable(const size_t channel);
-  // void disable(const size_t channel);
-  // void enableAll();
-  // void disableAll();
-  // uint32_t enabled();
+  void enable(const size_t channel);
+  void disable(const size_t channel);
+  void enableAll();
+  void disableAll();
+  uint32_t enabled();
 
   void moveBy(const size_t channel, const double position);
   void moveTo(const size_t channel, const double position);
@@ -87,7 +87,7 @@ private:
   modular_server::Callback callbacks_[step_dir_controller::constants::CALLBACK_COUNT_MAX];
 
   TMC429 tmc429s_[step_dir_controller::constants::TMC429_COUNT];
-  // bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
+  bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
 
   size_t channelToTmc429Index(const size_t channel);
   size_t channelToMotorIndex(const size_t channel);
@@ -95,7 +95,6 @@ private:
   // Handlers
   void setLimitsHandler(const size_t channel);
   void reinitializeHandler();
-  // void setEnablePolarityHandler(const size_t index);
   void setStepPolarityInvertedHandler();
   void setDirPolarityInvertedHandler();
   void setSwitchActivePolarityHandler();
@@ -103,11 +102,11 @@ private:
   void setRightSwitchesEnabledHandler();
   void setRightSwitchStopEnabledHandler(const size_t channel);
   void setSwitchSoftStopEnabledHandler(const size_t channel);
-  // void enableHandler();
-  // void disableHandler();
-  // void enableAllHandler();
-  // void disableAllHandler();
-  // void enabledHandler();
+  void enableHandler();
+  void disableHandler();
+  void enableAllHandler();
+  void disableAllHandler();
+  void enabledHandler();
   void moveByHandler();
   void moveToHandler();
   void moveAtHandler();

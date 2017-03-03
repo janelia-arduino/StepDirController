@@ -94,11 +94,11 @@ CONSTANT_STRING(velocity_parameter_name,"velocity");
 
 // Functions
 CONSTANT_STRING(reinitialize_function_name,"reinitialize");
-// CONSTANT_STRING(enable_function_name,"enable");
-// CONSTANT_STRING(disable_function_name,"disable");
-// CONSTANT_STRING(enable_all_function_name,"enableAll");
-// CONSTANT_STRING(disable_all_function_name,"disableAll");
-// CONSTANT_STRING(enabled_function_name,"enabled");
+CONSTANT_STRING(enable_function_name,"enable");
+CONSTANT_STRING(disable_function_name,"disable");
+CONSTANT_STRING(enable_all_function_name,"enableAll");
+CONSTANT_STRING(disable_all_function_name,"disableAll");
+CONSTANT_STRING(enabled_function_name,"enabled");
 CONSTANT_STRING(move_by_function_name,"moveBy");
 CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");

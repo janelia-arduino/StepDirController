@@ -25,7 +25,7 @@ enum {TMC429_COUNT=1};
 enum {CHANNEL_COUNT=3};
 
 extern const size_t cs_pins[TMC429_COUNT];
-// extern const size_t enable_pins[CHANNEL_COUNT];
+extern const size_t enable_pins[CHANNEL_COUNT];
 
 // Units
 
