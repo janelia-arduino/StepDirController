@@ -90,7 +90,8 @@ private:
   modular_server::Function functions_[step_dir_controller::constants::FUNCTION_COUNT_MAX];
   modular_server::Callback callbacks_[step_dir_controller::constants::CALLBACK_COUNT_MAX];
 
-  TMC429 tmc429s_[step_dir_controller::constants::TMC429_COUNT];
+  typedef TMC429 Controller;
+  Controller controllers_[step_dir_controller::constants::CONTROLLER_COUNT];
   bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
   bool homing_[step_dir_controller::constants::CHANNEL_COUNT];
   bool homed_[step_dir_controller::constants::CHANNEL_COUNT];
@@ -100,7 +101,7 @@ private:
   double acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
   double home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT];
 
-  size_t channelToTmc429Index(const size_t channel);
+  size_t channelToControllerIndex(const size_t channel);
   size_t channelToMotorIndex(const size_t channel);
 
   // Handlers

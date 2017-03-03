@@ -19,12 +19,12 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{INTERRUPT_COUNT_MAX=1};
 
-enum {TMC429_COUNT=1};
-// CHANNEL_COUNT = TMC429_COUNT*CHANNELS_PER_TMC429_COUNT
-// CHANNELS_PER_TMC429_COUNT = 3
+enum {CONTROLLER_COUNT=1};
+// CHANNEL_COUNT = CONTROLLER_COUNT*CHANNELS_PER_CONTROLLER_COUNT
+// CHANNELS_PER_CONTROLLER_COUNT = 3
 enum {CHANNEL_COUNT=3};
 
-extern const size_t cs_pins[TMC429_COUNT];
+extern const size_t cs_pins[CONTROLLER_COUNT];
 extern const size_t enable_pins[CHANNEL_COUNT];
 
 // Units

@@ -29,7 +29,7 @@ extern const modular_server::FirmwareInfo firmware_info;
 extern ConstantString hardware_name;
 extern const modular_server::HardwareInfo hardware_info;
 
-enum{CHANNELS_PER_TMC429_COUNT=3};
+enum{CHANNELS_PER_CONTROLLER_COUNT=3};
 
 extern const size_t clock_frequency_mhz;
 

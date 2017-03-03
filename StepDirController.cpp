@@ -24,11 +24,11 @@ void StepDirController::setup()
   // Parent Setup
   ModularDevice::setup();
 
-  // TMC429 Setup
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  // Controller Setup
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setup(constants::cs_pins[tmc429_i],constants::clock_frequency_mhz);
+    Controller & controller = controllers_[controller_i];
+    controller.setup(constants::cs_pins[controller_i],constants::clock_frequency_mhz);
   }
 
   // Pin Setup
@@ -236,10 +236,10 @@ void StepDirController::update()
   {
     if (homing_[channel])
     {
-      size_t tmc429_i = channelToTmc429Index(channel);
+      size_t controller_i = channelToControllerIndex(channel);
       size_t motor_i = channelToMotorIndex(channel);
-      TMC429 & tmc429 = tmc429s_[tmc429_i];
-      bool latch_position_waiting = tmc429.latchPositionWaiting(motor_i);
+      Controller & controller = controllers_[controller_i];
+      bool latch_position_waiting = controller.latchPositionWaiting(motor_i);
       if (!latch_position_waiting)
       {
         homing_[channel] = false;
@@ -252,13 +252,13 @@ void StepDirController::update()
 
 void StepDirController::reinitialize()
 {
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setStepDirOutput();
-    for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_TMC429_COUNT; ++motor_i)
+    Controller & controller = controllers_[controller_i];
+    controller.setStepDirOutput();
+    for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_CONTROLLER_COUNT; ++motor_i)
     {
-      tmc429.disableSwitchSoftStop(motor_i);
+      controller.disableSwitchSoftStop(motor_i);
     }
   }
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
@@ -338,13 +338,13 @@ void StepDirController::moveBy(const size_t channel, const double position)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setRampMode(motor_i);
-    long position_actual = tmc429.getActualPosition(motor_i);
+    Controller & controller = controllers_[controller_i];
+    controller.setRampMode(motor_i);
+    long position_actual = controller.getActualPosition(motor_i);
     long position_target = positionUnitsToSteps(channel,position) + position_actual;
-    tmc429.setTargetPosition(motor_i,position_target);
+    controller.setTargetPosition(motor_i,position_target);
     homing_[channel] = false;
   }
 }
@@ -353,11 +353,11 @@ void StepDirController::moveTo(const size_t channel, const double position)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setRampMode(motor_i);
-    tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
+    Controller & controller = controllers_[controller_i];
+    controller.setRampMode(motor_i);
+    controller.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
     homing_[channel] = false;
   }
 }
@@ -366,11 +366,11 @@ void StepDirController::moveAt(const size_t channel, const double velocity)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setVelocityMode(motor_i);
-    tmc429.setTargetVelocityInHz(motor_i,positionUnitsToSteps(channel,velocity));
+    Controller & controller = controllers_[controller_i];
+    controller.setVelocityMode(motor_i);
+    controller.setTargetVelocityInHz(motor_i,positionUnitsToSteps(channel,velocity));
     homing_[channel] = false;
   }
 }
@@ -379,13 +379,13 @@ void StepDirController::moveSoftlyBy(const size_t channel, const double position
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setSoftMode(motor_i);
-    long position_actual = tmc429.getActualPosition(motor_i);
+    Controller & controller = controllers_[controller_i];
+    controller.setSoftMode(motor_i);
+    long position_actual = controller.getActualPosition(motor_i);
     long position_target = positionUnitsToSteps(channel,position) + position_actual;
-    tmc429.setTargetPosition(motor_i,position_target);
+    controller.setTargetPosition(motor_i,position_target);
     homing_[channel] = false;
   }
 }
@@ -394,11 +394,11 @@ void StepDirController::moveSoftlyTo(const size_t channel, const double position
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setSoftMode(motor_i);
-    tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
+    Controller & controller = controllers_[controller_i];
+    controller.setSoftMode(motor_i);
+    controller.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
     homing_[channel] = false;
   }
 }
@@ -407,20 +407,20 @@ void StepDirController::stop(const size_t channel)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.stop(motor_i);
+    Controller & controller = controllers_[controller_i];
+    controller.stop(motor_i);
     homing_[channel] = false;
   }
 }
 
 void StepDirController::stopAll()
 {
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.stopAll();
+    Controller & controller = controllers_[controller_i];
+    controller.stopAll();
   }
 }
 
@@ -428,12 +428,12 @@ void StepDirController::zero(const size_t channel)
 {
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    tmc429.setVelocityMode(motor_i);
-    tmc429.setActualPosition(motor_i,0);
-    tmc429.setTargetPosition(motor_i,0);
+    Controller & controller = controllers_[controller_i];
+    controller.setVelocityMode(motor_i);
+    controller.setActualPosition(motor_i,0);
+    controller.setTargetPosition(motor_i,0);
   }
 }
 
@@ -450,10 +450,10 @@ double StepDirController::getPosition(const size_t channel)
   double position = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    position = tmc429.getActualPosition(motor_i);
+    Controller & controller = controllers_[controller_i];
+    position = controller.getActualPosition(motor_i);
   }
   return stepsToPositionUnits(channel,position);
 }
@@ -463,10 +463,10 @@ double StepDirController::getTargetPosition(const size_t channel)
   double position = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    position = tmc429.getTargetPosition(motor_i);
+    Controller & controller = controllers_[controller_i];
+    position = controller.getTargetPosition(motor_i);
   }
   return stepsToPositionUnits(channel,position);
 }
@@ -476,10 +476,10 @@ bool StepDirController::atTargetPosition(const size_t channel)
   bool at_target_position = true;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    at_target_position = tmc429.atTargetPosition(motor_i);
+    Controller & controller = controllers_[controller_i];
+    at_target_position = controller.atTargetPosition(motor_i);
   }
   return at_target_position;
 }
@@ -489,10 +489,10 @@ double StepDirController::getVelocity(const size_t channel)
   double velocity = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    velocity = tmc429.getActualVelocityInHz(motor_i);
+    Controller & controller = controllers_[controller_i];
+    velocity = controller.getActualVelocityInHz(motor_i);
   }
   return stepsToPositionUnits(channel,velocity);
 }
@@ -502,10 +502,10 @@ double StepDirController::getTargetVelocity(const size_t channel)
   double velocity = 0;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    velocity = tmc429.getTargetVelocityInHz(motor_i);
+    Controller & controller = controllers_[controller_i];
+    velocity = controller.getTargetVelocityInHz(motor_i);
   }
   return stepsToPositionUnits(channel,velocity);
 }
@@ -515,10 +515,10 @@ bool StepDirController::atTargetVelocity(const size_t channel)
   bool at_target_velocity = true;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    at_target_velocity = tmc429.atTargetVelocity(motor_i);
+    Controller & controller = controllers_[controller_i];
+    at_target_velocity = controller.atTargetVelocity(motor_i);
   }
   return at_target_velocity;
 }
@@ -528,10 +528,10 @@ bool StepDirController::leftSwitchActive(const size_t channel)
   bool left_switch_active = false;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    left_switch_active = tmc429.leftSwitchActive(motor_i);
+    Controller & controller = controllers_[controller_i];
+    left_switch_active = controller.leftSwitchActive(motor_i);
   }
   return left_switch_active;
 }
@@ -541,10 +541,10 @@ bool StepDirController::rightSwitchActive(const size_t channel)
   bool right_switch_active = false;
   if (channel < constants::CHANNEL_COUNT)
   {
-    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    right_switch_active = tmc429.rightSwitchActive(motor_i);
+    Controller & controller = controllers_[controller_i];
+    right_switch_active = controller.rightSwitchActive(motor_i);
   }
   return right_switch_active;
 }
@@ -559,9 +559,9 @@ bool StepDirController::home(const size_t channel)
   double home_velocity;
   home_velocity_property.getElementValue(channel,home_velocity);
 
-  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t controller_i = channelToControllerIndex(channel);
   size_t motor_i = channelToMotorIndex(channel);
-  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  Controller & controller = controllers_[controller_i];
 
   bool home_switch_enabled;
   if (home_velocity < 0)
@@ -569,7 +569,7 @@ bool StepDirController::home(const size_t channel)
     modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,home_switch_enabled);
     if (home_switch_enabled)
     {
-      tmc429.setReferenceSwitchToLeft(motor_i);
+      controller.setReferenceSwitchToLeft(motor_i);
       if (leftSwitchActive(channel))
       {
         homing_[channel] = false;
@@ -588,7 +588,7 @@ bool StepDirController::home(const size_t channel)
     home_switch_enabled = right_switches_enabled && right_switch_stop_enabled;
     if (home_switch_enabled)
     {
-      tmc429.setReferenceSwitchToRight(motor_i);
+      controller.setReferenceSwitchToRight(motor_i);
       if (rightSwitchActive(channel))
       {
         homing_[channel] = false;
@@ -603,7 +603,7 @@ bool StepDirController::home(const size_t channel)
     return false;
   }
 
-  tmc429.startLatchPositionWaiting(motor_i);
+  controller.startLatchPositionWaiting(motor_i);
   moveAt(channel,home_velocity);
   homing_[channel] = true;
   homed_[channel] = false;
@@ -658,14 +658,14 @@ double StepDirController::positionUnitsToSteps(const size_t channel, const doubl
   return position_units*steps_per_position_unit;
 }
 
-size_t StepDirController::channelToTmc429Index(const size_t channel)
+size_t StepDirController::channelToControllerIndex(const size_t channel)
 {
-  return channel/constants::CHANNELS_PER_TMC429_COUNT;
+  return channel/constants::CHANNELS_PER_CONTROLLER_COUNT;
 }
 
 size_t StepDirController::channelToMotorIndex(const size_t channel)
 {
-  return channel%constants::CHANNELS_PER_TMC429_COUNT;
+  return channel%constants::CHANNELS_PER_CONTROLLER_COUNT;
 }
 
 // Handlers must be non-blocking (avoid 'delay')
@@ -755,11 +755,11 @@ void StepDirController::setLimitsHandler(const size_t channel)
   double acceleration_max;
   acceleration_max_property.getElementValue(channel,acceleration_max);
 
-  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t controller_i = channelToControllerIndex(channel);
   size_t motor_i = channelToMotorIndex(channel);
-  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  Controller & controller = controllers_[controller_i];
 
-  tmc429.setLimitsInHz(motor_i,
+  controller.setLimitsInHz(motor_i,
                        positionUnitsToSteps(channel,velocity_min),
                        positionUnitsToSteps(channel,velocity_max),
                        positionUnitsToSteps(channel,acceleration_max));
@@ -774,16 +774,16 @@ void StepDirController::setStepPolarityInvertedHandler()
 {
   bool inverted;
   modular_server_.property(constants::step_polarity_inverted_property_name).getValue(inverted);
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    Controller & controller = controllers_[controller_i];
     if (inverted)
     {
-      tmc429.enableInverseStepPolarity();
+      controller.enableInverseStepPolarity();
     }
     else
     {
-      tmc429.disableInverseStepPolarity();
+      controller.disableInverseStepPolarity();
     }
   }
 }
@@ -792,16 +792,16 @@ void StepDirController::setDirPolarityInvertedHandler()
 {
   bool inverted;
   modular_server_.property(constants::step_polarity_inverted_property_name).getValue(inverted);
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    Controller & controller = controllers_[controller_i];
     if (inverted)
     {
-      tmc429.enableInverseDirPolarity();
+      controller.enableInverseDirPolarity();
     }
     else
     {
-      tmc429.disableInverseDirPolarity();
+      controller.disableInverseDirPolarity();
     }
   }
 }
@@ -810,16 +810,16 @@ void StepDirController::setSwitchActivePolarityHandler()
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::switch_active_polarity_property_name).getValue(polarity_ptr);
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    Controller & controller = controllers_[controller_i];
     if (polarity_ptr == &constants::polarity_high)
     {
-      tmc429.setSwitchesActiveHigh();
+      controller.setSwitchesActiveHigh();
     }
     else if (polarity_ptr == &constants::polarity_low)
     {
-      tmc429.setSwitchesActiveLow();
+      controller.setSwitchesActiveLow();
     }
   }
 }
@@ -828,16 +828,16 @@ void StepDirController::setLeftSwitchStopEnabledHandler(const size_t channel)
 {
   bool enabled;
   modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,enabled);
-  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t controller_i = channelToControllerIndex(channel);
   size_t motor_i = channelToMotorIndex(channel);
-  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  Controller & controller = controllers_[controller_i];
   if (enabled)
   {
-    tmc429.enableLeftSwitchStop(motor_i);
+    controller.enableLeftSwitchStop(motor_i);
   }
   else
   {
-    tmc429.disableLeftSwitchStop(motor_i);
+    controller.disableLeftSwitchStop(motor_i);
   }
 }
 
@@ -845,16 +845,16 @@ void StepDirController::setRightSwitchesEnabledHandler()
 {
   bool enabled;
   modular_server_.property(constants::right_switches_enabled_property_name).getValue(enabled);
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    Controller & controller = controllers_[controller_i];
     if (enabled)
     {
-      tmc429.enableRightSwitches();
+      controller.enableRightSwitches();
     }
     else
     {
-      tmc429.disableRightSwitches();
+      controller.disableRightSwitches();
     }
   }
 }
@@ -863,16 +863,16 @@ void StepDirController::setRightSwitchStopEnabledHandler(const size_t channel)
 {
   bool enabled;
   modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,enabled);
-  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t controller_i = channelToControllerIndex(channel);
   size_t motor_i = channelToMotorIndex(channel);
-  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  Controller & controller = controllers_[controller_i];
   if (enabled)
   {
-    tmc429.enableRightSwitchStop(motor_i);
+    controller.enableRightSwitchStop(motor_i);
   }
   else
   {
-    tmc429.disableRightSwitchStop(motor_i);
+    controller.disableRightSwitchStop(motor_i);
   }
 }
 
@@ -880,16 +880,16 @@ void StepDirController::setSwitchSoftStopEnabledHandler(const size_t channel)
 {
   bool enabled;
   modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,enabled);
-  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t controller_i = channelToControllerIndex(channel);
   size_t motor_i = channelToMotorIndex(channel);
-  TMC429 & tmc429 = tmc429s_[tmc429_i];
+  Controller & controller = controllers_[controller_i];
   if (enabled)
   {
-    tmc429.enableSwitchSoftStop(motor_i);
+    controller.enableSwitchSoftStop(motor_i);
   }
   else
   {
-    tmc429.disableSwitchSoftStop(motor_i);
+    controller.disableSwitchSoftStop(motor_i);
   }
 }
 
@@ -1104,15 +1104,15 @@ void StepDirController::switchesActiveHandler()
 {
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
-    TMC429 & tmc429 = tmc429s_[tmc429_i];
-    for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_TMC429_COUNT; ++motor_i)
+    Controller & controller = controllers_[controller_i];
+    for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_CONTROLLER_COUNT; ++motor_i)
     {
       modular_server_.response().beginObject();
-      bool left_switch_active = tmc429.leftSwitchActive(motor_i);
+      bool left_switch_active = controller.leftSwitchActive(motor_i);
       modular_server_.response().write(constants::left_constant_string,left_switch_active);
-      bool right_switch_active = tmc429.rightSwitchActive(motor_i);
+      bool right_switch_active = controller.rightSwitchActive(motor_i);
       modular_server_.response().write(constants::right_constant_string,right_switch_active);
       modular_server_.response().endObject();
     }
