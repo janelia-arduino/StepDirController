@@ -66,9 +66,11 @@ modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
     {.cs_ptr=&polarity_low},
   };
 
-CONSTANT_STRING(step_polarity_property_name,"stepPolarity");
+CONSTANT_STRING(step_polarity_inverted_property_name,"stepPolarityInverted");
+const bool step_polarity_inverted_default = false;
 
-CONSTANT_STRING(dir_polarity_property_name,"dirPolarity");
+CONSTANT_STRING(dir_polarity_inverted_property_name,"dirPolarityInverted");
+const bool dir_polarity_inverted_default = false;
 
 CONSTANT_STRING(switch_active_polarity_property_name,"switchActivePolarity");
 const ConstantString * const switch_active_polarity_default = &polarity_low;
@@ -102,6 +104,8 @@ CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");
 CONSTANT_STRING(move_by_at_function_name,"moveByAt");
 CONSTANT_STRING(move_to_at_function_name,"moveToAt");
+CONSTANT_STRING(move_softly_by_function_name,"moveSoftlyBy");
+CONSTANT_STRING(move_softly_to_function_name,"moveSoftlyTo");
 CONSTANT_STRING(stop_function_name,"stop");
 CONSTANT_STRING(stop_all_function_name,"stopAll");
 CONSTANT_STRING(zero_function_name,"zero");

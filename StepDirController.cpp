@@ -82,13 +82,11 @@ void StepDirController::setup()
   // enable_polarity_property.setSubset(constants::polarity_ptr_subset);
   // enable_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setEnablePolarityHandler));
 
-  // modular_server::Property & step_polarity_property = modular_server_.createProperty(constants::step_polarity_property_name,constants::step_polarity_default);
-  // step_polarity_property.setSubset(constants::polarity_ptr_subset);
-  // step_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setStepPolarityHandler));
+  modular_server::Property & step_polarity_inverted_property = modular_server_.createProperty(constants::step_polarity_inverted_property_name,constants::step_polarity_inverted_default);
+  step_polarity_inverted_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setStepPolarityInvertedHandler));
 
-  // modular_server::Property & dir_polarity_property = modular_server_.createProperty(constants::dir_polarity_property_name,constants::dir_polarity_default);
-  // dir_polarity_property.setSubset(constants::polarity_ptr_subset);
-  // dir_polarity_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setDirPolarityHandler));
+  modular_server::Property & dir_polarity_inverted_property = modular_server_.createProperty(constants::dir_polarity_inverted_property_name,constants::dir_polarity_inverted_default);
+  dir_polarity_inverted_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setDirPolarityInvertedHandler));
 
   modular_server::Property & switch_active_polarity_property = modular_server_.createProperty(constants::switch_active_polarity_property_name,constants::switch_active_polarity_default);
   switch_active_polarity_property.setSubset(constants::polarity_ptr_subset);
@@ -168,6 +166,16 @@ void StepDirController::setup()
   // move_to_at_function.addParameter(position_parameter);
   // move_to_at_function.addParameter(velocity_parameter);
 
+  modular_server::Function & move_softly_by_function = modular_server_.createFunction(constants::move_softly_by_function_name);
+  move_softly_by_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveSoftlyByHandler));
+  move_softly_by_function.addParameter(channel_parameter);
+  move_softly_by_function.addParameter(position_parameter);
+
+  modular_server::Function & move_softly_to_function = modular_server_.createFunction(constants::move_softly_to_function_name);
+  move_softly_to_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveSoftlyToHandler));
+  move_softly_to_function.addParameter(channel_parameter);
+  move_softly_to_function.addParameter(position_parameter);
+
   modular_server::Function & stop_function = modular_server_.createFunction(constants::stop_function_name);
   stop_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::stopHandler));
   stop_function.addParameter(channel_parameter);
@@ -230,54 +238,6 @@ void StepDirController::reinitialize()
     setLimitsHandler(channel);
   }
 }
-
-// void StepDirController::setEnablePolarity(const size_t channel, const ConstantString & polarity)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     steppers_[channel].setEnablePolarity(polarity);
-//   }
-// }
-
-// void StepDirController::setEnablePolarityAll(const ConstantString & polarity)
-// {
-//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-//   {
-//     steppers_[channel].setEnablePolarity(polarity);
-//   }
-// }
-
-// void StepDirController::setStepPolarity(const size_t channel, const ConstantString & polarity)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     steppers_[channel].setStepPolarity(polarity);
-//   }
-// }
-
-// void StepDirController::setStepPolarityAll(const ConstantString & polarity)
-// {
-//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-//   {
-//     steppers_[channel].setStepPolarity(polarity);
-//   }
-// }
-
-// void StepDirController::setDirPolarity(const size_t channel, const ConstantString & polarity)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     steppers_[channel].setDirPolarity(polarity);
-//   }
-// }
-
-// void StepDirController::setDirPolarityAll(const ConstantString & polarity)
-// {
-//   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
-//   {
-//     steppers_[channel].setDirPolarity(polarity);
-//   }
-// }
 
 // void StepDirController::enable(const size_t channel)
 // {
@@ -394,6 +354,32 @@ void StepDirController::moveAt(const size_t channel, const double velocity)
 //     stepper.start();
 //   }
 // }
+
+void StepDirController::moveSoftlyBy(const size_t channel, const double position)
+{
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    tmc429.setSoftMode(motor_i);
+    long position_actual = tmc429.getActualPosition(motor_i);
+    long position_target = positionUnitsToSteps(channel,position) + position_actual;
+    tmc429.setTargetPosition(motor_i,position_target);
+  }
+}
+
+void StepDirController::moveSoftlyTo(const size_t channel, const double position)
+{
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t tmc429_i = channelToTmc429Index(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    tmc429.setSoftMode(motor_i);
+    tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
+  }
+}
 
 void StepDirController::stop(const size_t channel)
 {
@@ -703,25 +689,41 @@ void StepDirController::reinitializeHandler()
 //   }
 // }
 
-// void StepDirController::setStepPolarityHandler(const size_t index)
-// {
-//   const ConstantString * polarity_ptr;
-//   modular_server_.property(constants::step_polarity_property_name).getElementValue(index,polarity_ptr);
-//   if ((polarity_ptr == &constants::polarity_high) || (polarity_ptr == &constants::polarity_high))
-//   {
-//     setStepPolarity(index,*polarity_ptr);
-//   }
-// }
+void StepDirController::setStepPolarityInvertedHandler()
+{
+  bool inverted;
+  modular_server_.property(constants::step_polarity_inverted_property_name).getValue(inverted);
+  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  {
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    if (inverted)
+    {
+      tmc429.enableInverseStepPolarity();
+    }
+    else
+    {
+      tmc429.disableInverseStepPolarity();
+    }
+  }
+}
 
-// void StepDirController::setDirPolarityHandler(const size_t index)
-// {
-//   const ConstantString * polarity_ptr;
-//   modular_server_.property(constants::dir_polarity_property_name).getElementValue(index,polarity_ptr);
-//   if ((polarity_ptr == &constants::polarity_high) || (polarity_ptr == &constants::polarity_high))
-//   {
-//     setDirPolarity(index,*polarity_ptr);
-//   }
-// }
+void StepDirController::setDirPolarityInvertedHandler()
+{
+  bool inverted;
+  modular_server_.property(constants::step_polarity_inverted_property_name).getValue(inverted);
+  for (size_t tmc429_i=0; tmc429_i<constants::TMC429_COUNT; ++tmc429_i)
+  {
+    TMC429 & tmc429 = tmc429s_[tmc429_i];
+    if (inverted)
+    {
+      tmc429.enableInverseDirPolarity();
+    }
+    else
+    {
+      tmc429.disableInverseDirPolarity();
+    }
+  }
+}
 
 void StepDirController::setSwitchActivePolarityHandler()
 {
@@ -896,6 +898,24 @@ void StepDirController::moveAtHandler()
 //   modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
 //   moveToAt(channel,position,velocity);
 // }
+
+void StepDirController::moveSoftlyByHandler()
+{
+  long channel;
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
+  double position;
+  modular_server_.parameter(constants::position_parameter_name).getValue(position);
+  moveSoftlyBy(channel,position);
+}
+
+void StepDirController::moveSoftlyToHandler()
+{
+  long channel;
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
+  double position;
+  modular_server_.parameter(constants::position_parameter_name).getValue(position);
+  moveSoftlyTo(channel,position);
+}
 
 void StepDirController::stopHandler()
 {

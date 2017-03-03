@@ -18,7 +18,7 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PROPERTY_COUNT_MAX=12};
 enum{PARAMETER_COUNT_MAX=3};
-enum{FUNCTION_COUNT_MAX=17};
+enum{FUNCTION_COUNT_MAX=19};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -69,9 +69,11 @@ extern ConstantString polarity_high;
 extern ConstantString polarity_low;
 extern modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH];
 
-extern ConstantString step_polarity_property_name;
+extern ConstantString step_polarity_inverted_property_name;
+extern const bool step_polarity_inverted_default;
 
-extern ConstantString dir_polarity_property_name;
+extern ConstantString dir_polarity_inverted_property_name;
+extern const bool dir_polarity_inverted_default;
 
 extern ConstantString switch_active_polarity_property_name;
 extern const ConstantString * const switch_active_polarity_default;
@@ -106,6 +108,8 @@ extern ConstantString move_to_function_name;
 extern ConstantString move_at_function_name;
 extern ConstantString move_by_at_function_name;
 extern ConstantString move_to_at_function_name;
+extern ConstantString move_softly_by_function_name;
+extern ConstantString move_softly_to_function_name;
 extern ConstantString stop_function_name;
 extern ConstantString stop_all_function_name;
 extern ConstantString zero_function_name;

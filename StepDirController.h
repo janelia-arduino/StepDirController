@@ -40,13 +40,6 @@ public:
 
   virtual void reinitialize();
 
-  // void setEnablePolarity(const size_t channel, const ConstantString & polarity);
-  // void setEnablePolarityAll(const ConstantString & polarity);
-  // void setStepPolarity(const size_t channel, const ConstantString & polarity);
-  // void setStepPolarityAll(const ConstantString & polarity);
-  // void setDirPolarity(const size_t channel, const ConstantString & polarity);
-  // void setDirPolarityAll(const ConstantString & polarity);
-
   // void enable(const size_t channel);
   // void disable(const size_t channel);
   // void enableAll();
@@ -56,8 +49,10 @@ public:
   void moveBy(const size_t channel, const double position);
   void moveTo(const size_t channel, const double position);
   void moveAt(const size_t channel, const double velocity);
-  // void moveByAt(const size_t channel, const long position, const long speed);
-  // void moveToAt(const size_t channel, const long position, const long speed);
+  // void moveByAt(const size_t channel, const double position, const double speed);
+  // void moveToAt(const size_t channel, const double position, const double speed);
+  void moveSoftlyBy(const size_t channel, const double position);
+  void moveSoftlyTo(const size_t channel, const double position);
   void stop(const size_t channel);
   void stopAll();
   void zero(const size_t channel);
@@ -101,8 +96,8 @@ private:
   void setLimitsHandler(const size_t channel);
   void reinitializeHandler();
   // void setEnablePolarityHandler(const size_t index);
-  // void setStepPolarityHandler(const size_t index);
-  // void setDirPolarityHandler(const size_t index);
+  void setStepPolarityInvertedHandler();
+  void setDirPolarityInvertedHandler();
   void setSwitchActivePolarityHandler();
   void setLeftSwitchStopEnabledHandler(const size_t channel);
   void setRightSwitchesEnabledHandler();
@@ -118,6 +113,8 @@ private:
   void moveAtHandler();
   // void moveByAtHandler();
   // void moveToAtHandler();
+  void moveSoftlyByHandler();
+  void moveSoftlyToHandler();
   void stopHandler();
   void stopAllHandler();
   void zeroHandler();
