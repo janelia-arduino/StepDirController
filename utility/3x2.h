@@ -47,6 +47,8 @@ extern const bool right_switch_stop_enabled_default[CHANNEL_COUNT];
 
 extern const bool switch_soft_stop_enabled_default[CHANNEL_COUNT];
 
+extern const double home_velocity_default[CHANNEL_COUNT];
+
 // Parameters
 
 // Functions

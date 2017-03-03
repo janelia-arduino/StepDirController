@@ -36,6 +36,8 @@ void StepDirController::setup()
   {
     pinMode(constants::enable_pins[channel], INPUT);
     enabled_[channel] = false;
+    homing_[channel] = false;
+    homed_[channel] = false;
   }
 
   // Interrupts
@@ -60,8 +62,8 @@ void StepDirController::setup()
                               callbacks_);
   // Properties
   modular_server::Property & steps_per_position_unit_property = modular_server_.createProperty(constants::steps_per_position_unit_property_name,constants::steps_per_position_unit_default);
-  steps_per_position_unit_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateLimitsHandler));
-  steps_per_position_unit_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateLimitsHandler));
+  steps_per_position_unit_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
+  steps_per_position_unit_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
 
   modular_server::Property & velocity_max_property = modular_server_.createProperty(constants::velocity_max_property_name,constants::velocity_max_default);
   velocity_max_property.setUnits(constants::position_units_per_second_unit);
@@ -102,6 +104,10 @@ void StepDirController::setup()
 
   modular_server::Property & switch_soft_stop_enabled_property = modular_server_.createProperty(constants::switch_soft_stop_enabled_property_name,constants::switch_soft_stop_enabled_default);
   switch_soft_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setSwitchSoftStopEnabledHandler));
+
+  modular_server::Property & home_velocity_property = modular_server_.createProperty(constants::home_velocity_property_name,constants::home_velocity_default);
+  home_velocity_property.setUnits(constants::position_units_per_second_unit);
+  home_velocity_property.setRange(constants::velocity_max_min,constants::velocity_max_max);
 
   reinitialize();
 
@@ -151,18 +157,6 @@ void StepDirController::setup()
   move_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveAtHandler));
   move_at_function.addParameter(channel_parameter);
   move_at_function.addParameter(velocity_parameter);
-
-  // modular_server::Function & move_by_at_function = modular_server_.createFunction(constants::move_by_at_function_name);
-  // move_by_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveByAtHandler));
-  // move_by_at_function.addParameter(channel_parameter);
-  // move_by_at_function.addParameter(position_parameter);
-  // move_by_at_function.addParameter(velocity_parameter);
-
-  // modular_server::Function & move_to_at_function = modular_server_.createFunction(constants::move_to_at_function_name);
-  // move_to_at_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveToAtHandler));
-  // move_to_at_function.addParameter(channel_parameter);
-  // move_to_at_function.addParameter(position_parameter);
-  // move_to_at_function.addParameter(velocity_parameter);
 
   modular_server::Function & move_softly_by_function = modular_server_.createFunction(constants::move_softly_by_function_name);
   move_softly_by_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveSoftlyByHandler));
@@ -216,8 +210,44 @@ void StepDirController::setup()
   switches_active_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::switchesActiveHandler));
   switches_active_function.setReturnTypeArray();
 
+  modular_server::Function & home_function = modular_server_.createFunction(constants::home_function_name);
+  home_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::homeHandler));
+  home_function.addParameter(channel_parameter);
+  home_function.setReturnTypeBool();
+
+  modular_server::Function & homing_function = modular_server_.createFunction(constants::homing_function_name);
+  homing_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::homingHandler));
+  homing_function.setReturnTypeArray();
+
+  modular_server::Function & homed_function = modular_server_.createFunction(constants::homed_function_name);
+  homed_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::homedHandler));
+  homed_function.setReturnTypeArray();
+
   // Callbacks
 
+}
+
+void StepDirController::update()
+{
+  // Parent Update
+  ModularDevice::update();
+
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    if (homing_[channel])
+    {
+      size_t tmc429_i = channelToTmc429Index(channel);
+      size_t motor_i = channelToMotorIndex(channel);
+      TMC429 & tmc429 = tmc429s_[tmc429_i];
+      bool latch_position_waiting = tmc429.latchPositionWaiting(motor_i);
+      if (!latch_position_waiting)
+      {
+        homing_[channel] = false;
+        homed_[channel] = true;
+        zero(channel);
+      }
+    }
+  }
 }
 
 void StepDirController::reinitialize()
@@ -315,6 +345,7 @@ void StepDirController::moveBy(const size_t channel, const double position)
     long position_actual = tmc429.getActualPosition(motor_i);
     long position_target = positionUnitsToSteps(channel,position) + position_actual;
     tmc429.setTargetPosition(motor_i,position_target);
+    homing_[channel] = false;
   }
 }
 
@@ -327,6 +358,7 @@ void StepDirController::moveTo(const size_t channel, const double position)
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setRampMode(motor_i);
     tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
+    homing_[channel] = false;
   }
 }
 
@@ -339,34 +371,9 @@ void StepDirController::moveAt(const size_t channel, const double velocity)
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setVelocityMode(motor_i);
     tmc429.setTargetVelocityInHz(motor_i,positionUnitsToSteps(channel,velocity));
+    homing_[channel] = false;
   }
 }
-
-// void StepDirController::moveByAt(const size_t channel, const long position, const long speed)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     Stepper & stepper = steppers_[channel];
-//     stepper.stop();
-//     stepper.setPositionMode();
-//     stepper.setVelocity(speed);
-//     stepper.setTargetPositionRelative(position);
-//     stepper.start();
-//   }
-// }
-
-// void StepDirController::moveToAt(const size_t channel, const long position, const long speed)
-// {
-//   if (channel < constants::CHANNEL_COUNT)
-//   {
-//     Stepper & stepper = steppers_[channel];
-//     stepper.stop();
-//     stepper.setPositionMode();
-//     stepper.setVelocity(speed);
-//     stepper.setTargetPosition(position);
-//     stepper.start();
-//   }
-// }
 
 void StepDirController::moveSoftlyBy(const size_t channel, const double position)
 {
@@ -379,6 +386,7 @@ void StepDirController::moveSoftlyBy(const size_t channel, const double position
     long position_actual = tmc429.getActualPosition(motor_i);
     long position_target = positionUnitsToSteps(channel,position) + position_actual;
     tmc429.setTargetPosition(motor_i,position_target);
+    homing_[channel] = false;
   }
 }
 
@@ -391,6 +399,7 @@ void StepDirController::moveSoftlyTo(const size_t channel, const double position
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.setSoftMode(motor_i);
     tmc429.setTargetPosition(motor_i,positionUnitsToSteps(channel,position));
+    homing_[channel] = false;
   }
 }
 
@@ -402,6 +411,7 @@ void StepDirController::stop(const size_t channel)
     size_t motor_i = channelToMotorIndex(channel);
     TMC429 & tmc429 = tmc429s_[tmc429_i];
     tmc429.stop(motor_i);
+    homing_[channel] = false;
   }
 }
 
@@ -539,6 +549,97 @@ bool StepDirController::rightSwitchActive(const size_t channel)
   return right_switch_active;
 }
 
+bool StepDirController::home(const size_t channel)
+{
+  if (channel >= constants::CHANNEL_COUNT)
+  {
+    return false;
+  }
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
+  double home_velocity;
+  home_velocity_property.getElementValue(channel,home_velocity);
+
+  size_t tmc429_i = channelToTmc429Index(channel);
+  size_t motor_i = channelToMotorIndex(channel);
+  TMC429 & tmc429 = tmc429s_[tmc429_i];
+
+  bool home_switch_enabled;
+  if (home_velocity < 0)
+  {
+    modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,home_switch_enabled);
+    if (home_switch_enabled)
+    {
+      tmc429.setReferenceSwitchToLeft(motor_i);
+      if (leftSwitchActive(channel))
+      {
+        homing_[channel] = false;
+        homed_[channel] = true;
+        zero(channel);
+        return false;
+      }
+    }
+  }
+  else
+  {
+    bool right_switches_enabled;
+    modular_server_.property(constants::right_switches_enabled_property_name).getElementValue(channel,right_switches_enabled);
+    bool right_switch_stop_enabled;
+    modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,right_switch_stop_enabled);
+    home_switch_enabled = right_switches_enabled && right_switch_stop_enabled;
+    if (home_switch_enabled)
+    {
+      tmc429.setReferenceSwitchToRight(motor_i);
+      if (rightSwitchActive(channel))
+      {
+        homing_[channel] = false;
+        homed_[channel] = true;
+        zero(channel);
+        return false;
+      }
+    }
+  }
+  if (!home_switch_enabled)
+  {
+    return false;
+  }
+
+  tmc429.startLatchPositionWaiting(motor_i);
+  moveAt(channel,home_velocity);
+  homing_[channel] = true;
+  homed_[channel] = false;
+  return true;
+}
+
+bool StepDirController::homing(const size_t channel)
+{
+  if (channel >= constants::CHANNEL_COUNT)
+  {
+    return false;
+  }
+  return homing_[channel];
+}
+
+bool StepDirController::anyHoming()
+{
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    if (homing_[channel])
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool StepDirController::homed(const size_t channel)
+{
+  if (channel >= constants::CHANNEL_COUNT)
+  {
+    return false;
+  }
+  return homed_[channel];
+}
+
 double StepDirController::stepsToPositionUnits(const size_t channel, const double steps)
 {
   modular_server::Property & steps_per_position_unit_property = modular_server_.property(constants::steps_per_position_unit_property_name);
@@ -584,62 +685,56 @@ size_t StepDirController::channelToMotorIndex(const size_t channel)
 // modular_server_.property(property_name).getElementValue(value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(value) value type must match the property array element default type
 
-void StepDirController::preUpdateLimitsHandler(const size_t channel)
+void StepDirController::preUpdateScaledPropertiesHandler(const size_t channel)
 {
   modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
   double velocity_min;
   velocity_min_property.getElementValue(channel,velocity_min);
+  velocity_min_steps_[channel] = positionUnitsToSteps(channel,velocity_min);
 
   modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
   double velocity_max;
   velocity_max_property.getElementValue(channel,velocity_max);
+  velocity_max_steps_[channel] = positionUnitsToSteps(channel,velocity_max);
 
   modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
   double acceleration_max;
   acceleration_max_property.getElementValue(channel,acceleration_max);
+  acceleration_max_steps_[channel] = positionUnitsToSteps(channel,acceleration_max);
 
-  velocity_min_property.disableFunctors();
-  velocity_max_property.disableFunctors();
-  acceleration_max_property.disableFunctors();
-
-  velocity_min_property.setElementValue(channel,positionUnitsToSteps(channel,velocity_min));
-
-  velocity_max_property.setElementValue(channel,positionUnitsToSteps(channel,velocity_max));
-
-  acceleration_max_property.setElementValue(channel,positionUnitsToSteps(channel,acceleration_max));
-
-  velocity_min_property.reenableFunctors();
-  velocity_max_property.reenableFunctors();
-  acceleration_max_property.reenableFunctors();
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
+  double home_velocity;
+  home_velocity_property.getElementValue(channel,home_velocity);
+  home_velocity_steps_[channel] = positionUnitsToSteps(channel,home_velocity);
 }
 
-void StepDirController::postUpdateLimitsHandler(const size_t channel)
+void StepDirController::postUpdateScaledPropertiesHandler(const size_t channel)
 {
   modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
-  double velocity_min;
-  velocity_min_property.getElementValue(channel,velocity_min);
 
   modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
-  double velocity_max;
-  velocity_max_property.getElementValue(channel,velocity_max);
 
   modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
-  double acceleration_max;
-  acceleration_max_property.getElementValue(channel,acceleration_max);
+
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
 
   velocity_min_property.disableFunctors();
   velocity_max_property.disableFunctors();
   acceleration_max_property.disableFunctors();
+  home_velocity_property.disableFunctors();
 
-  velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min));
+  velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min_steps_[channel]));
 
-  velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max));
+  velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max_steps_[channel]));
 
-  acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max));
+  acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max_steps_[channel]));
+
+  home_velocity_property.setElementValue(channel,stepsToPositionUnits(channel,home_velocity_steps_[channel]));
 
   velocity_min_property.reenableFunctors();
   velocity_max_property.reenableFunctors();
   acceleration_max_property.reenableFunctors();
+  home_velocity_property.reenableFunctors();
 
   setLimitsHandler(channel);
 }
@@ -668,23 +763,6 @@ void StepDirController::setLimitsHandler(const size_t channel)
                        positionUnitsToSteps(channel,velocity_min),
                        positionUnitsToSteps(channel,velocity_max),
                        positionUnitsToSteps(channel,acceleration_max));
-
-  // velocity_min_property.disableFunctors();
-  // velocity_max_property.disableFunctors();
-  // acceleration_max_property.disableFunctors();
-
-  // velocity_min = tmc429.getVelocityMinInHz(motor_i);
-  // velocity_min_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_min));
-
-  // velocity_max = tmc429.getVelocityMaxInHz(motor_i);
-  // velocity_max_property.setElementValue(channel,stepsToPositionUnits(channel,velocity_max));
-
-  // acceleration_max = tmc429.getAccelerationMaxInHzPerS(motor_i);
-  // acceleration_max_property.setElementValue(channel,stepsToPositionUnits(channel,acceleration_max));
-
-  // velocity_min_property.reenableFunctors();
-  // velocity_max_property.reenableFunctors();
-  // acceleration_max_property.reenableFunctors();
 }
 
 void StepDirController::reinitializeHandler()
@@ -1041,3 +1119,38 @@ void StepDirController::switchesActiveHandler()
   }
   modular_server_.response().endArray();
 }
+
+void StepDirController::homeHandler()
+{
+  long channel;
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
+  bool is_homing = home(channel);
+  modular_server_.response().returnResult(is_homing);
+}
+
+void StepDirController::homingHandler()
+{
+  bool is_homing;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    is_homing = homing(channel);
+    modular_server_.response().write(is_homing);
+  }
+  modular_server_.response().endArray();
+}
+
+void StepDirController::homedHandler()
+{
+  bool is_homed;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
+  {
+    is_homed = homed(channel);
+    modular_server_.response().write(is_homed);
+  }
+  modular_server_.response().endArray();
+}
+

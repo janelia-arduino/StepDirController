@@ -100,6 +100,13 @@ const bool switch_soft_stop_enabled_default[CHANNEL_COUNT] =
     false,
   };
 
+const double home_velocity_default[CHANNEL_COUNT] =
+  {
+    home_velocity_element_default,
+    home_velocity_element_default,
+    home_velocity_element_default,
+  };
+
 // Parameters
 const long channel_max = CHANNEL_COUNT - 1;
 

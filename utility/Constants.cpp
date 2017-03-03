@@ -84,6 +84,9 @@ CONSTANT_STRING(right_switch_stop_enabled_property_name,"rightSwitchStopEnabled"
 
 CONSTANT_STRING(switch_soft_stop_enabled_property_name,"switchSoftStopEnabled");
 
+CONSTANT_STRING(home_velocity_property_name,"homeVelocity");
+extern const double home_velocity_element_default = -50000;
+
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");
 const long channel_min = 0;
@@ -102,8 +105,6 @@ CONSTANT_STRING(enabled_function_name,"enabled");
 CONSTANT_STRING(move_by_function_name,"moveBy");
 CONSTANT_STRING(move_to_function_name,"moveTo");
 CONSTANT_STRING(move_at_function_name,"moveAt");
-CONSTANT_STRING(move_by_at_function_name,"moveByAt");
-CONSTANT_STRING(move_to_at_function_name,"moveToAt");
 CONSTANT_STRING(move_softly_by_function_name,"moveSoftlyBy");
 CONSTANT_STRING(move_softly_to_function_name,"moveSoftlyTo");
 CONSTANT_STRING(stop_function_name,"stop");
@@ -117,6 +118,9 @@ CONSTANT_STRING(get_velocities_function_name,"getVelocities");
 CONSTANT_STRING(get_target_velocities_function_name,"getTargetVelocities");
 CONSTANT_STRING(at_target_velocities_function_name,"atTargetVelocities");
 CONSTANT_STRING(switches_active_function_name,"switchesActive");
+CONSTANT_STRING(home_function_name,"home");
+CONSTANT_STRING(homing_function_name,"homing");
+CONSTANT_STRING(homed_function_name,"homed");
 
 // Callbacks
 

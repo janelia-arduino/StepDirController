@@ -16,9 +16,9 @@ namespace step_dir_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=12};
+enum{PROPERTY_COUNT_MAX=13};
 enum{PARAMETER_COUNT_MAX=3};
-enum{FUNCTION_COUNT_MAX=24};
+enum{FUNCTION_COUNT_MAX=25};
 enum{CALLBACK_COUNT_MAX=1};
 
 extern ConstantString device_name;
@@ -87,6 +87,9 @@ extern ConstantString right_switch_stop_enabled_property_name;
 
 extern ConstantString switch_soft_stop_enabled_property_name;
 
+extern ConstantString home_velocity_property_name;
+extern const double home_velocity_element_default;
+
 // Parameters
 extern ConstantString channel_parameter_name;
 extern const long channel_min;
@@ -106,8 +109,6 @@ extern ConstantString enabled_function_name;
 extern ConstantString move_by_function_name;
 extern ConstantString move_to_function_name;
 extern ConstantString move_at_function_name;
-extern ConstantString move_by_at_function_name;
-extern ConstantString move_to_at_function_name;
 extern ConstantString move_softly_by_function_name;
 extern ConstantString move_softly_to_function_name;
 extern ConstantString stop_function_name;
@@ -121,6 +122,9 @@ extern ConstantString get_velocities_function_name;
 extern ConstantString get_target_velocities_function_name;
 extern ConstantString at_target_velocities_function_name;
 extern ConstantString switches_active_function_name;
+extern ConstantString home_function_name;
+extern ConstantString homing_function_name;
+extern ConstantString homed_function_name;
 
 // Callbacks
 

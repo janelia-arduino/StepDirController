@@ -37,6 +37,7 @@ public:
   StepDirController();
   ~StepDirController();
   virtual void setup();
+  virtual void update();
 
   virtual void reinitialize();
 
@@ -49,15 +50,13 @@ public:
   void moveBy(const size_t channel, const double position);
   void moveTo(const size_t channel, const double position);
   void moveAt(const size_t channel, const double velocity);
-  // void moveByAt(const size_t channel, const double position, const double speed);
-  // void moveToAt(const size_t channel, const double position, const double speed);
   void moveSoftlyBy(const size_t channel, const double position);
   void moveSoftlyTo(const size_t channel, const double position);
   void stop(const size_t channel);
   void stopAll();
+
   void zero(const size_t channel);
   void zeroAll();
-
 
   double getPosition(const size_t channel);
   double getTargetPosition(const size_t channel);
@@ -70,13 +69,18 @@ public:
   bool leftSwitchActive(const size_t channel);
   bool rightSwitchActive(const size_t channel);
 
+  bool home(const size_t channel);
+  bool homing(const size_t channel);
+  bool anyHoming();
+  bool homed(const size_t channel);
+
 protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
   virtual double positionUnitsToSteps(const size_t channel, const double position_units);
 
   // Handlers
-  void preUpdateLimitsHandler(const size_t channel);
-  void postUpdateLimitsHandler(const size_t channel);
+  void preUpdateScaledPropertiesHandler(const size_t channel);
+  void postUpdateScaledPropertiesHandler(const size_t channel);
 
 private:
   modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
@@ -88,6 +92,13 @@ private:
 
   TMC429 tmc429s_[step_dir_controller::constants::TMC429_COUNT];
   bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
+  bool homing_[step_dir_controller::constants::CHANNEL_COUNT];
+  bool homed_[step_dir_controller::constants::CHANNEL_COUNT];
+
+  double velocity_min_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  double velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  double acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  double home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT];
 
   size_t channelToTmc429Index(const size_t channel);
   size_t channelToMotorIndex(const size_t channel);
@@ -110,8 +121,6 @@ private:
   void moveByHandler();
   void moveToHandler();
   void moveAtHandler();
-  // void moveByAtHandler();
-  // void moveToAtHandler();
   void moveSoftlyByHandler();
   void moveSoftlyToHandler();
   void stopHandler();
@@ -125,6 +134,9 @@ private:
   void getTargetVelocitiesHandler();
   void atTargetVelocitiesHandler();
   void switchesActiveHandler();
+  void homeHandler();
+  void homingHandler();
+  void homedHandler();
 
 };
 
