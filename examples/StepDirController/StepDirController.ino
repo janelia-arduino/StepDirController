@@ -17,7 +17,7 @@
 #include "TMC429.h"
 
 #include "ModularServer.h"
-#include "ModularDevice.h"
+#include "ModularDeviceBase.h"
 #include "StepDirController.h"
 
 

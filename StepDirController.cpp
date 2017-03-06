@@ -22,7 +22,7 @@ StepDirController::~StepDirController()
 void StepDirController::setup()
 {
   // Parent Setup
-  ModularDevice::setup();
+  ModularDeviceBase::setup();
 
   // Controller Setup
   for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
@@ -230,7 +230,7 @@ void StepDirController::setup()
 void StepDirController::update()
 {
   // Parent Update
-  ModularDevice::update();
+  ModularDeviceBase::update();
 
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {

@@ -26,12 +26,12 @@
 #include "TMC429.h"
 
 #include "ModularServer.h"
-#include "ModularDevice.h"
+#include "ModularDeviceBase.h"
 
 #include "utility/Constants.h"
 
 
-class StepDirController : public ModularDevice
+class StepDirController : public ModularDeviceBase
 {
 public:
   StepDirController();
