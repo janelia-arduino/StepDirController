@@ -896,14 +896,14 @@ void StepDirController::setSwitchSoftStopEnabledHandler(const size_t channel)
 void StepDirController::enableHandler()
 {
   long channel;
-  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
   enable(channel);
 }
 
 void StepDirController::disableHandler()
 {
   long channel;
-  modular_server_.property(constants::channel_parameter_name).getValue(channel);
+  modular_server_.parameter(constants::channel_parameter_name).getValue(channel);
   disable(channel);
 }
 
