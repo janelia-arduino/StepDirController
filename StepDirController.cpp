@@ -447,14 +447,7 @@ void StepDirController::zeroAll()
 
 double StepDirController::getPosition(const size_t channel)
 {
-  double position = 0;
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    size_t controller_i = channelToControllerIndex(channel);
-    size_t motor_i = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_i];
-    position = controller.getActualPosition(motor_i);
-  }
+  int32_t position = getPositionInSteps(channel);
   return stepsToPositionUnits(channel,position);
 }
 
@@ -486,14 +479,7 @@ bool StepDirController::atTargetPosition(const size_t channel)
 
 double StepDirController::getVelocity(const size_t channel)
 {
-  double velocity = 0;
-  if (channel < constants::CHANNEL_COUNT)
-  {
-    size_t controller_i = channelToControllerIndex(channel);
-    size_t motor_i = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_i];
-    velocity = controller.getActualVelocityInHz(motor_i);
-  }
+  int32_t velocity = getVelocityInHz(channel);
   return stepsToPositionUnits(channel,velocity);
 }
 
@@ -656,6 +642,32 @@ double StepDirController::positionUnitsToSteps(const size_t channel, const doubl
   steps_per_position_unit_property.getElementValue(channel,steps_per_position_unit);
 
   return position_units*steps_per_position_unit;
+}
+
+int32_t StepDirController::getPositionInSteps(const size_t channel)
+{
+  int32_t position = 0;
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t controller_i = channelToControllerIndex(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    Controller & controller = controllers_[controller_i];
+    position = controller.getActualPosition(motor_i);
+  }
+  return position;
+}
+
+int32_t StepDirController::getVelocityInHz(const size_t channel)
+{
+  int32_t velocity = 0;
+  if (channel < constants::CHANNEL_COUNT)
+  {
+    size_t controller_i = channelToControllerIndex(channel);
+    size_t motor_i = channelToMotorIndex(channel);
+    Controller & controller = controllers_[controller_i];
+    velocity = controller.getActualVelocityInHz(motor_i);
+  }
+  return velocity;
 }
 
 size_t StepDirController::channelToControllerIndex(const size_t channel)

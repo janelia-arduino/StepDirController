@@ -78,6 +78,9 @@ protected:
   virtual double stepsToPositionUnits(const size_t channel, const double steps);
   virtual double positionUnitsToSteps(const size_t channel, const double position_units);
 
+  int32_t getPositionInSteps(const size_t channel);
+  int32_t getVelocityInHz(const size_t channel);
+
   // Handlers
   void preUpdateScaledPropertiesHandler(const size_t channel);
   void postUpdateScaledPropertiesHandler(const size_t channel);
