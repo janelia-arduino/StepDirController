@@ -107,7 +107,7 @@ void StepDirController::setup()
 
   modular_server::Property & home_velocity_property = modular_server_.createProperty(constants::home_velocity_property_name,constants::home_velocity_default);
   home_velocity_property.setUnits(constants::position_units_per_second_unit);
-  home_velocity_property.setRange(constants::velocity_max_min,constants::velocity_max_max);
+  home_velocity_property.setRange(-constants::velocity_max_max,constants::velocity_max_max);
 
   reinitialize();
 
@@ -760,9 +760,9 @@ void StepDirController::setLimitsHandler(const size_t channel)
   Controller & controller = controllers_[controller_i];
 
   controller.setLimitsInHz(motor_i,
-                       positionUnitsToSteps(channel,velocity_min),
-                       positionUnitsToSteps(channel,velocity_max),
-                       positionUnitsToSteps(channel,acceleration_max));
+                           positionUnitsToSteps(channel,velocity_min),
+                           positionUnitsToSteps(channel,velocity_max),
+                           positionUnitsToSteps(channel,acceleration_max));
 }
 
 void StepDirController::reinitializeHandler()
