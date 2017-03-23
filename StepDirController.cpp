@@ -34,7 +34,7 @@ void StepDirController::setup()
   // Pin Setup
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
   {
-    pinMode(constants::enable_pins[channel], INPUT);
+    pinMode(constants::enable_pins[channel],OUTPUT);
     enabled_[channel] = false;
     homing_[channel] = false;
     homed_[channel] = false;
