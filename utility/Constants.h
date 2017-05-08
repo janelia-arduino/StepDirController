@@ -46,6 +46,8 @@ extern ConstantString position_units_per_second_per_second_unit;
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 extern ConstantString steps_per_position_unit_property_name;
+extern const double steps_per_position_unit_element_min;
+extern const double steps_per_position_unit_element_max;
 extern const double steps_per_position_unit_element_default;
 
 extern ConstantString velocity_max_property_name;

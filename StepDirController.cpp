@@ -41,12 +41,7 @@ void StepDirController::setup()
   }
 
   // Interrupts
-  // #if defined(__AVR_ATmega2560__)
-  // modular_server::Interrupt & bnc_b_interrupt = modular_server_.createInterrupt(constants::bnc_b_interrupt_name,
-  //                                                                               constants::bnc_b_pin);
 
-
-  // #endif
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
 
@@ -62,6 +57,7 @@ void StepDirController::setup()
                               callbacks_);
   // Properties
   modular_server::Property & steps_per_position_unit_property = modular_server_.createProperty(constants::steps_per_position_unit_property_name,constants::steps_per_position_unit_default);
+  steps_per_position_unit_property.setRange(constants::steps_per_position_unit_element_min,constants::steps_per_position_unit_element_max);
   steps_per_position_unit_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
   steps_per_position_unit_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
 
@@ -256,9 +252,15 @@ void StepDirController::reinitialize()
   {
     Controller & controller = controllers_[controller_i];
     controller.setStepDirOutput();
+    setStepPolarityInvertedHandler();
+    setDirPolarityInvertedHandler();
+    setSwitchActivePolarityHandler();
+    setRightSwitchesEnabledHandler();
     for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_CONTROLLER_COUNT; ++motor_i)
     {
-      controller.disableSwitchSoftStop(motor_i);
+      setLeftSwitchStopEnabledHandler(motor_i);
+      setRightSwitchStopEnabledHandler(motor_i);
+      setSwitchSoftStopEnabledHandler(motor_i);
     }
   }
   for (size_t channel=0; channel<constants::CHANNEL_COUNT; ++channel)
@@ -552,7 +554,9 @@ bool StepDirController::home(const size_t channel)
   bool home_switch_enabled;
   if (home_velocity < 0)
   {
-    modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,home_switch_enabled);
+    bool left_switch_stop_enabled;
+    modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,left_switch_stop_enabled);
+    home_switch_enabled = left_switch_stop_enabled;
     if (home_switch_enabled)
     {
       controller.setReferenceSwitchToLeft(motor_i);
@@ -568,7 +572,7 @@ bool StepDirController::home(const size_t channel)
   else
   {
     bool right_switches_enabled;
-    modular_server_.property(constants::right_switches_enabled_property_name).getElementValue(channel,right_switches_enabled);
+    modular_server_.property(constants::right_switches_enabled_property_name).getValue(right_switches_enabled);
     bool right_switch_stop_enabled;
     modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,right_switch_stop_enabled);
     home_switch_enabled = right_switches_enabled && right_switch_stop_enabled;
@@ -803,7 +807,7 @@ void StepDirController::setStepPolarityInvertedHandler()
 void StepDirController::setDirPolarityInvertedHandler()
 {
   bool inverted;
-  modular_server_.property(constants::step_polarity_inverted_property_name).getValue(inverted);
+  modular_server_.property(constants::dir_polarity_inverted_property_name).getValue(inverted);
   for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
