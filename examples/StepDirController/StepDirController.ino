@@ -16,6 +16,8 @@
 #include "SPI.h"
 #include "TMC429.h"
 
+#include "ModularClient.h"
+
 #include "ModularServer.h"
 #include "ModularDeviceBase.h"
 #include "StepDirController.h"
