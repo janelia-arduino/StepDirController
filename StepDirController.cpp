@@ -56,23 +56,23 @@ void StepDirController::setup()
                               functions_,
                               callbacks_);
   // Properties
-  modular_server::Property & steps_per_position_unit_property = modular_server_.createProperty(constants::steps_per_position_unit_property_name,constants::steps_per_position_unit_default);
-  steps_per_position_unit_property.setRange(constants::steps_per_position_unit_element_min,constants::steps_per_position_unit_element_max);
-  steps_per_position_unit_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
-  steps_per_position_unit_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
+  modular_server::Property & steps_per_position_units_property = modular_server_.createProperty(constants::steps_per_position_units_property_name,constants::steps_per_position_units_default);
+  steps_per_position_units_property.setRange(constants::steps_per_position_units_element_min,constants::steps_per_position_units_element_max);
+  steps_per_position_units_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
+  steps_per_position_units_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
 
   modular_server::Property & velocity_max_property = modular_server_.createProperty(constants::velocity_max_property_name,constants::velocity_max_default);
-  velocity_max_property.setUnits(constants::position_units_per_second_unit);
+  velocity_max_property.setUnits(constants::position_units_per_second_units);
   velocity_max_property.setRange(constants::velocity_max_min,constants::velocity_max_max);
   velocity_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & velocity_min_property = modular_server_.createProperty(constants::velocity_min_property_name,constants::velocity_min_default);
-  velocity_min_property.setUnits(constants::position_units_per_second_unit);
+  velocity_min_property.setUnits(constants::position_units_per_second_units);
   velocity_min_property.setRange(constants::velocity_min_min,constants::velocity_min_max);
   velocity_min_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & acceleration_max_property = modular_server_.createProperty(constants::acceleration_max_property_name,constants::acceleration_max_default);
-  acceleration_max_property.setUnits(constants::position_units_per_second_per_second_unit);
+  acceleration_max_property.setUnits(constants::position_units_per_second_per_second_units);
   acceleration_max_property.setRange(constants::acceleration_max_min,constants::acceleration_max_max);
   acceleration_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
@@ -102,7 +102,7 @@ void StepDirController::setup()
   switch_soft_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setSwitchSoftStopEnabledHandler));
 
   modular_server::Property & home_velocity_property = modular_server_.createProperty(constants::home_velocity_property_name,constants::home_velocity_default);
-  home_velocity_property.setUnits(constants::position_units_per_second_unit);
+  home_velocity_property.setUnits(constants::position_units_per_second_units);
   home_velocity_property.setRange(-constants::velocity_max_max,constants::velocity_max_max);
 
   reinitialize();
@@ -137,7 +137,8 @@ void StepDirController::setup()
 
   modular_server::Function & enabled_function = modular_server_.createFunction(constants::enabled_function_name);
   enabled_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enabledHandler));
-  enabled_function.setReturnTypeArray();
+  enabled_function.setResultTypeArray();
+  enabled_function.setResultTypeBool();
 
   modular_server::Function & move_by_function = modular_server_.createFunction(constants::move_by_function_name);
   move_by_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::moveByHandler));
@@ -180,44 +181,53 @@ void StepDirController::setup()
 
   modular_server::Function & get_positions_function = modular_server_.createFunction(constants::get_positions_function_name);
   get_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getPositionsHandler));
-  get_positions_function.setReturnTypeArray();
+  get_positions_function.setResultTypeArray();
+  get_positions_function.setResultTypeDouble();
 
   modular_server::Function & get_target_positions_function = modular_server_.createFunction(constants::get_target_positions_function_name);
   get_target_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getTargetPositionsHandler));
-  get_target_positions_function.setReturnTypeArray();
+  get_target_positions_function.setResultTypeArray();
+  get_target_positions_function.setResultTypeDouble();
 
   modular_server::Function & at_target_positions_function = modular_server_.createFunction(constants::at_target_positions_function_name);
   at_target_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::atTargetPositionsHandler));
-  at_target_positions_function.setReturnTypeArray();
+  at_target_positions_function.setResultTypeArray();
+  at_target_positions_function.setResultTypeBool();
 
   modular_server::Function & get_velocities_function = modular_server_.createFunction(constants::get_velocities_function_name);
   get_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getVelocitiesHandler));
-  get_velocities_function.setReturnTypeArray();
+  get_velocities_function.setResultTypeArray();
+  get_velocities_function.setResultTypeDouble();
 
   modular_server::Function & get_target_velocities_function = modular_server_.createFunction(constants::get_target_velocities_function_name);
   get_target_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getTargetVelocitiesHandler));
-  get_target_velocities_function.setReturnTypeArray();
+  get_target_velocities_function.setResultTypeArray();
+  get_target_velocities_function.setResultTypeBool();
 
   modular_server::Function & at_target_velocities_function = modular_server_.createFunction(constants::at_target_velocities_function_name);
   at_target_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::atTargetVelocitiesHandler));
-  at_target_velocities_function.setReturnTypeArray();
+  at_target_velocities_function.setResultTypeArray();
+  at_target_velocities_function.setResultTypeBool();
 
   modular_server::Function & switches_active_function = modular_server_.createFunction(constants::switches_active_function_name);
   switches_active_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::switchesActiveHandler));
-  switches_active_function.setReturnTypeArray();
+  switches_active_function.setResultTypeArray();
+  switches_active_function.setResultTypeBool();
 
   modular_server::Function & home_function = modular_server_.createFunction(constants::home_function_name);
   home_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::homeHandler));
   home_function.addParameter(channel_parameter);
-  home_function.setReturnTypeBool();
+  home_function.setResultTypeBool();
 
   modular_server::Function & homing_function = modular_server_.createFunction(constants::homing_function_name);
   homing_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::homingHandler));
-  homing_function.setReturnTypeArray();
+  homing_function.setResultTypeArray();
+  homing_function.setResultTypeBool();
 
   modular_server::Function & homed_function = modular_server_.createFunction(constants::homed_function_name);
   homed_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::homedHandler));
-  homed_function.setReturnTypeArray();
+  homed_function.setResultTypeArray();
+  homed_function.setResultTypeBool();
 
   // Callbacks
 
@@ -632,20 +642,20 @@ bool StepDirController::homed(const size_t channel)
 
 double StepDirController::stepsToPositionUnits(const size_t channel, const double steps)
 {
-  modular_server::Property & steps_per_position_unit_property = modular_server_.property(constants::steps_per_position_unit_property_name);
-  double steps_per_position_unit;
-  steps_per_position_unit_property.getElementValue(channel,steps_per_position_unit);
+  modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
+  double steps_per_position_units;
+  steps_per_position_units_property.getElementValue(channel,steps_per_position_units);
 
-  return steps/steps_per_position_unit;
+  return steps/steps_per_position_units;
 }
 
 double StepDirController::positionUnitsToSteps(const size_t channel, const double position_units)
 {
-  modular_server::Property & steps_per_position_unit_property = modular_server_.property(constants::steps_per_position_unit_property_name);
-  double steps_per_position_unit;
-  steps_per_position_unit_property.getElementValue(channel,steps_per_position_unit);
+  modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
+  double steps_per_position_units;
+  steps_per_position_units_property.getElementValue(channel,steps_per_position_units);
 
-  return position_units*steps_per_position_unit;
+  return position_units*steps_per_position_units;
 }
 
 int32_t StepDirController::getPositionInSteps(const size_t channel)

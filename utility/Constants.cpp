@@ -34,15 +34,15 @@ CONSTANT_STRING(right_constant_string,"right");
 // Interrupts
 
 // Units
-CONSTANT_STRING(position_unit,"position_unit");
-CONSTANT_STRING(position_units_per_second_unit,"position_units/s");
-CONSTANT_STRING(position_units_per_second_per_second_unit,"position_units/s/s");
+CONSTANT_STRING(position_units,"position_units");
+CONSTANT_STRING(position_units_per_second_units,"position_units/s");
+CONSTANT_STRING(position_units_per_second_per_second_units,"position_units/s/s");
 
 // Properties
-CONSTANT_STRING(steps_per_position_unit_property_name,"stepsPerPositionUnit");
-extern const double steps_per_position_unit_element_min = 1.0;
-extern const double steps_per_position_unit_element_max = 1e9;
-extern const double steps_per_position_unit_element_default = 1.0;
+CONSTANT_STRING(steps_per_position_units_property_name,"stepsPerPositionUnits");
+extern const double steps_per_position_units_element_min = 1.0;
+extern const double steps_per_position_units_element_max = 1e9;
+extern const double steps_per_position_units_element_default = 1.0;
 
 CONSTANT_STRING(velocity_max_property_name,"velocityMax");
 extern const double velocity_max_min = 0.000001;
