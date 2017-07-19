@@ -8,7 +8,7 @@
 #include "5x3.h"
 
 
-#if defined(__AVR_ATmega2560__)
+#if defined(__MK64FX512__)
 
 namespace step_dir_controller
 {
@@ -22,38 +22,101 @@ const modular_server::HardwareInfo hardware_info =
     .version_minor=0,
   };
 
-const size_t enable_pins[CHANNEL_COUNT] = {49};
-const size_t step_pins[CHANNEL_COUNT] = {53};
-const size_t dir_pins[CHANNEL_COUNT] = {51};
-
-size_t step_half_period_us_max = 20;
+const size_t cs_pins[CONTROLLER_COUNT] =
+  {
+    10,
+  };
+const size_t enable_pins[CHANNEL_COUNT] =
+  {
+    2,
+    3,
+    4,
+  };
 
 // Interrupts
 
 // Units
 
 // Properties
+const double steps_per_position_units_default[CHANNEL_COUNT] =
+  {
+    steps_per_position_units_element_default,
+    steps_per_position_units_element_default,
+    steps_per_position_units_element_default,
+  };
+
+const double velocity_max_default[CHANNEL_COUNT] =
+  {
+    velocity_max_element_default,
+    velocity_max_element_default,
+    velocity_max_element_default,
+  };
+
+const double velocity_min_default[CHANNEL_COUNT] =
+  {
+    velocity_min_element_default,
+    velocity_min_element_default,
+    velocity_min_element_default,
+  };
+
+const double acceleration_max_default[CHANNEL_COUNT] =
+  {
+    acceleration_max_element_default,
+    acceleration_max_element_default,
+    acceleration_max_element_default,
+  };
+
 const ConstantString * const enable_polarity_default[CHANNEL_COUNT] =
   {
+    &polarity_high,
+    &polarity_high,
     &polarity_high,
   };
 
 const ConstantString * const step_polarity_default[CHANNEL_COUNT] =
   {
     &polarity_high,
+    &polarity_high,
+    &polarity_high,
   };
 
 const ConstantString * const dir_polarity_default[CHANNEL_COUNT] =
   {
     &polarity_high,
+    &polarity_high,
+    &polarity_high,
   };
 
-const ConstantString * const mode_default[CHANNEL_COUNT] =
+const bool left_switch_stop_enabled_default[CHANNEL_COUNT] =
   {
-    &mode_position,
+    false,
+    false,
+    false,
+  };
+
+const bool right_switch_stop_enabled_default[CHANNEL_COUNT] =
+  {
+    false,
+    false,
+    false,
+  };
+
+const bool switch_soft_stop_enabled_default[CHANNEL_COUNT] =
+  {
+    false,
+    false,
+    false,
+  };
+
+const double home_velocity_default[CHANNEL_COUNT] =
+  {
+    home_velocity_element_default,
+    home_velocity_element_default,
+    home_velocity_element_default,
   };
 
 // Parameters
+const long channel_max = CHANNEL_COUNT - 1;
 
 // Functions
 
@@ -62,4 +125,5 @@ const ConstantString * const mode_default[CHANNEL_COUNT] =
 // Errors
 }
 }
+
 #endif
