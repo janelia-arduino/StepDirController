@@ -83,6 +83,8 @@ protected:
   int32_t getPositionInSteps(const size_t channel);
   int32_t getVelocityInHz(const size_t channel);
 
+  void setChannelCount(const size_t channel_count);
+
   // Handlers
   void preUpdateScaledPropertiesHandler(const size_t channel);
   void postUpdateScaledPropertiesHandler(const size_t channel);
@@ -105,6 +107,7 @@ private:
   double velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
   double acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
   double home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  size_t channel_count_;
 
   size_t channelToControllerIndex(const size_t channel);
   size_t channelToMotorIndex(const size_t channel);
