@@ -125,6 +125,9 @@ void StepDirController::setup()
   modular_server::Function & reinitialize_function = modular_server_.createFunction(constants::reinitialize_function_name);
   reinitialize_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::reinitializeHandler));
 
+  modular_server::Function & controllers_communicating_function = modular_server_.createFunction(constants::controllers_communicating_function_name);
+  controllers_communicating_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::controllersCommunicatingHandler));
+
   modular_server::Function & enable_function = modular_server_.createFunction(constants::enable_function_name);
   enable_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enableHandler));
   enable_function.addParameter(channel_parameter);
@@ -265,7 +268,7 @@ void StepDirController::reinitialize()
   for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
-    controller.setStepDirOutput();
+    controller.initialize();
     setStepPolarityInvertedHandler();
     setDirPolarityInvertedHandler();
     setSwitchActivePolarityHandler();
@@ -815,6 +818,21 @@ void StepDirController::setLimitsHandler(const size_t channel)
 void StepDirController::reinitializeHandler()
 {
   reinitialize();
+}
+
+void StepDirController::controllersCommunicatingHandler()
+{
+  modular_server_.response().writeResultKey();
+
+  modular_server_.response().beginArray();
+
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
+  {
+    Controller & controller = controllers_[controller_i];
+    modular_server_.response().write(controller.communicating());
+  }
+
+  modular_server_.response().endArray();
 }
 
 void StepDirController::setStepPolarityInvertedHandler()

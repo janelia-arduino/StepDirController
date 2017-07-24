@@ -31,6 +31,7 @@ License:
     "firmware":["StepDirController"],
     "functions":[
       "reinitialize",
+      "controllersCommunicating",
       "enable",
       "disable",
       "enableAll",
@@ -62,7 +63,7 @@ License:
       "velocity"
     ],
     "properties":[
-      "stepsPerPositionUnit",
+      "stepsPerPositionUnits",
       "velocityMax",
       "velocityMin",
       "accelerationMax",

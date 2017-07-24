@@ -117,6 +117,7 @@ private:
   // Handlers
   void setLimitsHandler(const size_t channel);
   void reinitializeHandler();
+  void controllersCommunicatingHandler();
   void setStepPolarityInvertedHandler();
   void setDirPolarityInvertedHandler();
   void setSwitchActivePolarityHandler();

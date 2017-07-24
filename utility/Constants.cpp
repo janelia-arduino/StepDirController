@@ -99,6 +99,7 @@ CONSTANT_STRING(velocity_parameter_name,"velocity");
 
 // Functions
 CONSTANT_STRING(reinitialize_function_name,"reinitialize");
+CONSTANT_STRING(controllers_communicating_function_name,"controllersCommunicating");
 CONSTANT_STRING(enable_function_name,"enable");
 CONSTANT_STRING(disable_function_name,"disable");
 CONSTANT_STRING(enable_all_function_name,"enableAll");
