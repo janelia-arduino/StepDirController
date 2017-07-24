@@ -24,13 +24,13 @@ const modular_server::HardwareInfo hardware_info =
 
 const size_t cs_pins[CONTROLLER_COUNT] =
   {
-    10,
+    15,
   };
 const size_t enable_pins[CHANNEL_COUNT] =
   {
-    2,
-    3,
-    4,
+    40,
+    41,
+    42,
   };
 
 // Interrupts

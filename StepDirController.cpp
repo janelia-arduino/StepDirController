@@ -25,10 +25,11 @@ void StepDirController::setup()
   ModularDeviceBase::setup();
 
   // Variable Setup
+  controller_count_ = constants::CONTROLLER_COUNT;
   channel_count_ = constants::CHANNEL_COUNT;
 
   // Controller Setup
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     controller.setup(constants::cs_pins[controller_i],constants::clock_frequency_mhz);
@@ -261,7 +262,7 @@ void StepDirController::update()
 
 void StepDirController::reinitialize()
 {
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     controller.setStepDirOutput();
@@ -433,7 +434,7 @@ void StepDirController::stop(const size_t channel)
 
 void StepDirController::stopAll()
 {
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     controller.stopAll();
@@ -688,6 +689,14 @@ int32_t StepDirController::getVelocityInHz(const size_t channel)
   return velocity;
 }
 
+void StepDirController::setControllerCount(const size_t controller_count)
+{
+  if (controller_count <= constants::CONTROLLER_COUNT)
+  {
+    controller_count_ = controller_count;
+  }
+}
+
 void StepDirController::setChannelCount(const size_t channel_count)
 {
   if (channel_count <= constants::CHANNEL_COUNT)
@@ -812,7 +821,7 @@ void StepDirController::setStepPolarityInvertedHandler()
 {
   bool inverted;
   modular_server_.property(constants::step_polarity_inverted_property_name).getValue(inverted);
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     if (inverted)
@@ -830,7 +839,7 @@ void StepDirController::setDirPolarityInvertedHandler()
 {
   bool inverted;
   modular_server_.property(constants::dir_polarity_inverted_property_name).getValue(inverted);
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     if (inverted)
@@ -848,7 +857,7 @@ void StepDirController::setSwitchActivePolarityHandler()
 {
   const ConstantString * polarity_ptr;
   modular_server_.property(constants::switch_active_polarity_property_name).getValue(polarity_ptr);
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     if (polarity_ptr == &constants::polarity_high)
@@ -883,7 +892,7 @@ void StepDirController::setRightSwitchesEnabledHandler()
 {
   bool enabled;
   modular_server_.property(constants::right_switches_enabled_property_name).getValue(enabled);
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     if (enabled)
@@ -1142,7 +1151,7 @@ void StepDirController::switchesActiveHandler()
 {
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t controller_i=0; controller_i<constants::CONTROLLER_COUNT; ++controller_i)
+  for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
     for (size_t motor_i=0; motor_i<constants::CHANNELS_PER_CONTROLLER_COUNT; ++motor_i)
@@ -1191,4 +1200,3 @@ void StepDirController::homedHandler()
   }
   modular_server_.response().endArray();
 }
-
