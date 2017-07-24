@@ -1,0 +1,98 @@
+* StepDirController
+
+Authors:
+
+#+BEGIN_EXAMPLE
+    Peter Polidoro <polidorop@janelia.hhmi.org>
+#+END_EXAMPLE
+
+License:
+
+#+BEGIN_EXAMPLE
+    BSD
+#+END_EXAMPLE
+
+** Ancestors
+
+[[https://github.com/janelia-arduino/ModularServer][ModularServer]]
+
+[[https://github.com/janelia-arduino/ModularDeviceBase][ModularDeviceBase]]
+
+** Clients
+
+** Devices
+
+[[https://github.com/janelia-modular-devices/modular_device_base.git][modular\_device\_base]]
+
+[[https://github.com/janelia-modular-devices/step_dir_controller.git][step\_dir\_controller]]
+
+** API
+
+#+BEGIN_EXAMPLE
+    {
+      "id":"getApi",
+      "result":{
+        "firmware":["StepDirController"],
+        "functions":[
+          "reinitialize",
+          "enable",
+          "disable",
+          "enableAll",
+          "disableAll",
+          "enabled",
+          "moveBy",
+          "moveTo",
+          "moveAt",
+          "moveSoftlyBy",
+          "moveSoftlyTo",
+          "stop",
+          "stopAll",
+          "zero",
+          "zeroAll",
+          "getPositions",
+          "getTargetPositions",
+          "atTargetPositions",
+          "getVelocities",
+          "getTargetVelocities",
+          "atTargetVelocities",
+          "switchesActive",
+          "home",
+          "homing",
+          "homed"
+        ],
+        "parameters":[
+          "channel",
+          "position",
+          "velocity"
+        ],
+        "properties":[
+          "stepsPerPositionUnit",
+          "velocityMax",
+          "velocityMin",
+          "accelerationMax",
+          "enablePolarity",
+          "stepPolarityInverted",
+          "dirPolarityInverted",
+          "switchActivePolarity",
+          "leftSwitchStopEnabled",
+          "rightSwitchesEnabled",
+          "rightSwitchStopEnabled",
+          "switchSoftStopEnabled",
+          "homeVelocity"
+        ],
+        "callbacks":[]
+      }
+    }
+#+END_EXAMPLE
+
+** API Verbose
+
+[[./api.json][API Verbose]]
+
+** More Detailed Modular Device Information
+
+[[https://github.com/janelia-modular-devices/modular-devices][modular-devices]]
+
+** Install Library Dependencies
+
+[[https://github.com/janelia-arduino/arduino-libraries][arduino-libraries]]
