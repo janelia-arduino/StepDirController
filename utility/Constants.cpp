@@ -26,7 +26,7 @@ const modular_server::FirmwareInfo firmware_info =
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
-const size_t clock_frequency_mhz = 16;
+const size_t clock_frequency_mhz = 32;
 
 CONSTANT_STRING(left_constant_string,"left");
 CONSTANT_STRING(right_constant_string,"right");
