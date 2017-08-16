@@ -40,24 +40,24 @@ CONSTANT_STRING(position_units_per_second_per_second_units,"position_units/s/s")
 
 // Properties
 CONSTANT_STRING(steps_per_position_units_property_name,"stepsPerPositionUnits");
-extern const double steps_per_position_units_element_min = 1.0;
-extern const double steps_per_position_units_element_max = 1e9;
-extern const double steps_per_position_units_element_default = 1.0;
+const double steps_per_position_units_element_min = 1.0;
+const double steps_per_position_units_element_max = 1e9;
+const double steps_per_position_units_element_default = 1.0;
 
 CONSTANT_STRING(velocity_max_property_name,"velocityMax");
-extern const double velocity_max_min = 0.000001;
-extern const double velocity_max_max = 1000000;
-extern const double velocity_max_element_default = 200000;
+const double velocity_max_min = 0.000001;
+const double velocity_max_max = 1000000;
+const double velocity_max_element_default = 200000;
 
 CONSTANT_STRING(velocity_min_property_name,"velocityMin");
-extern const double velocity_min_min = 0.000001;
-extern const double velocity_min_max = 1000000;
-extern const double velocity_min_element_default = 20000;
+const double velocity_min_min = 0.000001;
+const double velocity_min_max = 1000000;
+const double velocity_min_element_default = 20000;
 
 CONSTANT_STRING(acceleration_max_property_name,"accelerationMax");
-extern const double acceleration_max_min = 0.000001;
-extern const double acceleration_max_max = 1000000;
-extern const double acceleration_max_element_default = 200000;
+const double acceleration_max_min = 0.000001;
+const double acceleration_max_max = 1000000;
+const double acceleration_max_element_default = 200000;
 
 CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
 CONSTANT_STRING(polarity_high,"HIGH");
@@ -87,7 +87,7 @@ CONSTANT_STRING(right_switch_stop_enabled_property_name,"rightSwitchStopEnabled"
 CONSTANT_STRING(switch_soft_stop_enabled_property_name,"switchSoftStopEnabled");
 
 CONSTANT_STRING(home_velocity_property_name,"homeVelocity");
-extern const double home_velocity_element_default = -50000;
+const double home_velocity_element_default = -50000;
 
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");
