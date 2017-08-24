@@ -22,13 +22,14 @@ License:
 
 [step_dir_controller](https://github.com/janelia-modular-devices/step_dir_controller.git)
 
-## API
+## API NAMES
 
 ```json
 {
   "id":"getApi",
   "result":{
     "firmware":["StepDirController"],
+    "verbosity":"NAMES",
     "functions":[
       "reinitialize",
       "controllersCommunicating",
@@ -76,15 +77,14 @@ License:
       "rightSwitchStopEnabled",
       "switchSoftStopEnabled",
       "homeVelocity"
-    ],
-    "callbacks":[]
+    ]
   }
 }
 ```
 
-## API Verbose
+## API GENERAL
 
-[API Verbose](./api.json)
+[API GENERAL](./api/)
 
 ## More Detailed Modular Device Information
 

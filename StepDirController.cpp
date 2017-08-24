@@ -127,6 +127,8 @@ void StepDirController::setup()
 
   modular_server::Function & controllers_communicating_function = modular_server_.createFunction(constants::controllers_communicating_function_name);
   controllers_communicating_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::controllersCommunicatingHandler));
+  controllers_communicating_function.setResultTypeArray();
+  controllers_communicating_function.setResultTypeBool();
 
   modular_server::Function & enable_function = modular_server_.createFunction(constants::enable_function_name);
   enable_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::enableHandler));
