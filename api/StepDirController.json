@@ -96,14 +96,14 @@
         "name":"getPositions",
         "result_info":{
           "type":"array",
-          "array_element_type":"double"
+          "array_element_type":"long"
         }
       },
       {
         "name":"getTargetPositions",
         "result_info":{
           "type":"array",
-          "array_element_type":"double"
+          "array_element_type":"long"
         }
       },
       {
@@ -117,7 +117,7 @@
         "name":"getVelocities",
         "result_info":{
           "type":"array",
-          "array_element_type":"double"
+          "array_element_type":"long"
         }
       },
       {
@@ -172,24 +172,24 @@
       },
       {
         "name":"position",
-        "type":"double"
+        "type":"long"
       },
       {
         "name":"velocity",
-        "type":"double"
+        "type":"long"
       }
     ],
     "properties":[
       {
         "name":"stepsPerPositionUnits",
         "type":"array",
-        "array_element_type":"double",
+        "array_element_type":"long",
         "functions":[
           {
             "name":"getValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -199,21 +199,21 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"getDefaultValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"setValueToDefault",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -222,7 +222,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -233,7 +233,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -242,7 +242,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -252,7 +252,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -262,7 +262,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -285,7 +285,7 @@
           {
             "name":"value",
             "type":"array",
-            "array_element_type":"double"
+            "array_element_type":"long"
           },
           {
             "name":"element_index",
@@ -293,7 +293,7 @@
           },
           {
             "name":"element_value",
-            "type":"double"
+            "type":"long"
           },
           {
             "name":"array_length",
@@ -304,13 +304,13 @@
       {
         "name":"velocityMax",
         "type":"array",
-        "array_element_type":"double",
+        "array_element_type":"long",
         "functions":[
           {
             "name":"getValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -320,21 +320,21 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"getDefaultValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"setValueToDefault",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -343,7 +343,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -354,7 +354,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -363,7 +363,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -373,7 +373,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -383,7 +383,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -406,7 +406,7 @@
           {
             "name":"value",
             "type":"array",
-            "array_element_type":"double"
+            "array_element_type":"long"
           },
           {
             "name":"element_index",
@@ -414,7 +414,7 @@
           },
           {
             "name":"element_value",
-            "type":"double"
+            "type":"long"
           },
           {
             "name":"array_length",
@@ -425,13 +425,13 @@
       {
         "name":"velocityMin",
         "type":"array",
-        "array_element_type":"double",
+        "array_element_type":"long",
         "functions":[
           {
             "name":"getValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -441,21 +441,21 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"getDefaultValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"setValueToDefault",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -464,7 +464,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -475,7 +475,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -484,7 +484,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -494,7 +494,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -504,7 +504,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -527,7 +527,7 @@
           {
             "name":"value",
             "type":"array",
-            "array_element_type":"double"
+            "array_element_type":"long"
           },
           {
             "name":"element_index",
@@ -535,7 +535,7 @@
           },
           {
             "name":"element_value",
-            "type":"double"
+            "type":"long"
           },
           {
             "name":"array_length",
@@ -546,13 +546,13 @@
       {
         "name":"accelerationMax",
         "type":"array",
-        "array_element_type":"double",
+        "array_element_type":"long",
         "functions":[
           {
             "name":"getValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -562,21 +562,21 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"getDefaultValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"setValueToDefault",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -585,7 +585,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -596,7 +596,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -605,7 +605,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -615,7 +615,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -625,7 +625,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -648,7 +648,7 @@
           {
             "name":"value",
             "type":"array",
-            "array_element_type":"double"
+            "array_element_type":"long"
           },
           {
             "name":"element_index",
@@ -656,7 +656,7 @@
           },
           {
             "name":"element_value",
-            "type":"double"
+            "type":"long"
           },
           {
             "name":"array_length",
@@ -1307,13 +1307,13 @@
       {
         "name":"homeVelocity",
         "type":"array",
-        "array_element_type":"double",
+        "array_element_type":"long",
         "functions":[
           {
             "name":"getValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -1323,21 +1323,21 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"getDefaultValue",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
             "name":"setValueToDefault",
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -1346,7 +1346,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -1357,7 +1357,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -1366,7 +1366,7 @@
               "element_index"
             ],
             "result_info":{
-              "type":"double"
+              "type":"long"
             }
           },
           {
@@ -1376,7 +1376,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -1386,7 +1386,7 @@
             ],
             "result_info":{
               "type":"array",
-              "array_element_type":"double"
+              "array_element_type":"long"
             }
           },
           {
@@ -1409,7 +1409,7 @@
           {
             "name":"value",
             "type":"array",
-            "array_element_type":"double"
+            "array_element_type":"long"
           },
           {
             "name":"element_index",
@@ -1417,7 +1417,7 @@
           },
           {
             "name":"element_value",
-            "type":"double"
+            "type":"long"
           },
           {
             "name":"array_length",
