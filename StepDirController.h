@@ -49,23 +49,23 @@ public:
   void disableAll();
   uint32_t enabled();
 
-  void moveBy(const size_t channel, const double position);
-  void moveTo(const size_t channel, const double position);
-  void moveAt(const size_t channel, const double velocity);
-  void moveSoftlyBy(const size_t channel, const double position);
-  void moveSoftlyTo(const size_t channel, const double position);
+  void moveBy(const size_t channel, const long position);
+  void moveTo(const size_t channel, const long position);
+  void moveAt(const size_t channel, const long velocity);
+  void moveSoftlyBy(const size_t channel, const long position);
+  void moveSoftlyTo(const size_t channel, const long position);
   void stop(const size_t channel);
   void stopAll();
 
   void zero(const size_t channel);
   void zeroAll();
 
-  double getPosition(const size_t channel);
-  double getTargetPosition(const size_t channel);
+  long getPosition(const size_t channel);
+  long getTargetPosition(const size_t channel);
   bool atTargetPosition(const size_t channel);
 
-  double getVelocity(const size_t channel);
-  double getTargetVelocity(const size_t channel);
+  long getVelocity(const size_t channel);
+  long getTargetVelocity(const size_t channel);
   bool atTargetVelocity(const size_t channel);
 
   bool leftSwitchActive(const size_t channel);
@@ -77,8 +77,8 @@ public:
   bool homed(const size_t channel);
 
 protected:
-  virtual double stepsToPositionUnits(const size_t channel, const double steps);
-  virtual double positionUnitsToSteps(const size_t channel, const double position_units);
+  virtual long stepsToPositionUnits(const size_t channel, const long steps);
+  virtual long positionUnitsToSteps(const size_t channel, const long position_units);
 
   int32_t getPositionInSteps(const size_t channel);
   int32_t getVelocityInHz(const size_t channel);
@@ -104,10 +104,10 @@ private:
   bool homing_[step_dir_controller::constants::CHANNEL_COUNT];
   bool homed_[step_dir_controller::constants::CHANNEL_COUNT];
 
-  double velocity_min_steps_[step_dir_controller::constants::CHANNEL_COUNT];
-  double velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
-  double acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
-  double home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  long velocity_min_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  long velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  long acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  long home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT];
   size_t controller_count_;
   size_t channel_count_;
 

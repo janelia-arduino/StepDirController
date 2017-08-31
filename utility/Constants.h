@@ -46,24 +46,24 @@ extern ConstantString position_units_per_second_per_second_units;
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
 extern ConstantString steps_per_position_units_property_name;
-extern const double steps_per_position_units_element_min;
-extern const double steps_per_position_units_element_max;
-extern const double steps_per_position_units_element_default;
+extern const long steps_per_position_units_element_min;
+extern const long steps_per_position_units_element_max;
+extern const long steps_per_position_units_element_default;
 
 extern ConstantString velocity_max_property_name;
-extern const double velocity_max_min;
-extern const double velocity_max_max;
-extern const double velocity_max_element_default;
+extern const long velocity_max_min;
+extern const long velocity_max_max;
+extern const long velocity_max_element_default;
 
 extern ConstantString velocity_min_property_name;
-extern const double velocity_min_min;
-extern const double velocity_min_max;
-extern const double velocity_min_element_default;
+extern const long velocity_min_min;
+extern const long velocity_min_max;
+extern const long velocity_min_element_default;
 
 extern ConstantString acceleration_max_property_name;
-extern const double acceleration_max_min;
-extern const double acceleration_max_max;
-extern const double acceleration_max_element_default;
+extern const long acceleration_max_min;
+extern const long acceleration_max_max;
+extern const long acceleration_max_element_default;
 
 extern ConstantString enable_polarity_property_name;
 enum{POLARITY_SUBSET_LENGTH=2};
@@ -90,7 +90,7 @@ extern ConstantString right_switch_stop_enabled_property_name;
 extern ConstantString switch_soft_stop_enabled_property_name;
 
 extern ConstantString home_velocity_property_name;
-extern const double home_velocity_element_default;
+extern const long home_velocity_element_default;
 
 // Parameters
 extern ConstantString channel_parameter_name;

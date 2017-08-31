@@ -19,7 +19,7 @@ CONSTANT_STRING(firmware_name,"StepDirController");
 const modular_server::FirmwareInfo firmware_info =
   {
     .name_ptr=&firmware_name,
-    .version_major=1,
+    .version_major=2,
     .version_minor=0,
     .version_patch=0,
   };
@@ -40,24 +40,24 @@ CONSTANT_STRING(position_units_per_second_per_second_units,"position_units/s/s")
 
 // Properties
 CONSTANT_STRING(steps_per_position_units_property_name,"stepsPerPositionUnits");
-const double steps_per_position_units_element_min = 1.0;
-const double steps_per_position_units_element_max = 1e9;
-const double steps_per_position_units_element_default = 1.0;
+const long steps_per_position_units_element_min = 1;
+const long steps_per_position_units_element_max = 1000000000;
+const long steps_per_position_units_element_default = 1;
 
 CONSTANT_STRING(velocity_max_property_name,"velocityMax");
-const double velocity_max_min = 0.000001;
-const double velocity_max_max = 1000000;
-const double velocity_max_element_default = 200000;
+const long velocity_max_min = 1;
+const long velocity_max_max = 1000000;
+const long velocity_max_element_default = 200000;
 
 CONSTANT_STRING(velocity_min_property_name,"velocityMin");
-const double velocity_min_min = 0.000001;
-const double velocity_min_max = 1000000;
-const double velocity_min_element_default = 20000;
+const long velocity_min_min = 1;
+const long velocity_min_max = 1000000;
+const long velocity_min_element_default = 20000;
 
 CONSTANT_STRING(acceleration_max_property_name,"accelerationMax");
-const double acceleration_max_min = 0.000001;
-const double acceleration_max_max = 1000000;
-const double acceleration_max_element_default = 200000;
+const long acceleration_max_min = 1;
+const long acceleration_max_max = 1000000;
+const long acceleration_max_element_default = 200000;
 
 CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
 CONSTANT_STRING(polarity_high,"HIGH");
@@ -87,7 +87,7 @@ CONSTANT_STRING(right_switch_stop_enabled_property_name,"rightSwitchStopEnabled"
 CONSTANT_STRING(switch_soft_stop_enabled_property_name,"switchSoftStopEnabled");
 
 CONSTANT_STRING(home_velocity_property_name,"homeVelocity");
-const double home_velocity_element_default = -50000;
+const long home_velocity_element_default = -50000;
 
 // Parameters
 CONSTANT_STRING(channel_parameter_name,"channel");
