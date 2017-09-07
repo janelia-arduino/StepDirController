@@ -86,7 +86,7 @@ protected:
   void setControllerCount(const size_t controller_count);
 
   // Handlers
-  virtual void setChannelCountHandler();
+  void setChannelCountHandler();
   void preUpdateScaledPropertiesHandler(const size_t channel);
   void postUpdateScaledPropertiesHandler(const size_t channel);
 

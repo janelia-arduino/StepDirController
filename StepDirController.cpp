@@ -785,7 +785,9 @@ void StepDirController::setControllerCount(const size_t controller_count)
   {
     controller_count_ = controller_count;
     modular_server::Property & channel_count_property = modular_server_.property(constants::channel_count_property_name);
+    channel_count_property.disableFunctors();
     channel_count_property.setRange(constants::channel_count_min,controller_count*constants::CHANNELS_PER_CONTROLLER_COUNT);
+    channel_count_property.reenableFunctors();
     setChannelCountHandler();
   }
 }
