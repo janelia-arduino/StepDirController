@@ -38,8 +38,7 @@ const size_t enable_pins[CHANNEL_COUNT_MAX] =
 // Units
 
 // Properties
-const long step_dir_channel_count_max = CHANNEL_COUNT_MAX;
-const long step_dir_channel_count_default = CHANNEL_COUNT_MAX;
+const long channel_count_default = CHANNEL_COUNT_MAX;
 
 const long steps_per_position_units_default[CHANNEL_COUNT_MAX] =
   {

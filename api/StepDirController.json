@@ -181,7 +181,7 @@
     ],
     "properties":[
       {
-        "name":"stepDirChannelCount",
+        "name":"channelCount",
         "type":"long",
         "functions":[
           {

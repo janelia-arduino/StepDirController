@@ -39,8 +39,8 @@ CONSTANT_STRING(position_units_per_second_units,"position_units/s");
 CONSTANT_STRING(position_units_per_second_per_second_units,"position_units/s/s");
 
 // Properties
-CONSTANT_STRING(step_dir_channel_count_property_name,"stepDirChannelCount");
-const long step_dir_channel_count_min = 1;
+CONSTANT_STRING(channel_count_property_name,"channelCount");
+const long channel_count_min = 1;
 
 CONSTANT_STRING(steps_per_position_units_property_name,"stepsPerPositionUnits");
 const long steps_per_position_units_element_min = 1;

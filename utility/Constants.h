@@ -45,10 +45,9 @@ extern ConstantString position_units_per_second_per_second_units;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
-extern ConstantString step_dir_channel_count_property_name;
-extern const long step_dir_channel_count_min;
-extern const long step_dir_channel_count_max;
-extern const long step_dir_channel_count_default;
+extern ConstantString channel_count_property_name;
+extern const long channel_count_min;
+extern const long channel_count_default;
 
 extern ConstantString steps_per_position_units_property_name;
 extern const long steps_per_position_units_element_min;

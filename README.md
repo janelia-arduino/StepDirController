@@ -64,7 +64,7 @@ License:
       "velocity"
     ],
     "properties":[
-      "stepDirChannelCount",
+      "channelCount",
       "stepsPerPositionUnits",
       "velocityMax",
       "velocityMin",
