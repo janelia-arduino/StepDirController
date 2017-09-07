@@ -20,7 +20,7 @@ const modular_server::FirmwareInfo firmware_info =
   {
     .name_ptr=&firmware_name,
     .version_major=2,
-    .version_minor=0,
+    .version_minor=1,
     .version_patch=0,
   };
 
@@ -39,6 +39,9 @@ CONSTANT_STRING(position_units_per_second_units,"position_units/s");
 CONSTANT_STRING(position_units_per_second_per_second_units,"position_units/s/s");
 
 // Properties
+CONSTANT_STRING(step_dir_channel_count_property_name,"stepDirChannelCount");
+const long step_dir_channel_count_min = 1;
+
 CONSTANT_STRING(steps_per_position_units_property_name,"stepsPerPositionUnits");
 const long steps_per_position_units_element_min = 1;
 const long steps_per_position_units_element_max = 1000000000;

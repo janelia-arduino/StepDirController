@@ -84,7 +84,6 @@ protected:
   int32_t getVelocityInHz(const size_t channel);
 
   void setControllerCount(const size_t controller_count);
-  void setChannelCount(const size_t channel_count);
 
   // Handlers
   void preUpdateScaledPropertiesHandler(const size_t channel);
@@ -99,22 +98,22 @@ private:
   modular_server::Callback callbacks_[step_dir_controller::constants::CALLBACK_COUNT_MAX];
 
   typedef TMC429 Controller;
-  Controller controllers_[step_dir_controller::constants::CONTROLLER_COUNT];
-  bool enabled_[step_dir_controller::constants::CHANNEL_COUNT];
-  bool homing_[step_dir_controller::constants::CHANNEL_COUNT];
-  bool homed_[step_dir_controller::constants::CHANNEL_COUNT];
+  Controller controllers_[step_dir_controller::constants::CONTROLLER_COUNT_MAX];
+  bool enabled_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+  bool homing_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+  bool homed_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
 
-  long velocity_min_steps_[step_dir_controller::constants::CHANNEL_COUNT];
-  long velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
-  long acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT];
-  long home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT];
+  long velocity_min_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+  long velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+  long acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+  long home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   size_t controller_count_;
-  size_t channel_count_;
 
   size_t channelToControllerIndex(const size_t channel);
   size_t channelToMotorIndex(const size_t channel);
 
   // Handlers
+  void setStepDirChannelCountHandler();
   void setLimitsHandler(const size_t channel);
   void reinitializeHandler();
   void controllersCommunicatingHandler();

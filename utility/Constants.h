@@ -16,7 +16,7 @@ namespace step_dir_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{PROPERTY_COUNT_MAX=13};
+enum{PROPERTY_COUNT_MAX=14};
 enum{PARAMETER_COUNT_MAX=3};
 enum{FUNCTION_COUNT_MAX=26};
 enum{CALLBACK_COUNT_MAX=1};
@@ -45,6 +45,11 @@ extern ConstantString position_units_per_second_per_second_units;
 
 // Properties
 // Property values must be long, double, bool, long[], double[], bool[], char[], ConstantString *, (ConstantString *)[]
+extern ConstantString step_dir_channel_count_property_name;
+extern const long step_dir_channel_count_min;
+extern const long step_dir_channel_count_max;
+extern const long step_dir_channel_count_default;
+
 extern ConstantString steps_per_position_units_property_name;
 extern const long steps_per_position_units_element_min;
 extern const long steps_per_position_units_element_max;
@@ -95,7 +100,6 @@ extern const long home_velocity_element_default;
 // Parameters
 extern ConstantString channel_parameter_name;
 extern const long channel_min;
-extern const long channel_max;
 
 extern ConstantString position_parameter_name;
 

@@ -181,6 +181,45 @@
     ],
     "properties":[
       {
+        "name":"stepDirChannelCount",
+        "type":"long",
+        "functions":[
+          {
+            "name":"getValue",
+            "result_info":{
+              "type":"long"
+            }
+          },
+          {
+            "name":"setValue",
+            "parameters":[
+              "value"
+            ],
+            "result_info":{
+              "type":"long"
+            }
+          },
+          {
+            "name":"getDefaultValue",
+            "result_info":{
+              "type":"long"
+            }
+          },
+          {
+            "name":"setValueToDefault",
+            "result_info":{
+              "type":"long"
+            }
+          }
+        ],
+        "parameters":[
+          {
+            "name":"value",
+            "type":"long"
+          }
+        ]
+      },
+      {
         "name":"stepsPerPositionUnits",
         "type":"array",
         "array_element_type":"long",
