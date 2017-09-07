@@ -61,7 +61,7 @@ void StepDirController::setup()
   // Properties
   modular_server::Property & channel_count_property = modular_server_.createProperty(constants::channel_count_property_name,constants::channel_count_default);
   channel_count_property.setRange(constants::channel_count_min,constants::CHANNEL_COUNT_MAX);
-  channel_count_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setStepDirChannelCountHandler));
+  channel_count_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setChannelCountHandler));
 
   modular_server::Property & steps_per_position_units_property = modular_server_.createProperty(constants::steps_per_position_units_property_name,constants::steps_per_position_units_default);
   steps_per_position_units_property.setRange(constants::steps_per_position_units_element_min,constants::steps_per_position_units_element_max);
@@ -121,7 +121,7 @@ void StepDirController::setup()
   modular_server::Parameter & velocity_parameter = modular_server_.createParameter(constants::velocity_parameter_name);
   velocity_parameter.setTypeLong();
 
-  setStepDirChannelCountHandler();
+  setChannelCountHandler();
   reinitialize();
 
   // Functions
@@ -786,7 +786,7 @@ void StepDirController::setControllerCount(const size_t controller_count)
     controller_count_ = controller_count;
     modular_server::Property & channel_count_property = modular_server_.property(constants::channel_count_property_name);
     channel_count_property.setRange(constants::channel_count_min,controller_count*constants::CHANNELS_PER_CONTROLLER_COUNT);
-    setStepDirChannelCountHandler();
+    setChannelCountHandler();
   }
 }
 
@@ -816,6 +816,43 @@ size_t StepDirController::channelToMotorIndex(const size_t channel)
 // modular_server_.property(property_name).setValue(value) value type must match the property default type
 // modular_server_.property(property_name).getElementValue(element_index,value) value type must match the property array element default type
 // modular_server_.property(property_name).setElementValue(element_index,value) value type must match the property array element default type
+
+void StepDirController::setChannelCountHandler()
+{
+  long channel_count;
+  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
+
+  modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
+  steps_per_position_units_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
+  velocity_max_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
+  velocity_min_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
+  acceleration_max_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & enable_polarity_property = modular_server_.property(constants::enable_polarity_property_name);
+  enable_polarity_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & left_switch_stop_enabled_property = modular_server_.property(constants::left_switch_stop_enabled_property_name);
+  left_switch_stop_enabled_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & right_switch_stop_enabled_property = modular_server_.property(constants::right_switch_stop_enabled_property_name);
+  right_switch_stop_enabled_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & switch_soft_stop_enabled_property = modular_server_.property(constants::switch_soft_stop_enabled_property_name);
+  switch_soft_stop_enabled_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
+  home_velocity_property.setArrayLengthRange(channel_count,channel_count);
+
+  modular_server::Parameter & channel_parameter = modular_server_.parameter(constants::channel_parameter_name);
+  channel_parameter.setRange(constants::channel_min,channel_count-1);
+
+}
 
 void StepDirController::preUpdateScaledPropertiesHandler(const size_t channel)
 {
@@ -869,43 +906,6 @@ void StepDirController::postUpdateScaledPropertiesHandler(const size_t channel)
   home_velocity_property.reenableFunctors();
 
   setLimitsHandler(channel);
-}
-
-void StepDirController::setStepDirChannelCountHandler()
-{
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
-  steps_per_position_units_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & velocity_max_property = modular_server_.property(constants::velocity_max_property_name);
-  velocity_max_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
-  velocity_min_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & acceleration_max_property = modular_server_.property(constants::acceleration_max_property_name);
-  acceleration_max_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & enable_polarity_property = modular_server_.property(constants::enable_polarity_property_name);
-  enable_polarity_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & left_switch_stop_enabled_property = modular_server_.property(constants::left_switch_stop_enabled_property_name);
-  left_switch_stop_enabled_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & right_switch_stop_enabled_property = modular_server_.property(constants::right_switch_stop_enabled_property_name);
-  right_switch_stop_enabled_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & switch_soft_stop_enabled_property = modular_server_.property(constants::switch_soft_stop_enabled_property_name);
-  switch_soft_stop_enabled_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
-  home_velocity_property.setArrayLengthRange(channel_count,channel_count);
-
-  modular_server::Parameter & channel_parameter = modular_server_.parameter(constants::channel_parameter_name);
-  channel_parameter.setRange(constants::channel_min,channel_count-1);
-
 }
 
 void StepDirController::setLimitsHandler(const size_t channel)

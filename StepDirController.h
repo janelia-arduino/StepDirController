@@ -86,6 +86,7 @@ protected:
   void setControllerCount(const size_t controller_count);
 
   // Handlers
+  virtual void setChannelCountHandler();
   void preUpdateScaledPropertiesHandler(const size_t channel);
   void postUpdateScaledPropertiesHandler(const size_t channel);
 
@@ -113,7 +114,6 @@ private:
   size_t channelToMotorIndex(const size_t channel);
 
   // Handlers
-  void setStepDirChannelCountHandler();
   void setLimitsHandler(const size_t channel);
   void reinitializeHandler();
   void controllersCommunicatingHandler();
