@@ -250,10 +250,7 @@ void StepDirController::update()
   // Parent Update
   ModularDeviceBase::update();
 
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     if (homing_[channel])
     {
@@ -289,22 +286,24 @@ void StepDirController::reinitialize()
     }
   }
 
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     setLimitsHandler(channel);
   }
   enableAll();
 }
 
-void StepDirController::enable(const size_t channel)
+size_t StepDirController::getChannelCount()
 {
   long channel_count;
   modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
 
-  if (channel < (size_t)channel_count)
+  return channel_count;
+}
+
+void StepDirController::enable(const size_t channel)
+{
+  if (channel < getChannelCount())
   {
     const ConstantString * polarity_ptr;
     modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
@@ -322,10 +321,7 @@ void StepDirController::enable(const size_t channel)
 
 void StepDirController::disable(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     stop(channel);
     const ConstantString * polarity_ptr;
@@ -344,10 +340,7 @@ void StepDirController::disable(const size_t channel)
 
 void StepDirController::enableAll()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     enable(channel);
   }
@@ -355,10 +348,7 @@ void StepDirController::enableAll()
 
 void StepDirController::disableAll()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     disable(channel);
   }
@@ -366,11 +356,8 @@ void StepDirController::disableAll()
 
 uint32_t StepDirController::enabled()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   uint32_t channels_enabled = 0;
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     bool channel_enabled = enabled_[channel];
     if (channel_enabled)
@@ -383,10 +370,7 @@ uint32_t StepDirController::enabled()
 
 void StepDirController::moveBy(const size_t channel, const long position)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -401,10 +385,7 @@ void StepDirController::moveBy(const size_t channel, const long position)
 
 void StepDirController::moveTo(const size_t channel, const long position)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -417,10 +398,7 @@ void StepDirController::moveTo(const size_t channel, const long position)
 
 void StepDirController::moveAt(const size_t channel, const long velocity)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -433,10 +411,7 @@ void StepDirController::moveAt(const size_t channel, const long velocity)
 
 void StepDirController::moveSoftlyBy(const size_t channel, const long position)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -451,10 +426,7 @@ void StepDirController::moveSoftlyBy(const size_t channel, const long position)
 
 void StepDirController::moveSoftlyTo(const size_t channel, const long position)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -467,10 +439,7 @@ void StepDirController::moveSoftlyTo(const size_t channel, const long position)
 
 void StepDirController::stop(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -491,10 +460,7 @@ void StepDirController::stopAll()
 
 void StepDirController::zero(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -507,10 +473,7 @@ void StepDirController::zero(const size_t channel)
 
 void StepDirController::zeroAll()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     zero(channel);
   }
@@ -524,11 +487,8 @@ long StepDirController::getPosition(const size_t channel)
 
 long StepDirController::getTargetPosition(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   long position = 0;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -540,11 +500,8 @@ long StepDirController::getTargetPosition(const size_t channel)
 
 bool StepDirController::atTargetPosition(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool at_target_position = true;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -562,11 +519,8 @@ long StepDirController::getVelocity(const size_t channel)
 
 long StepDirController::getTargetVelocity(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   long velocity = 0;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -578,11 +532,8 @@ long StepDirController::getTargetVelocity(const size_t channel)
 
 bool StepDirController::atTargetVelocity(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool at_target_velocity = true;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -594,11 +545,8 @@ bool StepDirController::atTargetVelocity(const size_t channel)
 
 bool StepDirController::leftSwitchActive(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool left_switch_active = false;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -610,11 +558,8 @@ bool StepDirController::leftSwitchActive(const size_t channel)
 
 bool StepDirController::rightSwitchActive(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool right_switch_active = false;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -626,10 +571,7 @@ bool StepDirController::rightSwitchActive(const size_t channel)
 
 bool StepDirController::home(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel >= (size_t)channel_count)
+  if (channel >= getChannelCount())
   {
     return false;
   }
@@ -692,10 +634,7 @@ bool StepDirController::home(const size_t channel)
 
 bool StepDirController::homing(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel >= (size_t)channel_count)
+  if (channel >= getChannelCount())
   {
     return false;
   }
@@ -704,10 +643,7 @@ bool StepDirController::homing(const size_t channel)
 
 bool StepDirController::anyHoming()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     if (homing_[channel])
     {
@@ -719,10 +655,7 @@ bool StepDirController::anyHoming()
 
 bool StepDirController::homed(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
-  if (channel >= (size_t)channel_count)
+  if (channel >= getChannelCount())
   {
     return false;
   }
@@ -749,11 +682,8 @@ long StepDirController::positionUnitsToSteps(const size_t channel, const long po
 
 int32_t StepDirController::getPositionInSteps(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   int32_t position = 0;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -765,11 +695,8 @@ int32_t StepDirController::getPositionInSteps(const size_t channel)
 
 int32_t StepDirController::getVelocityInHz(const size_t channel)
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   int32_t velocity = 0;
-  if (channel < (size_t)channel_count)
+  if (channel < getChannelCount())
   {
     size_t controller_i = channelToControllerIndex(channel);
     size_t motor_i = channelToMotorIndex(channel);
@@ -821,8 +748,7 @@ size_t StepDirController::channelToMotorIndex(const size_t channel)
 
 void StepDirController::setChannelCountHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
+  size_t channel_count = getChannelCount();
 
   modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
   steps_per_position_units_property.setArrayLengthRange(channel_count,channel_count);
@@ -852,7 +778,7 @@ void StepDirController::setChannelCountHandler()
   home_velocity_property.setArrayLengthRange(channel_count,channel_count);
 
   modular_server::Parameter & channel_parameter = modular_server_.parameter(constants::channel_parameter_name);
-  channel_parameter.setRange(constants::channel_min,channel_count-1);
+  channel_parameter.setRange(constants::channel_min,(long)(channel_count-1));
 
 }
 
@@ -1105,14 +1031,11 @@ void StepDirController::disableAllHandler()
 
 void StepDirController::enabledHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   uint32_t channels_enabled = enabled();
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
   int bit = 1;
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     bool channel_enabled = (bit << channel) & channels_enabled;
     modular_server_.response().write(channel_enabled);
@@ -1213,13 +1136,10 @@ void StepDirController::zeroAllHandler()
 
 void StepDirController::getPositionsHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   long position;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     position = getPosition(channel);
     modular_server_.response().write(position);
@@ -1229,13 +1149,10 @@ void StepDirController::getPositionsHandler()
 
 void StepDirController::getTargetPositionsHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   long position;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     position = getPosition(channel);
     modular_server_.response().write(position);
@@ -1245,13 +1162,10 @@ void StepDirController::getTargetPositionsHandler()
 
 void StepDirController::atTargetPositionsHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool at_target_position;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     at_target_position = atTargetPosition(channel);
     modular_server_.response().write(at_target_position);
@@ -1261,13 +1175,10 @@ void StepDirController::atTargetPositionsHandler()
 
 void StepDirController::getVelocitiesHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   long velocity;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     velocity = getVelocity(channel);
     modular_server_.response().write(velocity);
@@ -1277,13 +1188,10 @@ void StepDirController::getVelocitiesHandler()
 
 void StepDirController::getTargetVelocitiesHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   long velocity;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     velocity = getTargetVelocity(channel);
     modular_server_.response().write(velocity);
@@ -1293,13 +1201,10 @@ void StepDirController::getTargetVelocitiesHandler()
 
 void StepDirController::atTargetVelocitiesHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool at_target_velocity;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     at_target_velocity = atTargetVelocity(channel);
     modular_server_.response().write(at_target_velocity);
@@ -1337,13 +1242,10 @@ void StepDirController::homeHandler()
 
 void StepDirController::homingHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool is_homing;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     is_homing = homing(channel);
     modular_server_.response().write(is_homing);
@@ -1353,13 +1255,10 @@ void StepDirController::homingHandler()
 
 void StepDirController::homedHandler()
 {
-  long channel_count;
-  modular_server_.property(constants::channel_count_property_name).getValue(channel_count);
-
   bool is_homed;
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t channel=0; channel<(size_t)channel_count; ++channel)
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
     is_homed = homed(channel);
     modular_server_.response().write(is_homed);

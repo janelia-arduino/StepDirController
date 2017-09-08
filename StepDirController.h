@@ -43,6 +43,8 @@ public:
 
   virtual void reinitialize();
 
+  virtual size_t getChannelCount();
+
   void enable(const size_t channel);
   void disable(const size_t channel);
   void enableAll();
