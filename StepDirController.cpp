@@ -114,6 +114,7 @@ void StepDirController::setup()
 
   // Parameters
   modular_server::Parameter & channel_parameter = modular_server_.createParameter(constants::channel_parameter_name);
+  channel_parameter.setTypeLong();
 
   modular_server::Parameter & position_parameter = modular_server_.createParameter(constants::position_parameter_name);
   position_parameter.setTypeLong();
