@@ -7,8 +7,8 @@
 // ----------------------------------------------------------------------------
 #ifndef STEP_DIR_CONTROLLER_CONSTANTS_H
 #define STEP_DIR_CONTROLLER_CONSTANTS_H
-#include "ConstantVariable.h"
-#include "ModularServer.h"
+#include <ConstantVariable.h>
+#include <ModularServer.h>
 
 
 namespace step_dir_controller

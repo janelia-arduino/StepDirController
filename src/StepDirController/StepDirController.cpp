@@ -5,7 +5,7 @@
 // Authors:
 // Peter Polidoro polidorop@janelia.hhmi.org
 // ----------------------------------------------------------------------------
-#include "StepDirController.h"
+#include "../StepDirController.h"
 
 
 using namespace step_dir_controller;
