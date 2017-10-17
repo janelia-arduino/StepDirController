@@ -1155,7 +1155,7 @@ void StepDirController::getTargetPositionsHandler()
   modular_server_.response().beginArray();
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
-    position = getPosition(channel);
+    position = getTargetPosition(channel);
     modular_server_.response().write(position);
   }
   modular_server_.response().endArray();
