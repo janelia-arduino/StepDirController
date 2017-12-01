@@ -26,11 +26,13 @@ License:
 
 ```json
 {
-  "id":"getApi",
-  "result":{
-    "firmware":["StepDirController"],
-    "verbosity":"NAMES",
-    "functions":[
+  "id": "getApi",
+  "result": {
+    "firmware": [
+      "StepDirController"
+    ],
+    "verbosity": "NAMES",
+    "functions": [
       "reinitialize",
       "controllersCommunicating",
       "enable",
@@ -58,12 +60,12 @@ License:
       "homing",
       "homed"
     ],
-    "parameters":[
+    "parameters": [
       "channel",
       "position",
       "velocity"
     ],
-    "properties":[
+    "properties": [
       "channelCount",
       "stepsPerPositionUnits",
       "velocityMax",
