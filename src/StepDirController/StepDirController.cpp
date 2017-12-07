@@ -24,6 +24,9 @@ void StepDirController::setup()
   // Parent Setup
   ModularDeviceBase::setup();
 
+  // Reset Watchdog
+  resetWatchdog();
+
   // Variable Setup
   controller_count_ = constants::CONTROLLER_COUNT_MAX;
 

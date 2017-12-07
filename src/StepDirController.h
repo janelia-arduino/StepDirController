@@ -21,6 +21,7 @@
 #include <Functor.h>
 #include <IndexedContainer.h>
 #include <FunctorCallbacks.h>
+#include <Watchdog.h>
 
 #include <SPI.h>
 #include <TMC429.h>
