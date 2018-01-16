@@ -460,6 +460,10 @@ void StepDirController::stopAll()
     Controller & controller = controllers_[controller_i];
     controller.stopAll();
   }
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    homing_[channel] = false;
+  }
 }
 
 void StepDirController::zero(const size_t channel)

@@ -74,7 +74,7 @@ public:
   bool leftSwitchActive(const size_t channel);
   bool rightSwitchActive(const size_t channel);
 
-  bool home(const size_t channel);
+  virtual bool home(const size_t channel);
   bool homing(const size_t channel);
   bool anyHoming();
   bool homed(const size_t channel);
