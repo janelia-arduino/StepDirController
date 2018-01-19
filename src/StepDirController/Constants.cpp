@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
     .name_ptr=&firmware_name,
     .version_major=2,
     .version_minor=2,
-    .version_patch=0,
+    .version_patch=1,
   };
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
@@ -70,6 +70,7 @@ modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
     {.cs_ptr=&polarity_high},
     {.cs_ptr=&polarity_low},
   };
+const ConstantString * const enable_polarity_element_default = &polarity_high;
 
 CONSTANT_STRING(step_polarity_inverted_property_name,"stepPolarityInverted");
 const bool step_polarity_inverted_default = false;
@@ -81,13 +82,16 @@ CONSTANT_STRING(switch_active_polarity_property_name,"switchActivePolarity");
 const ConstantString * const switch_active_polarity_default = &polarity_low;
 
 CONSTANT_STRING(left_switch_stop_enabled_property_name,"leftSwitchStopEnabled");
+const bool left_switch_stop_enabled_element_default = false;
 
 CONSTANT_STRING(right_switches_enabled_property_name,"rightSwitchesEnabled");
 const bool right_switches_enabled_default = false;
 
 CONSTANT_STRING(right_switch_stop_enabled_property_name,"rightSwitchStopEnabled");
+const bool right_switch_stop_enabled_element_default = false;
 
 CONSTANT_STRING(switch_soft_stop_enabled_property_name,"switchSoftStopEnabled");
+const bool switch_soft_stop_enabled_element_default = false;
 
 CONSTANT_STRING(home_velocity_property_name,"homeVelocity");
 const long home_velocity_element_default = -50000;

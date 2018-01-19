@@ -70,30 +70,30 @@ const long acceleration_max_default[CHANNEL_COUNT_MAX] =
 
 const ConstantString * const enable_polarity_default[CHANNEL_COUNT_MAX] =
   {
-    &polarity_high,
-    &polarity_high,
-    &polarity_high,
+    enable_polarity_element_default,
+    enable_polarity_element_default,
+    enable_polarity_element_default,
   };
 
 const bool left_switch_stop_enabled_default[CHANNEL_COUNT_MAX] =
   {
-    false,
-    false,
-    false,
+    left_switch_stop_enabled_element_default,
+    left_switch_stop_enabled_element_default,
+    left_switch_stop_enabled_element_default,
   };
 
 const bool right_switch_stop_enabled_default[CHANNEL_COUNT_MAX] =
   {
-    false,
-    false,
-    false,
+    right_switch_stop_enabled_element_default,
+    right_switch_stop_enabled_element_default,
+    right_switch_stop_enabled_element_default,
   };
 
 const bool switch_soft_stop_enabled_default[CHANNEL_COUNT_MAX] =
   {
-    false,
-    false,
-    false,
+    switch_soft_stop_enabled_element_default,
+    switch_soft_stop_enabled_element_default,
+    switch_soft_stop_enabled_element_default,
   };
 
 const long home_velocity_default[CHANNEL_COUNT_MAX] =

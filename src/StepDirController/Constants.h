@@ -74,6 +74,7 @@ enum{POLARITY_SUBSET_LENGTH=2};
 extern ConstantString polarity_high;
 extern ConstantString polarity_low;
 extern modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH];
+extern const ConstantString * const enable_polarity_element_default;
 
 extern ConstantString step_polarity_inverted_property_name;
 extern const bool step_polarity_inverted_default;
@@ -85,13 +86,16 @@ extern ConstantString switch_active_polarity_property_name;
 extern const ConstantString * const switch_active_polarity_default;
 
 extern ConstantString left_switch_stop_enabled_property_name;
+extern const bool left_switch_stop_enabled_element_default;
 
 extern ConstantString right_switches_enabled_property_name;
 extern const bool right_switches_enabled_default;
 
 extern ConstantString right_switch_stop_enabled_property_name;
+extern const bool right_switch_stop_enabled_element_default;
 
 extern ConstantString switch_soft_stop_enabled_property_name;
+extern const bool switch_soft_stop_enabled_element_default;
 
 extern ConstantString home_velocity_property_name;
 extern const long home_velocity_element_default;
