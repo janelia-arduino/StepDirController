@@ -17,7 +17,7 @@ namespace step_dir_controller
 namespace constants
 {
 //MAX values must be >= 1, >= created/copied count, < RAM limit
-enum{INTERRUPT_COUNT_MAX=1};
+enum{PIN_COUNT_MAX=1};
 
 enum {CONTROLLER_COUNT_MAX=1};
 // CHANNEL_COUNT_MAX = CONTROLLER_COUNT_MAX*CHANNELS_PER_CONTROLLER_COUNT

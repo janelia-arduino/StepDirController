@@ -82,7 +82,7 @@ protected:
   void postUpdateScaledPropertiesHandler(const size_t channel);
 
 private:
-  modular_server::Interrupt interrupts_[step_dir_controller::constants::INTERRUPT_COUNT_MAX];
+  modular_server::Pin pins_[step_dir_controller::constants::PIN_COUNT_MAX];
 
   modular_server::Property properties_[step_dir_controller::constants::PROPERTY_COUNT_MAX];
   modular_server::Parameter parameters_[step_dir_controller::constants::PARAMETER_COUNT_MAX];

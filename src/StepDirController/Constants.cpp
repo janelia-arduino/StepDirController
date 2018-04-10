@@ -17,12 +17,12 @@ CONSTANT_STRING(device_name,"step_dir_controller");
 CONSTANT_STRING(firmware_name,"StepDirController");
 // Use semantic versioning http://semver.org/
 const modular_server::FirmwareInfo firmware_info =
-  {
-    .name_ptr=&firmware_name,
-    .version_major=2,
-    .version_minor=2,
-    .version_patch=1,
-  };
+{
+  .name_ptr=&firmware_name,
+  .version_major=2,
+  .version_minor=2,
+  .version_patch=1,
+};
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
 
@@ -31,7 +31,7 @@ const size_t clock_frequency_mhz = 32;
 CONSTANT_STRING(left_constant_string,"left");
 CONSTANT_STRING(right_constant_string,"right");
 
-// Interrupts
+// Pins
 
 // Units
 CONSTANT_STRING(position_units,"position_units");
@@ -66,10 +66,10 @@ CONSTANT_STRING(enable_polarity_property_name,"enablePolarity");
 CONSTANT_STRING(polarity_high,"HIGH");
 CONSTANT_STRING(polarity_low,"LOW");
 modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
-  {
-    {.cs_ptr=&polarity_high},
-    {.cs_ptr=&polarity_low},
-  };
+{
+  {.cs_ptr=&polarity_high},
+  {.cs_ptr=&polarity_low},
+};
 const ConstantString * const enable_polarity_element_default = &polarity_high;
 
 CONSTANT_STRING(step_polarity_inverted_property_name,"stepPolarityInverted");

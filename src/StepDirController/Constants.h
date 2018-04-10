@@ -36,7 +36,7 @@ extern const size_t clock_frequency_mhz;
 extern ConstantString left_constant_string;
 extern ConstantString right_constant_string;
 
-// Interrupts
+// Pins
 
 // Units
 extern ConstantString position_units;

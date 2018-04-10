@@ -46,14 +46,14 @@ void StepDirController::setup()
     homed_[channel] = false;
   }
 
-  // Interrupts
+  // Pins
 
   // Set Device ID
   modular_server_.setDeviceName(constants::device_name);
 
   // Add Hardware
   modular_server_.addHardware(constants::hardware_info,
-                              interrupts_);
+                              pins_);
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
