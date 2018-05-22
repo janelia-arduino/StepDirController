@@ -3,94 +3,102 @@
 #+EMAIL: peterpolidoro@gmail.com
 
 * Library Information
-  - Author :: Peter Polidoro
+  - Name :: StepDirController
+  - Version :: 2.2.1
   - License :: BSD
+  - URL :: https://github.com/janelia-arduino/StepDirController
+  - Author :: Peter Polidoro
+  - Email :: peterpolidoro@gmail.com
+
+** Description
+
+   Modular device step and direction controller library.
+
+* API NAMES
+
+  #+BEGIN_SRC js
+    {
+      "id": "getApi",
+      "result": {
+        "firmware": [
+          "StepDirController"
+        ],
+        "verbosity": "NAMES",
+        "functions": [
+          "reinitialize",
+          "controllersCommunicating",
+          "enable",
+          "disable",
+          "enableAll",
+          "disableAll",
+          "enabled",
+          "moveBy",
+          "moveTo",
+          "moveAt",
+          "moveSoftlyBy",
+          "moveSoftlyTo",
+          "stop",
+          "stopAll",
+          "zero",
+          "zeroAll",
+          "getPositions",
+          "getTargetPositions",
+          "atTargetPositions",
+          "getVelocities",
+          "getTargetVelocities",
+          "atTargetVelocities",
+          "switchesActive",
+          "home",
+          "homing",
+          "homed"
+        ],
+        "parameters": [
+          "channel",
+          "position",
+          "velocity"
+        ],
+        "properties": [
+          "channelCount",
+          "stepsPerPositionUnits",
+          "velocityMax",
+          "velocityMin",
+          "accelerationMax",
+          "enablePolarity",
+          "stepPolarityInverted",
+          "dirPolarityInverted",
+          "switchActivePolarity",
+          "leftSwitchStopEnabled",
+          "rightSwitchesEnabled",
+          "rightSwitchStopEnabled",
+          "switchSoftStopEnabled",
+          "homeVelocity"
+        ]
+      }
+    }
+  #+END_SRC
+
+* API GENERAL
+
+  [[./api/]]
 
 * Ancestors
 
-  [[https://github.com/janelia-arduino/ModularServer][ModularServer]]
+  [[https://github.com/janelia-arduino/ModularServer]]
 
-  [[https://github.com/janelia-arduino/ModularDeviceBase][ModularDeviceBase]]
+  [[https://github.com/janelia-arduino/ModularDeviceBase]]
 
 * Clients
 
 * Devices
 
-  [[https://github.com/janelia-modular-devices/modular_device_base.git][modular_device_base]]
+  [[https://github.com/janelia-modular-devices/modular_device_base.git]]
 
-  [[https://github.com/janelia-modular-devices/step_dir_controller.git][step_dir_controller]]
-
-* API NAMES
-
-  #+BEGIN_SRC js
-{
-  "id": "getApi",
-  "result": {
-    "firmware": [
-      "StepDirController"
-    ],
-    "verbosity": "NAMES",
-    "functions": [
-      "reinitialize",
-      "controllersCommunicating",
-      "enable",
-      "disable",
-      "enableAll",
-      "disableAll",
-      "enabled",
-      "moveBy",
-      "moveTo",
-      "moveAt",
-      "moveSoftlyBy",
-      "moveSoftlyTo",
-      "stop",
-      "stopAll",
-      "zero",
-      "zeroAll",
-      "getPositions",
-      "getTargetPositions",
-      "atTargetPositions",
-      "getVelocities",
-      "getTargetVelocities",
-      "atTargetVelocities",
-      "switchesActive",
-      "home",
-      "homing",
-      "homed"
-    ],
-    "parameters": [
-      "channel",
-      "position",
-      "velocity"
-    ],
-    "properties": [
-      "channelCount",
-      "stepsPerPositionUnits",
-      "velocityMax",
-      "velocityMin",
-      "accelerationMax",
-      "enablePolarity",
-      "stepPolarityInverted",
-      "dirPolarityInverted",
-      "switchActivePolarity",
-      "leftSwitchStopEnabled",
-      "rightSwitchesEnabled",
-      "rightSwitchStopEnabled",
-      "switchSoftStopEnabled",
-      "homeVelocity"
-    ]
-  }
-}
-  #+END_SRC
-
-* API GENERAL
-
-  [[./api/][API GENERAL]]
+  [[https://github.com/janelia-modular-devices/step_dir_controller.git]]
 
 * More Detailed Modular Device Information
 
-  [[https://github.com/janelia-modular-devices/modular-devices][modular-devices]]
+  [[https://github.com/janelia-modular-devices/modular-devices]]
 
-* Library Dependencies
+* Installation Instructions
 
-  [[https://github.com/janelia-arduino/arduino-libraries][arduino-libraries]]
+  [[https://github.com/janelia-arduino/arduino-libraries]]
