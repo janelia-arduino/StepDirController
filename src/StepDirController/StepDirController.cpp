@@ -264,6 +264,7 @@ void StepDirController::update()
       bool latch_position_waiting = controller.latchPositionWaiting(motor_i);
       if (!latch_position_waiting)
       {
+        stop(channel);
         homing_[channel] = false;
         homed_[channel] = true;
         zero(channel);
@@ -602,6 +603,7 @@ bool StepDirController::home(const size_t channel)
       controller.setReferenceSwitchToLeft(motor_i);
       if (leftSwitchActive(channel))
       {
+        stop(channel);
         homing_[channel] = false;
         homed_[channel] = true;
         zero(channel);
@@ -621,6 +623,7 @@ bool StepDirController::home(const size_t channel)
       controller.setReferenceSwitchToRight(motor_i);
       if (rightSwitchActive(channel))
       {
+        stop(channel);
         homing_[channel] = false;
         homed_[channel] = true;
         zero(channel);
