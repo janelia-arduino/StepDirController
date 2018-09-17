@@ -50,8 +50,8 @@ extern const long channel_count_min;
 extern const long channel_count_default;
 
 extern ConstantString steps_per_position_units_property_name;
-extern const long steps_per_position_units_element_min;
-extern const long steps_per_position_units_element_max;
+extern const long steps_per_position_units_min;
+extern const long steps_per_position_units_max;
 extern const long steps_per_position_units_element_default;
 
 extern ConstantString velocity_max_property_name;

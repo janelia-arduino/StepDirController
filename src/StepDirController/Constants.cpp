@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
   .name_ptr=&firmware_name,
   .version_major=2,
   .version_minor=2,
-  .version_patch=3,
+  .version_patch=4,
 };
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
@@ -43,8 +43,8 @@ CONSTANT_STRING(channel_count_property_name,"channelCount");
 const long channel_count_min = 1;
 
 CONSTANT_STRING(steps_per_position_units_property_name,"stepsPerPositionUnits");
-const long steps_per_position_units_element_min = 1;
-const long steps_per_position_units_element_max = 1000000000;
+const long steps_per_position_units_min = 1;
+const long steps_per_position_units_max = 1000000000;
 const long steps_per_position_units_element_default = 1;
 
 CONSTANT_STRING(velocity_max_property_name,"velocityMax");

@@ -67,7 +67,7 @@ void StepDirController::setup()
   channel_count_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setChannelCountHandler));
 
   modular_server::Property & steps_per_position_units_property = modular_server_.createProperty(constants::steps_per_position_units_property_name,constants::steps_per_position_units_default);
-  steps_per_position_units_property.setRange(constants::steps_per_position_units_element_min,constants::steps_per_position_units_element_max);
+  steps_per_position_units_property.setRange(constants::steps_per_position_units_min,constants::steps_per_position_units_max);
   steps_per_position_units_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
   steps_per_position_units_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
 
