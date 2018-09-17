@@ -19,10 +19,10 @@ namespace constants
 //MAX values must be >= 1, >= created/copied count, < RAM limit
 enum{PIN_COUNT_MAX=1};
 
-enum {CONTROLLER_COUNT_MAX=2};
+enum {CONTROLLER_COUNT_MAX=3};
 // CHANNEL_COUNT_MAX = CONTROLLER_COUNT_MAX*CHANNELS_PER_CONTROLLER_COUNT
 // CHANNELS_PER_CONTROLLER_COUNT = 3
-enum {CHANNEL_COUNT_MAX=6};
+enum {CHANNEL_COUNT_MAX=9};
 
 extern const size_t cs_pins[CONTROLLER_COUNT_MAX];
 extern const size_t enable_pins[CHANNEL_COUNT_MAX];

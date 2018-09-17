@@ -26,6 +26,7 @@ const size_t cs_pins[CONTROLLER_COUNT_MAX] =
 {
   10,
 };
+
 const size_t enable_pins[CHANNEL_COUNT_MAX] =
 {
   2,
