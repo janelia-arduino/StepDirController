@@ -68,6 +68,8 @@ public:
   bool homed(const size_t channel);
 
 protected:
+  virtual size_t getControllerCsPin(const size_t controller);
+  virtual size_t getEnablePin(const size_t channel);
   virtual long stepsToPositionUnits(const size_t channel, const long steps);
   virtual long positionUnitsToSteps(const size_t channel, const long position_units);
 

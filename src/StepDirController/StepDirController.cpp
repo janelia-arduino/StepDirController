@@ -34,13 +34,13 @@ void StepDirController::setup()
   for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
-    controller.setup(constants::cs_pins[controller_i],constants::clock_frequency_mhz);
+    controller.setup(getControllerCsPin(controller_i),constants::clock_frequency_mhz);
   }
 
   // Pin Setup
   for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
-    pinMode(constants::enable_pins[channel],OUTPUT);
+    pinMode(getEnablePin(channel),OUTPUT);
     enabled_[channel] = false;
     homing_[channel] = false;
     homed_[channel] = false;
@@ -314,11 +314,11 @@ void StepDirController::enable(const size_t channel)
     modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
     if (polarity_ptr == &constants::polarity_high)
     {
-      digitalWrite(constants::enable_pins[channel],HIGH);
+      digitalWrite(getEnablePin(channel),HIGH);
     }
     else
     {
-      digitalWrite(constants::enable_pins[channel],LOW);
+      digitalWrite(getEnablePin(channel),LOW);
     }
     enabled_[channel] = true;
   }
@@ -333,11 +333,11 @@ void StepDirController::disable(const size_t channel)
     modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
     if (polarity_ptr == &constants::polarity_high)
     {
-      digitalWrite(constants::enable_pins[channel],LOW);
+      digitalWrite(getEnablePin(channel),LOW);
     }
     else
     {
-      digitalWrite(constants::enable_pins[channel],HIGH);
+      digitalWrite(getEnablePin(channel),HIGH);
     }
     enabled_[channel] = false;
   }
@@ -671,6 +671,16 @@ bool StepDirController::homed(const size_t channel)
     return false;
   }
   return homed_[channel];
+}
+
+size_t StepDirController::getControllerCsPin(const size_t controller)
+{
+  return constants::cs_pins[controller];
+}
+
+size_t StepDirController::getEnablePin(const size_t channel)
+{
+  return constants::enable_pins[channel];
 }
 
 long StepDirController::stepsToPositionUnits(const size_t channel, const long steps)

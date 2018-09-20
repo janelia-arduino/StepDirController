@@ -31,9 +31,9 @@ const size_t cs_pins[CONTROLLER_COUNT_MAX] =
 
 const size_t enable_pins[CHANNEL_COUNT_MAX] =
 {
-  29,
-  30,
-  34,
+  40,
+  41,
+  42,
   35,
   37,
   38,
