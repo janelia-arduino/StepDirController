@@ -68,23 +68,23 @@ void StepDirController::setup()
 
   modular_server::Property & steps_per_position_units_property = modular_server_.createProperty(constants::steps_per_position_units_property_name,constants::steps_per_position_units_default);
   steps_per_position_units_property.setRange(constants::steps_per_position_units_min,constants::steps_per_position_units_max);
-  steps_per_position_units_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
-  steps_per_position_units_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
+  steps_per_position_units_property.attachPreSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::preUpdateScaledPropertiesHandler));
+  steps_per_position_units_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::postUpdateScaledPropertiesHandler));
 
   modular_server::Property & velocity_max_property = modular_server_.createProperty(constants::velocity_max_property_name,constants::velocity_max_default);
   velocity_max_property.setUnits(constants::position_units_per_second_units);
   velocity_max_property.setRange(constants::velocity_max_min,constants::velocity_max_max);
-  velocity_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
+  velocity_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & velocity_min_property = modular_server_.createProperty(constants::velocity_min_property_name,constants::velocity_min_default);
   velocity_min_property.setUnits(constants::position_units_per_second_units);
   velocity_min_property.setRange(constants::velocity_min_min,constants::velocity_min_max);
-  velocity_min_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
+  velocity_min_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & acceleration_max_property = modular_server_.createProperty(constants::acceleration_max_property_name,constants::acceleration_max_default);
   acceleration_max_property.setUnits(constants::position_units_per_second_per_second_units);
   acceleration_max_property.setRange(constants::acceleration_max_min,constants::acceleration_max_max);
-  acceleration_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLimitsHandler));
+  acceleration_max_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::setLimitsHandler));
 
   modular_server::Property & enable_polarity_property = modular_server_.createProperty(constants::enable_polarity_property_name,constants::enable_polarity_default);
   enable_polarity_property.setSubset(constants::polarity_ptr_subset);
@@ -100,16 +100,16 @@ void StepDirController::setup()
   switch_active_polarity_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setSwitchActivePolarityHandler));
 
   modular_server::Property & left_switch_stop_enabled_property = modular_server_.createProperty(constants::left_switch_stop_enabled_property_name,constants::left_switch_stop_enabled_default);
-  left_switch_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setLeftSwitchStopEnabledHandler));
+  left_switch_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::setLeftSwitchStopEnabledHandler));
 
   modular_server::Property & right_switches_enabled_property = modular_server_.createProperty(constants::right_switches_enabled_property_name,constants::right_switches_enabled_default);
   right_switches_enabled_property.attachPostSetValueFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::setRightSwitchesEnabledHandler));
 
   modular_server::Property & right_switch_stop_enabled_property = modular_server_.createProperty(constants::right_switch_stop_enabled_property_name,constants::right_switch_stop_enabled_default);
-  right_switch_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setRightSwitchStopEnabledHandler));
+  right_switch_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::setRightSwitchStopEnabledHandler));
 
   modular_server::Property & switch_soft_stop_enabled_property = modular_server_.createProperty(constants::switch_soft_stop_enabled_property_name,constants::switch_soft_stop_enabled_default);
-  switch_soft_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<const size_t> *)0,*this,&StepDirController::setSwitchSoftStopEnabledHandler));
+  switch_soft_stop_enabled_property.attachPostSetElementValueFunctor(makeFunctor((Functor1<size_t> *)0,*this,&StepDirController::setSwitchSoftStopEnabledHandler));
 
   modular_server::Property & home_velocity_property = modular_server_.createProperty(constants::home_velocity_property_name,constants::home_velocity_default);
   home_velocity_property.setUnits(constants::position_units_per_second_units);
@@ -306,7 +306,7 @@ size_t StepDirController::getChannelCount()
   return channel_count;
 }
 
-void StepDirController::enable(const size_t channel)
+void StepDirController::enable(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -324,7 +324,7 @@ void StepDirController::enable(const size_t channel)
   }
 }
 
-void StepDirController::disable(const size_t channel)
+void StepDirController::disable(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -373,7 +373,8 @@ uint32_t StepDirController::enabled()
   return channels_enabled;
 }
 
-void StepDirController::moveBy(const size_t channel, const long position)
+void StepDirController::moveBy(size_t channel,
+  long position)
 {
   if (channel < getChannelCount())
   {
@@ -388,7 +389,8 @@ void StepDirController::moveBy(const size_t channel, const long position)
   }
 }
 
-void StepDirController::moveTo(const size_t channel, const long position)
+void StepDirController::moveTo(size_t channel,
+  long position)
 {
   if (channel < getChannelCount())
   {
@@ -401,7 +403,8 @@ void StepDirController::moveTo(const size_t channel, const long position)
   }
 }
 
-void StepDirController::moveAt(const size_t channel, const long velocity)
+void StepDirController::moveAt(size_t channel,
+  long velocity)
 {
   if (channel < getChannelCount())
   {
@@ -414,7 +417,8 @@ void StepDirController::moveAt(const size_t channel, const long velocity)
   }
 }
 
-void StepDirController::moveSoftlyBy(const size_t channel, const long position)
+void StepDirController::moveSoftlyBy(size_t channel,
+  long position)
 {
   if (channel < getChannelCount())
   {
@@ -429,7 +433,8 @@ void StepDirController::moveSoftlyBy(const size_t channel, const long position)
   }
 }
 
-void StepDirController::moveSoftlyTo(const size_t channel, const long position)
+void StepDirController::moveSoftlyTo(size_t channel,
+  long position)
 {
   if (channel < getChannelCount())
   {
@@ -442,7 +447,7 @@ void StepDirController::moveSoftlyTo(const size_t channel, const long position)
   }
 }
 
-void StepDirController::stop(const size_t channel)
+void StepDirController::stop(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -467,7 +472,7 @@ void StepDirController::stopAll()
   }
 }
 
-void StepDirController::zero(const size_t channel)
+void StepDirController::zero(size_t channel)
 {
   if (channel < getChannelCount())
   {
@@ -488,13 +493,13 @@ void StepDirController::zeroAll()
   }
 }
 
-long StepDirController::getPosition(const size_t channel)
+long StepDirController::getPosition(size_t channel)
 {
   int32_t position = getPositionInSteps(channel);
   return stepsToPositionUnits(channel,position);
 }
 
-long StepDirController::getTargetPosition(const size_t channel)
+long StepDirController::getTargetPosition(size_t channel)
 {
   long position = 0;
   if (channel < getChannelCount())
@@ -507,7 +512,7 @@ long StepDirController::getTargetPosition(const size_t channel)
   return stepsToPositionUnits(channel,position);
 }
 
-bool StepDirController::atTargetPosition(const size_t channel)
+bool StepDirController::atTargetPosition(size_t channel)
 {
   bool at_target_position = true;
   if (channel < getChannelCount())
@@ -520,13 +525,13 @@ bool StepDirController::atTargetPosition(const size_t channel)
   return at_target_position;
 }
 
-long StepDirController::getVelocity(const size_t channel)
+long StepDirController::getVelocity(size_t channel)
 {
   int32_t velocity = getVelocityInHz(channel);
   return stepsToPositionUnits(channel,velocity);
 }
 
-long StepDirController::getTargetVelocity(const size_t channel)
+long StepDirController::getTargetVelocity(size_t channel)
 {
   long velocity = 0;
   if (channel < getChannelCount())
@@ -539,7 +544,7 @@ long StepDirController::getTargetVelocity(const size_t channel)
   return stepsToPositionUnits(channel,velocity);
 }
 
-bool StepDirController::atTargetVelocity(const size_t channel)
+bool StepDirController::atTargetVelocity(size_t channel)
 {
   bool at_target_velocity = true;
   if (channel < getChannelCount())
@@ -552,7 +557,7 @@ bool StepDirController::atTargetVelocity(const size_t channel)
   return at_target_velocity;
 }
 
-bool StepDirController::leftSwitchActive(const size_t channel)
+bool StepDirController::leftSwitchActive(size_t channel)
 {
   bool left_switch_active = false;
   if (channel < getChannelCount())
@@ -565,7 +570,7 @@ bool StepDirController::leftSwitchActive(const size_t channel)
   return left_switch_active;
 }
 
-bool StepDirController::rightSwitchActive(const size_t channel)
+bool StepDirController::rightSwitchActive(size_t channel)
 {
   bool right_switch_active = false;
   if (channel < getChannelCount())
@@ -578,7 +583,7 @@ bool StepDirController::rightSwitchActive(const size_t channel)
   return right_switch_active;
 }
 
-bool StepDirController::home(const size_t channel)
+bool StepDirController::home(size_t channel)
 {
   if (channel >= getChannelCount())
   {
@@ -643,7 +648,7 @@ bool StepDirController::home(const size_t channel)
   return true;
 }
 
-bool StepDirController::homing(const size_t channel)
+bool StepDirController::homing(size_t channel)
 {
   if (channel >= getChannelCount())
   {
@@ -664,7 +669,7 @@ bool StepDirController::anyHoming()
   return false;
 }
 
-bool StepDirController::homed(const size_t channel)
+bool StepDirController::homed(size_t channel)
 {
   if (channel >= getChannelCount())
   {
@@ -673,17 +678,18 @@ bool StepDirController::homed(const size_t channel)
   return homed_[channel];
 }
 
-size_t StepDirController::getControllerCsPin(const size_t controller)
+size_t StepDirController::getControllerCsPin(size_t controller)
 {
   return constants::cs_pins[controller];
 }
 
-size_t StepDirController::getEnablePin(const size_t channel)
+size_t StepDirController::getEnablePin(size_t channel)
 {
   return constants::enable_pins[channel];
 }
 
-long StepDirController::stepsToPositionUnits(const size_t channel, const long steps)
+long StepDirController::stepsToPositionUnits(size_t channel,
+  long steps)
 {
   modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
   long steps_per_position_units;
@@ -692,7 +698,8 @@ long StepDirController::stepsToPositionUnits(const size_t channel, const long st
   return steps/steps_per_position_units;
 }
 
-long StepDirController::positionUnitsToSteps(const size_t channel, const long position_units)
+long StepDirController::positionUnitsToSteps(size_t channel,
+  long position_units)
 {
   modular_server::Property & steps_per_position_units_property = modular_server_.property(constants::steps_per_position_units_property_name);
   long steps_per_position_units;
@@ -701,7 +708,7 @@ long StepDirController::positionUnitsToSteps(const size_t channel, const long po
   return position_units*steps_per_position_units;
 }
 
-int32_t StepDirController::getPositionInSteps(const size_t channel)
+int32_t StepDirController::getPositionInSteps(size_t channel)
 {
   int32_t position = 0;
   if (channel < getChannelCount())
@@ -714,7 +721,7 @@ int32_t StepDirController::getPositionInSteps(const size_t channel)
   return position;
 }
 
-int32_t StepDirController::getVelocityInHz(const size_t channel)
+int32_t StepDirController::getVelocityInHz(size_t channel)
 {
   int32_t velocity = 0;
   if (channel < getChannelCount())
@@ -727,7 +734,7 @@ int32_t StepDirController::getVelocityInHz(const size_t channel)
   return velocity;
 }
 
-void StepDirController::setControllerCount(const size_t controller_count)
+void StepDirController::setControllerCount(size_t controller_count)
 {
   if (controller_count <= constants::CONTROLLER_COUNT_MAX)
   {
@@ -740,12 +747,12 @@ void StepDirController::setControllerCount(const size_t controller_count)
   }
 }
 
-size_t StepDirController::channelToControllerIndex(const size_t channel)
+size_t StepDirController::channelToControllerIndex(size_t channel)
 {
   return channel/constants::CHANNELS_PER_CONTROLLER_COUNT;
 }
 
-size_t StepDirController::channelToMotorIndex(const size_t channel)
+size_t StepDirController::channelToMotorIndex(size_t channel)
 {
   return channel%constants::CHANNELS_PER_CONTROLLER_COUNT;
 }
@@ -804,7 +811,7 @@ void StepDirController::setChannelCountHandler()
 
 }
 
-void StepDirController::preUpdateScaledPropertiesHandler(const size_t channel)
+void StepDirController::preUpdateScaledPropertiesHandler(size_t channel)
 {
   modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
   long velocity_min;
@@ -827,7 +834,7 @@ void StepDirController::preUpdateScaledPropertiesHandler(const size_t channel)
   home_velocity_steps_[channel] = positionUnitsToSteps(channel,home_velocity);
 }
 
-void StepDirController::postUpdateScaledPropertiesHandler(const size_t channel)
+void StepDirController::postUpdateScaledPropertiesHandler(size_t channel)
 {
   modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
 
@@ -858,7 +865,7 @@ void StepDirController::postUpdateScaledPropertiesHandler(const size_t channel)
   setLimitsHandler(channel);
 }
 
-void StepDirController::setLimitsHandler(const size_t channel)
+void StepDirController::setLimitsHandler(size_t channel)
 {
   stopAll();
 
@@ -958,7 +965,7 @@ void StepDirController::setSwitchActivePolarityHandler()
   }
 }
 
-void StepDirController::setLeftSwitchStopEnabledHandler(const size_t channel)
+void StepDirController::setLeftSwitchStopEnabledHandler(size_t channel)
 {
   bool enabled;
   modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,enabled);
@@ -993,7 +1000,7 @@ void StepDirController::setRightSwitchesEnabledHandler()
   }
 }
 
-void StepDirController::setRightSwitchStopEnabledHandler(const size_t channel)
+void StepDirController::setRightSwitchStopEnabledHandler(size_t channel)
 {
   bool enabled;
   modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,enabled);
@@ -1010,7 +1017,7 @@ void StepDirController::setRightSwitchStopEnabledHandler(const size_t channel)
   }
 }
 
-void StepDirController::setSwitchSoftStopEnabledHandler(const size_t channel)
+void StepDirController::setSwitchSoftStopEnabledHandler(size_t channel)
 {
   bool enabled;
   modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,enabled);

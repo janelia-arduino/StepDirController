@@ -34,54 +34,61 @@ public:
 
   virtual size_t getChannelCount();
 
-  void enable(const size_t channel);
-  void disable(const size_t channel);
+  void enable(size_t channel);
+  void disable(size_t channel);
   void enableAll();
   void disableAll();
   uint32_t enabled();
 
-  void moveBy(const size_t channel, const long position);
-  void moveTo(const size_t channel, const long position);
-  void moveAt(const size_t channel, const long velocity);
-  void moveSoftlyBy(const size_t channel, const long position);
-  void moveSoftlyTo(const size_t channel, const long position);
-  void stop(const size_t channel);
+  void moveBy(size_t channel,
+    long position);
+  void moveTo(size_t channel,
+    long position);
+  void moveAt(size_t channel,
+    long velocity);
+  void moveSoftlyBy(size_t channel,
+    long position);
+  void moveSoftlyTo(size_t channel,
+    long position);
+  void stop(size_t channel);
   void stopAll();
 
-  void zero(const size_t channel);
+  void zero(size_t channel);
   void zeroAll();
 
-  long getPosition(const size_t channel);
-  long getTargetPosition(const size_t channel);
-  bool atTargetPosition(const size_t channel);
+  long getPosition(size_t channel);
+  long getTargetPosition(size_t channel);
+  bool atTargetPosition(size_t channel);
 
-  long getVelocity(const size_t channel);
-  long getTargetVelocity(const size_t channel);
-  bool atTargetVelocity(const size_t channel);
+  long getVelocity(size_t channel);
+  long getTargetVelocity(size_t channel);
+  bool atTargetVelocity(size_t channel);
 
-  bool leftSwitchActive(const size_t channel);
-  bool rightSwitchActive(const size_t channel);
+  bool leftSwitchActive(size_t channel);
+  bool rightSwitchActive(size_t channel);
 
-  virtual bool home(const size_t channel);
-  bool homing(const size_t channel);
+  virtual bool home(size_t channel);
+  bool homing(size_t channel);
   bool anyHoming();
-  bool homed(const size_t channel);
+  bool homed(size_t channel);
 
 protected:
-  virtual size_t getControllerCsPin(const size_t controller);
-  virtual size_t getEnablePin(const size_t channel);
-  virtual long stepsToPositionUnits(const size_t channel, const long steps);
-  virtual long positionUnitsToSteps(const size_t channel, const long position_units);
+  virtual size_t getControllerCsPin(size_t controller);
+  virtual size_t getEnablePin(size_t channel);
+  virtual long stepsToPositionUnits(size_t channel,
+    long steps);
+  virtual long positionUnitsToSteps(size_t channel,
+    long position_units);
 
-  int32_t getPositionInSteps(const size_t channel);
-  int32_t getVelocityInHz(const size_t channel);
+  int32_t getPositionInSteps(size_t channel);
+  int32_t getVelocityInHz(size_t channel);
 
-  void setControllerCount(const size_t controller_count);
+  void setControllerCount(size_t controller_count);
 
   // Handlers
   void setChannelCountHandler();
-  void preUpdateScaledPropertiesHandler(const size_t channel);
-  void postUpdateScaledPropertiesHandler(const size_t channel);
+  void preUpdateScaledPropertiesHandler(size_t channel);
+  void postUpdateScaledPropertiesHandler(size_t channel);
 
 private:
   modular_server::Pin pins_[step_dir_controller::constants::PIN_COUNT_MAX];
@@ -103,20 +110,20 @@ private:
   long home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   size_t controller_count_;
 
-  size_t channelToControllerIndex(const size_t channel);
-  size_t channelToMotorIndex(const size_t channel);
+  size_t channelToControllerIndex(size_t channel);
+  size_t channelToMotorIndex(size_t channel);
 
   // Handlers
-  void setLimitsHandler(const size_t channel);
+  void setLimitsHandler(size_t channel);
   void reinitializeHandler();
   void controllersCommunicatingHandler();
   void setStepPolarityInvertedHandler();
   void setDirPolarityInvertedHandler();
   void setSwitchActivePolarityHandler();
-  void setLeftSwitchStopEnabledHandler(const size_t channel);
+  void setLeftSwitchStopEnabledHandler(size_t channel);
   void setRightSwitchesEnabledHandler();
-  void setRightSwitchStopEnabledHandler(const size_t channel);
-  void setSwitchSoftStopEnabledHandler(const size_t channel);
+  void setRightSwitchStopEnabledHandler(size_t channel);
+  void setSwitchSoftStopEnabledHandler(size_t channel);
   void enableHandler();
   void disableHandler();
   void enableAllHandler();
