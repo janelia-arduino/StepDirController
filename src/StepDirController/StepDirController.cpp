@@ -53,14 +53,14 @@ void StepDirController::setup()
 
   // Add Hardware
   modular_server_.addHardware(constants::hardware_info,
-                              pins_);
+    pins_);
 
   // Add Firmware
   modular_server_.addFirmware(constants::firmware_info,
-                              properties_,
-                              parameters_,
-                              functions_,
-                              callbacks_);
+    properties_,
+    parameters_,
+    functions_,
+    callbacks_);
   // Properties
   modular_server::Property & channel_count_property = modular_server_.createProperty(constants::channel_count_property_name,constants::channel_count_default);
   channel_count_property.setRange(constants::channel_count_min,constants::CHANNEL_COUNT_MAX);
@@ -879,9 +879,9 @@ void StepDirController::setLimitsHandler(const size_t channel)
   Controller & controller = controllers_[controller_i];
 
   controller.setLimitsInHz(motor_i,
-                           positionUnitsToSteps(channel,velocity_min),
-                           positionUnitsToSteps(channel,velocity_max),
-                           positionUnitsToSteps(channel,acceleration_max));
+    positionUnitsToSteps(channel,velocity_min),
+    positionUnitsToSteps(channel,velocity_max),
+    positionUnitsToSteps(channel,acceleration_max));
 }
 
 void StepDirController::reinitializeHandler()
