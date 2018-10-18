@@ -22,7 +22,7 @@ const modular_server::HardwareInfo hardware_info =
   .version_minor=0,
 };
 
-const size_t cs_pins[CONTROLLER_COUNT_MAX] =
+const size_t chip_select_pins[CONTROLLER_COUNT_MAX] =
 {
   10,
 };

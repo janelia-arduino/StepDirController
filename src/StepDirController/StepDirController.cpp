@@ -34,7 +34,7 @@ void StepDirController::setup()
   for (size_t controller_i=0; controller_i<controller_count_; ++controller_i)
   {
     Controller & controller = controllers_[controller_i];
-    controller.setup(getControllerCsPin(controller_i),constants::clock_frequency_mhz);
+    controller.setup(getControllerChipSelectPin(controller_i),constants::clock_frequency_mhz);
   }
 
   // Pin Setup
@@ -61,6 +61,7 @@ void StepDirController::setup()
     parameters_,
     functions_,
     callbacks_);
+
   // Properties
   modular_server::Property & channel_count_property = modular_server_.createProperty(constants::channel_count_property_name,constants::channel_count_default);
   channel_count_property.setRange(constants::channel_count_min,constants::CHANNEL_COUNT_MAX);
@@ -678,9 +679,9 @@ bool StepDirController::homed(size_t channel)
   return homed_[channel];
 }
 
-size_t StepDirController::getControllerCsPin(size_t controller)
+size_t StepDirController::getControllerChipSelectPin(size_t controller)
 {
-  return constants::cs_pins[controller];
+  return constants::chip_select_pins[controller];
 }
 
 size_t StepDirController::getEnablePin(size_t channel)

@@ -73,7 +73,7 @@ public:
   bool homed(size_t channel);
 
 protected:
-  virtual size_t getControllerCsPin(size_t controller);
+  virtual size_t getControllerChipSelectPin(size_t controller);
   virtual size_t getEnablePin(size_t channel);
   virtual long stepsToPositionUnits(size_t channel,
     long steps);

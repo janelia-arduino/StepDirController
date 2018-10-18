@@ -24,7 +24,7 @@ enum {CONTROLLER_COUNT_MAX=1};
 // CHANNELS_PER_CONTROLLER_COUNT = 3
 enum {CHANNEL_COUNT_MAX=3};
 
-extern const size_t cs_pins[CONTROLLER_COUNT_MAX];
+extern const size_t chip_select_pins[CONTROLLER_COUNT_MAX];
 extern const size_t enable_pins[CHANNEL_COUNT_MAX];
 
 // Units
