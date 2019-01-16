@@ -77,19 +77,19 @@ extern modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENG
 extern const ConstantString * const enable_polarity_element_default;
 
 extern ConstantString step_polarity_inverted_property_name;
-extern const bool step_polarity_inverted_default;
+extern const bool step_polarity_inverted_element_default;
 
 extern ConstantString dir_polarity_inverted_property_name;
-extern const bool dir_polarity_inverted_default;
+extern const bool dir_polarity_inverted_element_default;
 
 extern ConstantString switch_active_polarity_property_name;
-extern const ConstantString * const switch_active_polarity_default;
+extern const ConstantString * const switch_active_polarity_element_default;
 
 extern ConstantString left_switch_stop_enabled_property_name;
 extern const bool left_switch_stop_enabled_element_default;
 
 extern ConstantString right_switches_enabled_property_name;
-extern const bool right_switches_enabled_default;
+extern const bool right_switches_enabled_element_default;
 
 extern ConstantString right_switch_stop_enabled_property_name;
 extern const bool right_switch_stop_enabled_element_default;

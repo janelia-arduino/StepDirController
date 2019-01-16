@@ -20,8 +20,8 @@ const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
   .version_major=2,
-  .version_minor=3,
-  .version_patch=1,
+  .version_minor=4,
+  .version_patch=0,
 };
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");
@@ -73,19 +73,19 @@ modular_server::SubsetMemberType polarity_ptr_subset[POLARITY_SUBSET_LENGTH] =
 const ConstantString * const enable_polarity_element_default = &polarity_high;
 
 CONSTANT_STRING(step_polarity_inverted_property_name,"stepPolarityInverted");
-const bool step_polarity_inverted_default = false;
+const bool step_polarity_inverted_element_default = false;
 
 CONSTANT_STRING(dir_polarity_inverted_property_name,"dirPolarityInverted");
-const bool dir_polarity_inverted_default = false;
+const bool dir_polarity_inverted_element_default = false;
 
 CONSTANT_STRING(switch_active_polarity_property_name,"switchActivePolarity");
-const ConstantString * const switch_active_polarity_default = &polarity_low;
+const ConstantString * const switch_active_polarity_element_default = &polarity_low;
 
 CONSTANT_STRING(left_switch_stop_enabled_property_name,"leftSwitchStopEnabled");
 const bool left_switch_stop_enabled_element_default = false;
 
 CONSTANT_STRING(right_switches_enabled_property_name,"rightSwitchesEnabled");
-const bool right_switches_enabled_default = false;
+const bool right_switches_enabled_element_default = false;
 
 CONSTANT_STRING(right_switch_stop_enabled_property_name,"rightSwitchStopEnabled");
 const bool right_switch_stop_enabled_element_default = false;

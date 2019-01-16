@@ -33,6 +33,7 @@ public:
   virtual void reinitialize();
 
   virtual size_t getChannelCount();
+  virtual size_t getControllerCount();
 
   void enable(size_t channel);
   void disable(size_t channel);
@@ -117,11 +118,11 @@ private:
   void setLimitsHandler(size_t channel);
   void reinitializeHandler();
   void controllersCommunicatingHandler();
-  void setStepPolarityInvertedHandler();
-  void setDirPolarityInvertedHandler();
-  void setSwitchActivePolarityHandler();
+  void setStepPolarityInvertedHandler(size_t controller_index);
+  void setDirPolarityInvertedHandler(size_t controller_index);
+  void setSwitchActivePolarityHandler(size_t controller_index);
   void setLeftSwitchStopEnabledHandler(size_t channel);
-  void setRightSwitchesEnabledHandler();
+  void setRightSwitchesEnabledHandler(size_t controller_index);
   void setRightSwitchStopEnabledHandler(size_t channel);
   void setSwitchSoftStopEnabledHandler(size_t channel);
   void enableHandler();

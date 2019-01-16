@@ -41,6 +41,14 @@ extern const long acceleration_max_default[CHANNEL_COUNT_MAX];
 
 extern const ConstantString * const enable_polarity_default[CHANNEL_COUNT_MAX];
 
+extern const bool step_polarity_inverted_default[CONTROLLER_COUNT_MAX];
+
+extern const bool dir_polarity_inverted_default[CONTROLLER_COUNT_MAX];
+
+extern const ConstantString * const switch_active_polarity_default[CONTROLLER_COUNT_MAX];
+
+extern const bool right_switches_enabled_default[CONTROLLER_COUNT_MAX];
+
 extern const bool left_switch_stop_enabled_default[CHANNEL_COUNT_MAX];
 
 extern const bool right_switch_stop_enabled_default[CHANNEL_COUNT_MAX];
