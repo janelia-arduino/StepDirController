@@ -84,7 +84,7 @@ protected:
   int32_t getPositionInSteps(size_t channel);
   int32_t getVelocityInHz(size_t channel);
 
-  void setControllerCount(size_t controller_count);
+  void setControllerCountLimit(size_t controller_count);
 
   // Handlers
   void setChannelCountHandler();
@@ -109,7 +109,6 @@ private:
   long velocity_max_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   long acceleration_max_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   long home_velocity_steps_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
-  size_t controller_count_;
 
   size_t channelToControllerIndex(size_t channel);
   size_t channelToMotorIndex(size_t channel);

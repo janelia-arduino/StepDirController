@@ -28,10 +28,9 @@ void StepDirController::setup()
   resetWatchdog();
 
   // Variable Setup
-  controller_count_ = constants::CONTROLLER_COUNT_MAX;
 
   // Controller Setup
-  for (size_t controller_index=0; controller_index<controller_count_; ++controller_index)
+  for (size_t controller_index=0; controller_index<constants::CONTROLLER_COUNT_MAX; ++controller_index)
   {
     Controller & controller = controllers_[controller_index];
     controller.setup(getControllerChipSelectPin(controller_index),constants::clock_frequency_mhz);
@@ -276,7 +275,7 @@ void StepDirController::update()
 
 void StepDirController::reinitialize()
 {
-  for (size_t controller_index=0; controller_index<controller_count_; ++controller_index)
+  for (size_t controller_index=0; controller_index<getControllerCount(); ++controller_index)
   {
     Controller & controller = controllers_[controller_index];
     controller.initialize();
@@ -469,7 +468,7 @@ void StepDirController::stop(size_t channel)
 
 void StepDirController::stopAll()
 {
-  for (size_t controller_index=0; controller_index<controller_count_; ++controller_index)
+  for (size_t controller_index=0; controller_index<getControllerCount(); ++controller_index)
   {
     Controller & controller = controllers_[controller_index];
     controller.stopAll();
@@ -742,11 +741,10 @@ int32_t StepDirController::getVelocityInHz(size_t channel)
   return velocity;
 }
 
-void StepDirController::setControllerCount(size_t controller_count)
+void StepDirController::setControllerCountLimit(size_t controller_count)
 {
   if (controller_count <= constants::CONTROLLER_COUNT_MAX)
   {
-    controller_count_ = controller_count;
     modular_server::Property & channel_count_property = modular_server_.property(constants::channel_count_property_name);
     channel_count_property.disableFunctors();
     channel_count_property.setRange(constants::channel_count_min,controller_count*constants::CHANNELS_PER_CONTROLLER_COUNT);
@@ -923,7 +921,7 @@ void StepDirController::controllersCommunicatingHandler()
 
   modular_server_.response().beginArray();
 
-  for (size_t controller_index=0; controller_index<controller_count_; ++controller_index)
+  for (size_t controller_index=0; controller_index<getControllerCount(); ++controller_index)
   {
     Controller & controller = controllers_[controller_index];
     modular_server_.response().write(controller.communicating());
@@ -1254,18 +1252,21 @@ void StepDirController::switchesActiveHandler()
 {
   modular_server_.response().writeResultKey();
   modular_server_.response().beginArray();
-  for (size_t controller_index=0; controller_index<controller_count_; ++controller_index)
+  size_t controller_index;
+  size_t motor_index;
+  bool left_switch_active;
+  bool right_switch_active;
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
+    controller_index = channelToControllerIndex(channel);
+    motor_index = channelToMotorIndex(channel);
     Controller & controller = controllers_[controller_index];
-    for (size_t motor_index=0; motor_index<constants::CHANNELS_PER_CONTROLLER_COUNT; ++motor_index)
-    {
-      modular_server_.response().beginObject();
-      bool left_switch_active = controller.leftSwitchActive(motor_index);
-      modular_server_.response().write(constants::left_constant_string,left_switch_active);
-      bool right_switch_active = controller.rightSwitchActive(motor_index);
-      modular_server_.response().write(constants::right_constant_string,right_switch_active);
-      modular_server_.response().endObject();
-    }
+    modular_server_.response().beginObject();
+    left_switch_active = controller.leftSwitchActive(motor_index);
+    modular_server_.response().write(constants::left_constant_string,left_switch_active);
+    right_switch_active = controller.rightSwitchActive(motor_index);
+    modular_server_.response().write(constants::right_constant_string,right_switch_active);
+    modular_server_.response().endObject();
   }
   modular_server_.response().endArray();
 }
