@@ -120,9 +120,11 @@ void StepDirController::setup()
   channel_parameter.setTypeLong();
 
   modular_server::Parameter & position_parameter = modular_server_.createParameter(constants::position_parameter_name);
+  position_parameter.setUnits(constants::position_units);
   position_parameter.setTypeLong();
 
   modular_server::Parameter & velocity_parameter = modular_server_.createParameter(constants::velocity_parameter_name);
+  velocity_parameter.setUnits(constants::position_units_per_second_units);
   velocity_parameter.setTypeLong();
 
   setChannelCountHandler();
@@ -197,11 +199,13 @@ void StepDirController::setup()
 
   modular_server::Function & get_positions_function = modular_server_.createFunction(constants::get_positions_function_name);
   get_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getPositionsHandler));
+  get_positions_function.setResultUnits(constants::position_units);
   get_positions_function.setResultTypeArray();
   get_positions_function.setResultTypeLong();
 
   modular_server::Function & get_target_positions_function = modular_server_.createFunction(constants::get_target_positions_function_name);
   get_target_positions_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getTargetPositionsHandler));
+  get_target_positions_function.setResultUnits(constants::position_units);
   get_target_positions_function.setResultTypeArray();
   get_target_positions_function.setResultTypeLong();
 
@@ -212,11 +216,13 @@ void StepDirController::setup()
 
   modular_server::Function & get_velocities_function = modular_server_.createFunction(constants::get_velocities_function_name);
   get_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getVelocitiesHandler));
+  get_velocities_function.setResultUnits(constants::position_units_per_second_units);
   get_velocities_function.setResultTypeArray();
   get_velocities_function.setResultTypeLong();
 
   modular_server::Function & get_target_velocities_function = modular_server_.createFunction(constants::get_target_velocities_function_name);
   get_target_velocities_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getTargetVelocitiesHandler));
+  get_target_velocities_function.setResultUnits(constants::position_units_per_second_units);
   get_target_velocities_function.setResultTypeArray();
   get_target_velocities_function.setResultTypeBool();
 
