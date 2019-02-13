@@ -631,8 +631,9 @@ bool StepDirController::home(size_t channel)
   }
   else
   {
+    size_t controller_index = channelToControllerIndex(channel);
     bool right_switches_enabled;
-    modular_server_.property(constants::right_switches_enabled_property_name).getValue(right_switches_enabled);
+    modular_server_.property(constants::right_switches_enabled_property_name).getElementValue(controller_index,right_switches_enabled);
     bool right_switch_stop_enabled;
     modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,right_switch_stop_enabled);
     home_switch_enabled = right_switches_enabled && right_switch_stop_enabled;
