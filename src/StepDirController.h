@@ -51,8 +51,8 @@ public:
     long position);
   void moveSoftlyTo(size_t channel,
     long position);
-  void stop(size_t channel);
-  void stopAll();
+  virtual void stop(size_t channel);
+  virtual void stopAll();
 
   void zero(size_t channel);
   void zeroAll();
