@@ -4,7 +4,7 @@
 
 * Library Information
   - Name :: StepDirController
-  - Version :: 2.4.3
+  - Version :: 2.5.0
   - License :: BSD
   - URL :: https://github.com/janelia-arduino/StepDirController
   - Author :: Peter Polidoro

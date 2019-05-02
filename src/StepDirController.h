@@ -72,6 +72,9 @@ public:
   bool homing(size_t channel);
   bool anyHoming();
   bool homed(size_t channel);
+  void temporarilyEnableHomeSwitch(size_t channel);
+  void restoreHomeSwitch(size_t channel);
+  bool homeSwitchActive(size_t channel);
 
 protected:
   virtual size_t getControllerChipSelectPin(size_t controller);
@@ -90,6 +93,7 @@ protected:
   void setChannelCountHandler();
   void preUpdateScaledPropertiesHandler(size_t channel);
   void postUpdateScaledPropertiesHandler(size_t channel);
+  virtual void homedHandler(size_t channel);
 
 private:
   modular_server::Pin pins_[step_dir_controller::constants::PIN_COUNT_MAX];
@@ -102,6 +106,7 @@ private:
   typedef TMC429 Controller;
   Controller controllers_[step_dir_controller::constants::CONTROLLER_COUNT_MAX];
   bool enabled_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+  bool pre_homing_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   bool homing_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   bool homed_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
 

@@ -41,6 +41,7 @@ void StepDirController::setup()
   {
     pinMode(getEnablePin(channel),OUTPUT);
     enabled_[channel] = false;
+    pre_homing_[channel] = false;
     homing_[channel] = false;
     homed_[channel] = false;
   }
@@ -274,6 +275,7 @@ void StepDirController::update()
         homing_[channel] = false;
         homed_[channel] = true;
         zero(channel);
+        homedHandler(channel);
       }
     }
   }
@@ -613,40 +615,34 @@ bool StepDirController::home(size_t channel)
   bool home_switch_enabled;
   if (home_velocity < 0)
   {
-    bool left_switch_stop_enabled;
-    modular_server_.property(constants::left_switch_stop_enabled_property_name).getElementValue(channel,left_switch_stop_enabled);
+    bool left_switch_stop_enabled = controller.leftSwitchStopEnabled(motor_index);
     home_switch_enabled = left_switch_stop_enabled;
     if (home_switch_enabled)
     {
       controller.setReferenceSwitchToLeft(motor_index);
       if (leftSwitchActive(channel))
       {
-        stop(channel);
-        homing_[channel] = false;
-        homed_[channel] = true;
-        zero(channel);
-        return false;
+        pre_homing_[channel] = true;
+        homing_[channel] = true;
+        homed_[channel] = false;
+        return true;
       }
     }
   }
   else
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    bool right_switches_enabled;
-    modular_server_.property(constants::right_switches_enabled_property_name).getElementValue(controller_index,right_switches_enabled);
-    bool right_switch_stop_enabled;
-    modular_server_.property(constants::right_switch_stop_enabled_property_name).getElementValue(channel,right_switch_stop_enabled);
+    bool right_switches_enabled = controller.rightSwitchesEnabled();
+    bool right_switch_stop_enabled = controller.rightSwitchStopEnabled(motor_index);
     home_switch_enabled = right_switches_enabled && right_switch_stop_enabled;
     if (home_switch_enabled)
     {
       controller.setReferenceSwitchToRight(motor_index);
       if (rightSwitchActive(channel))
       {
-        stop(channel);
-        homing_[channel] = false;
-        homed_[channel] = true;
-        zero(channel);
-        return false;
+        pre_homing_[channel] = true;
+        homing_[channel] = true;
+        homed_[channel] = false;
+        return true;
       }
     }
   }
@@ -690,6 +686,64 @@ bool StepDirController::homed(size_t channel)
     return false;
   }
   return homed_[channel];
+}
+
+void StepDirController::temporarilyEnableHomeSwitch(size_t channel)
+{
+  if (channel >= getChannelCount())
+  {
+    return;
+  }
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
+  long home_velocity;
+  home_velocity_property.getElementValue(channel,home_velocity);
+
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+
+  if (home_velocity < 0)
+  {
+    controller.enableLeftSwitchStop(motor_index);
+  }
+  else
+  {
+    controller.enableRightSwitches();
+    controller.enableRightSwitchStop(motor_index);
+  }
+}
+
+void StepDirController::restoreHomeSwitch(size_t channel)
+{
+  if (channel >= getChannelCount())
+  {
+    return;
+  }
+  size_t controller_index = channelToControllerIndex(channel);
+
+  setLeftSwitchStopEnabledHandler(channel);
+  setRightSwitchesEnabledHandler(controller_index);
+  setRightSwitchStopEnabledHandler(channel);
+}
+
+bool StepDirController::homeSwitchActive(size_t channel)
+{
+  if (channel >= getChannelCount())
+  {
+    return false;
+  }
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
+  long home_velocity;
+  home_velocity_property.getElementValue(channel,home_velocity);
+
+  if (home_velocity < 0)
+  {
+    return leftSwitchActive(channel);
+  }
+  else
+  {
+    return rightSwitchActive(channel);
+  }
 }
 
 size_t StepDirController::getControllerChipSelectPin(size_t controller)
@@ -889,6 +943,10 @@ void StepDirController::postUpdateScaledPropertiesHandler(size_t channel)
   home_velocity_property.reenableFunctors();
 
   setLimitsHandler(channel);
+}
+
+void StepDirController::homedHandler(size_t channel)
+{
 }
 
 void StepDirController::setLimitsHandler(size_t channel)
