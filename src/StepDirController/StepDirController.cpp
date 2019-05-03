@@ -263,6 +263,16 @@ void StepDirController::update()
 
   for (size_t channel=0; channel<getChannelCount(); ++channel)
   {
+    if (pre_homing_[channel])
+    {
+      if (!homeSwitchActive(channel))
+      {
+        stop(channel);
+        pre_homing_[channel] = false;
+        home(channel);
+        return;
+      }
+    }
     if (homing_[channel])
     {
       size_t controller_index = channelToControllerIndex(channel);
@@ -604,15 +614,16 @@ bool StepDirController::home(size_t channel)
   {
     return false;
   }
-  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
-  long home_velocity;
-  home_velocity_property.getElementValue(channel,home_velocity);
-
   size_t controller_index = channelToControllerIndex(channel);
   size_t motor_index = channelToMotorIndex(channel);
   Controller & controller = controllers_[controller_index];
 
-  bool home_switch_enabled;
+  modular_server::Property & home_velocity_property = modular_server_.property(constants::home_velocity_property_name);
+  long home_velocity;
+  home_velocity_property.getElementValue(channel,home_velocity);
+
+  bool home_switch_enabled = false;
+  bool home_switch_active = false;
   if (home_velocity < 0)
   {
     bool left_switch_stop_enabled = controller.leftSwitchStopEnabled(motor_index);
@@ -620,13 +631,7 @@ bool StepDirController::home(size_t channel)
     if (home_switch_enabled)
     {
       controller.setReferenceSwitchToLeft(motor_index);
-      if (leftSwitchActive(channel))
-      {
-        pre_homing_[channel] = true;
-        homing_[channel] = true;
-        homed_[channel] = false;
-        return true;
-      }
+      home_switch_active = leftSwitchActive(channel);
     }
   }
   else
@@ -637,22 +642,25 @@ bool StepDirController::home(size_t channel)
     if (home_switch_enabled)
     {
       controller.setReferenceSwitchToRight(motor_index);
-      if (rightSwitchActive(channel))
-      {
-        pre_homing_[channel] = true;
-        homing_[channel] = true;
-        homed_[channel] = false;
-        return true;
-      }
+      home_switch_active = rightSwitchActive(channel);
     }
   }
   if (!home_switch_enabled)
   {
     return false;
   }
+  if (home_switch_active)
+  {
+    pre_homing_[channel] = true;
+    homing_[channel] = true;
+    homed_[channel] = false;
+    moveAt(channel,-home_velocity);
+    return true;
+  }
 
   controller.startLatchPositionWaiting(motor_index);
   moveAt(channel,home_velocity);
+  pre_homing_[channel] = false;
   homing_[channel] = true;
   homed_[channel] = false;
   return true;
