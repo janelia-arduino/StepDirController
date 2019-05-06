@@ -754,6 +754,19 @@ bool StepDirController::homeSwitchActive(size_t channel)
   }
 }
 
+void StepDirController::temporarilySetLimits(size_t channel,
+  long velocity_min,
+  long velocity_max,
+  long acceleration_max)
+{
+  setLimits(channel,velocity_min,velocity_max,acceleration_max);
+}
+
+void StepDirController::restoreLimits(size_t channel)
+{
+  setLimitsHandler(channel);
+}
+
 size_t StepDirController::getControllerChipSelectPin(size_t controller)
 {
   return constants::chip_select_pins[controller];
@@ -830,6 +843,21 @@ size_t StepDirController::channelToControllerIndex(size_t channel)
 size_t StepDirController::channelToMotorIndex(size_t channel)
 {
   return channel%constants::CHANNELS_PER_CONTROLLER_COUNT;
+}
+
+void StepDirController::setLimits(size_t channel,
+  long velocity_min,
+  long velocity_max,
+  long acceleration_max)
+{
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+
+  controller.setLimitsInHz(motor_index,
+    positionUnitsToSteps(channel,velocity_min),
+    positionUnitsToSteps(channel,velocity_max),
+    positionUnitsToSteps(channel,acceleration_max));
 }
 
 // Handlers must be non-blocking (avoid 'delay')
@@ -959,8 +987,6 @@ void StepDirController::homedHandler(size_t channel)
 
 void StepDirController::setLimitsHandler(size_t channel)
 {
-  stopAll();
-
   modular_server::Property & velocity_min_property = modular_server_.property(constants::velocity_min_property_name);
   long velocity_min;
   velocity_min_property.getElementValue(channel,velocity_min);
@@ -973,14 +999,7 @@ void StepDirController::setLimitsHandler(size_t channel)
   long acceleration_max;
   acceleration_max_property.getElementValue(channel,acceleration_max);
 
-  size_t controller_index = channelToControllerIndex(channel);
-  size_t motor_index = channelToMotorIndex(channel);
-  Controller & controller = controllers_[controller_index];
-
-  controller.setLimitsInHz(motor_index,
-    positionUnitsToSteps(channel,velocity_min),
-    positionUnitsToSteps(channel,velocity_max),
-    positionUnitsToSteps(channel,acceleration_max));
+  setLimits(channel,velocity_min,velocity_max,acceleration_max);
 }
 
 void StepDirController::reinitializeHandler()

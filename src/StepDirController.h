@@ -76,6 +76,12 @@ public:
   void restoreHomeSwitch(size_t channel);
   bool homeSwitchActive(size_t channel);
 
+  void temporarilySetLimits(size_t channel,
+    long velocity_min,
+    long velocity_max,
+    long acceleration_max);
+  void restoreLimits(size_t channel);
+
 protected:
   virtual size_t getControllerChipSelectPin(size_t controller);
   virtual size_t getEnablePin(size_t channel);
@@ -117,6 +123,11 @@ private:
 
   size_t channelToControllerIndex(size_t channel);
   size_t channelToMotorIndex(size_t channel);
+
+  void setLimits(size_t channel,
+    long velocity_min,
+    long velocity_max,
+    long acceleration_max);
 
   // Handlers
   void setLimitsHandler(size_t channel);
