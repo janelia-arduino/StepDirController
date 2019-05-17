@@ -232,6 +232,26 @@ void StepDirController::setup()
   at_target_velocities_function.setResultTypeArray();
   at_target_velocities_function.setResultTypeBool();
 
+  modular_server::Function & get_velocity_upper_limits_function = modular_server_.createFunction(constants::get_velocity_upper_limits_function_name);
+  get_velocity_upper_limits_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getVelocityUpperLimitsHandler));
+  get_velocity_upper_limits_function.setResultUnits(constants::position_units_per_second_units);
+  get_velocity_upper_limits_function.setResultTypeArray();
+  get_velocity_upper_limits_function.setResultTypeLong();
+
+  modular_server::Function & get_acceleration_upper_limits_function = modular_server_.createFunction(constants::get_acceleration_upper_limits_function_name);
+  get_acceleration_upper_limits_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getAccelerationUpperLimitsHandler));
+  get_acceleration_upper_limits_function.addParameter(velocity_parameter);
+  get_acceleration_upper_limits_function.setResultUnits(constants::position_units_per_second_per_second_units);
+  get_acceleration_upper_limits_function.setResultTypeArray();
+  get_acceleration_upper_limits_function.setResultTypeLong();
+
+  modular_server::Function & get_acceleration_lower_limits_function = modular_server_.createFunction(constants::get_acceleration_lower_limits_function_name);
+  get_acceleration_lower_limits_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::getAccelerationLowerLimitsHandler));
+  get_acceleration_lower_limits_function.addParameter(velocity_parameter);
+  get_acceleration_lower_limits_function.setResultUnits(constants::position_units_per_second_per_second_units);
+  get_acceleration_lower_limits_function.setResultTypeArray();
+  get_acceleration_lower_limits_function.setResultTypeLong();
+
   modular_server::Function & switches_active_function = modular_server_.createFunction(constants::switches_active_function_name);
   switches_active_function.attachFunctor(makeFunctor((Functor0 *)0,*this,&StepDirController::switchesActiveHandler));
   switches_active_function.setResultTypeArray();
@@ -333,39 +353,41 @@ size_t StepDirController::getControllerCount()
 
 void StepDirController::enable(size_t channel)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    const ConstantString * polarity_ptr;
-    modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
-    if (polarity_ptr == &constants::polarity_high)
-    {
-      digitalWrite(getEnablePin(channel),HIGH);
-    }
-    else
-    {
-      digitalWrite(getEnablePin(channel),LOW);
-    }
-    enabled_[channel] = true;
+    return;
   }
+  const ConstantString * polarity_ptr;
+  modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
+  if (polarity_ptr == &constants::polarity_high)
+  {
+    digitalWrite(getEnablePin(channel),HIGH);
+  }
+  else
+  {
+    digitalWrite(getEnablePin(channel),LOW);
+  }
+  enabled_[channel] = true;
 }
 
 void StepDirController::disable(size_t channel)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    stop(channel);
-    const ConstantString * polarity_ptr;
-    modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
-    if (polarity_ptr == &constants::polarity_high)
-    {
-      digitalWrite(getEnablePin(channel),LOW);
-    }
-    else
-    {
-      digitalWrite(getEnablePin(channel),HIGH);
-    }
-    enabled_[channel] = false;
+    return;
   }
+  stop(channel);
+  const ConstantString * polarity_ptr;
+  modular_server_.property(constants::enable_polarity_property_name).getElementValue(channel,polarity_ptr);
+  if (polarity_ptr == &constants::polarity_high)
+  {
+    digitalWrite(getEnablePin(channel),LOW);
+  }
+  else
+  {
+    digitalWrite(getEnablePin(channel),HIGH);
+  }
+  enabled_[channel] = false;
 }
 
 void StepDirController::enableAll()
@@ -401,87 +423,93 @@ uint32_t StepDirController::enabled()
 void StepDirController::moveBy(size_t channel,
   long position)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.setRampMode(motor_index);
-    long position_actual = controller.getActualPosition(motor_index);
-    long position_target = positionUnitsToSteps(channel,position) + position_actual;
-    controller.setTargetPosition(motor_index,position_target);
-    homing_[channel] = false;
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.setRampMode(motor_index);
+  long position_actual = controller.getActualPosition(motor_index);
+  long position_target = positionUnitsToSteps(channel,position) + position_actual;
+  controller.setTargetPosition(motor_index,position_target);
+  homing_[channel] = false;
 }
 
 void StepDirController::moveTo(size_t channel,
   long position)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.setRampMode(motor_index);
-    controller.setTargetPosition(motor_index,positionUnitsToSteps(channel,position));
-    homing_[channel] = false;
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.setRampMode(motor_index);
+  controller.setTargetPosition(motor_index,positionUnitsToSteps(channel,position));
+  homing_[channel] = false;
 }
 
 void StepDirController::moveAt(size_t channel,
   long velocity)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.setVelocityMode(motor_index);
-    controller.setTargetVelocityInHz(motor_index,positionUnitsToSteps(channel,velocity));
-    homing_[channel] = false;
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.setVelocityMode(motor_index);
+  controller.setTargetVelocityInHz(motor_index,positionUnitsToSteps(channel,velocity));
+  homing_[channel] = false;
 }
 
 void StepDirController::moveSoftlyBy(size_t channel,
   long position)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.setSoftMode(motor_index);
-    long position_actual = controller.getActualPosition(motor_index);
-    long position_target = positionUnitsToSteps(channel,position) + position_actual;
-    controller.setTargetPosition(motor_index,position_target);
-    homing_[channel] = false;
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.setSoftMode(motor_index);
+  long position_actual = controller.getActualPosition(motor_index);
+  long position_target = positionUnitsToSteps(channel,position) + position_actual;
+  controller.setTargetPosition(motor_index,position_target);
+  homing_[channel] = false;
 }
 
 void StepDirController::moveSoftlyTo(size_t channel,
   long position)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.setSoftMode(motor_index);
-    controller.setTargetPosition(motor_index,positionUnitsToSteps(channel,position));
-    homing_[channel] = false;
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.setSoftMode(motor_index);
+  controller.setTargetPosition(motor_index,positionUnitsToSteps(channel,position));
+  homing_[channel] = false;
 }
 
 void StepDirController::stop(size_t channel)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.stop(motor_index);
-    homing_[channel] = false;
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.stop(motor_index);
+  homing_[channel] = false;
 }
 
 void StepDirController::stopAll()
@@ -499,15 +527,16 @@ void StepDirController::stopAll()
 
 void StepDirController::zero(size_t channel)
 {
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    controller.setVelocityMode(motor_index);
-    controller.setActualPosition(motor_index,0);
-    controller.setTargetPosition(motor_index,0);
+    return;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  controller.setVelocityMode(motor_index);
+  controller.setActualPosition(motor_index,0);
+  controller.setTargetPosition(motor_index,0);
 }
 
 void StepDirController::zeroAll()
@@ -520,91 +549,150 @@ void StepDirController::zeroAll()
 
 long StepDirController::getPosition(size_t channel)
 {
-  int32_t position = getPositionInSteps(channel);
+  long position = 0;
+  if (channel >= getChannelCount())
+  {
+    return position;
+  }
+  position = getPositionInSteps(channel);
   return stepsToPositionUnits(channel,position);
 }
 
 long StepDirController::getTargetPosition(size_t channel)
 {
   long position = 0;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    position = controller.getTargetPosition(motor_index);
+    return position;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  position = controller.getTargetPosition(motor_index);
   return stepsToPositionUnits(channel,position);
 }
 
 bool StepDirController::atTargetPosition(size_t channel)
 {
   bool at_target_position = true;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    at_target_position = controller.atTargetPosition(motor_index);
+    return at_target_position;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  at_target_position = controller.atTargetPosition(motor_index);
   return at_target_position;
 }
 
 long StepDirController::getVelocity(size_t channel)
 {
-  int32_t velocity = getVelocityInHz(channel);
+  long velocity = 0;
+  if (channel >= getChannelCount())
+  {
+    return velocity;
+  }
+  velocity = getVelocityInHz(channel);
   return stepsToPositionUnits(channel,velocity);
 }
 
 long StepDirController::getTargetVelocity(size_t channel)
 {
   long velocity = 0;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    velocity = controller.getTargetVelocityInHz(motor_index);
+    return velocity;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  velocity = controller.getTargetVelocityInHz(motor_index);
   return stepsToPositionUnits(channel,velocity);
 }
 
 bool StepDirController::atTargetVelocity(size_t channel)
 {
   bool at_target_velocity = true;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    at_target_velocity = controller.atTargetVelocity(motor_index);
+    return at_target_velocity;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  at_target_velocity = controller.atTargetVelocity(motor_index);
   return at_target_velocity;
+}
+
+long StepDirController::getVelocityUpperLimit(size_t channel)
+{
+  long velocity_upper_limit = 0;
+  if (channel >= getChannelCount())
+  {
+    return velocity_upper_limit;
+  }
+  size_t controller_index = channelToControllerIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  velocity_upper_limit = controller.getVelocityMaxUpperLimitInHz();
+  return stepsToPositionUnits(channel,velocity_upper_limit);
+}
+
+long StepDirController::getAccelerationUpperLimit(size_t channel,
+  long velocity_max)
+{
+  long acceleration_upper_limit = 0;
+  if (channel >= getChannelCount())
+  {
+    return acceleration_upper_limit;
+  }
+  size_t controller_index = channelToControllerIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  velocity_max = positionUnitsToSteps(channel,abs(velocity_max));
+  acceleration_upper_limit = controller.getAccelerationMaxUpperLimitInHzPerS(velocity_max);
+  return stepsToPositionUnits(channel,acceleration_upper_limit);
+}
+
+long StepDirController::getAccelerationLowerLimit(size_t channel,
+  long velocity_max)
+{
+  long acceleration_lower_limit = 0;
+  if (channel >= getChannelCount())
+  {
+    return acceleration_lower_limit;
+  }
+  size_t controller_index = channelToControllerIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  velocity_max = positionUnitsToSteps(channel,abs(velocity_max));
+  acceleration_lower_limit = controller.getAccelerationMaxLowerLimitInHzPerS(velocity_max);
+  return stepsToPositionUnits(channel,acceleration_lower_limit);
 }
 
 bool StepDirController::leftSwitchActive(size_t channel)
 {
   bool left_switch_active = false;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    left_switch_active = controller.leftSwitchActive(motor_index);
+    return left_switch_active;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  left_switch_active = controller.leftSwitchActive(motor_index);
   return left_switch_active;
 }
 
 bool StepDirController::rightSwitchActive(size_t channel)
 {
   bool right_switch_active = false;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    right_switch_active = controller.rightSwitchActive(motor_index);
+    return right_switch_active;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  right_switch_active = controller.rightSwitchActive(motor_index);
   return right_switch_active;
 }
 
@@ -759,11 +847,19 @@ void StepDirController::temporarilySetLimits(size_t channel,
   long velocity_max,
   long acceleration_max)
 {
+  if (channel >= getChannelCount())
+  {
+    return;
+  }
   setLimits(channel,velocity_min,velocity_max,acceleration_max);
 }
 
 void StepDirController::restoreLimits(size_t channel)
 {
+  if (channel >= getChannelCount())
+  {
+    return;
+  }
   setLimitsHandler(channel);
 }
 
@@ -800,7 +896,7 @@ long StepDirController::positionUnitsToSteps(size_t channel,
 int32_t StepDirController::getPositionInSteps(size_t channel)
 {
   int32_t position = 0;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
     size_t controller_index = channelToControllerIndex(channel);
     size_t motor_index = channelToMotorIndex(channel);
@@ -813,7 +909,7 @@ int32_t StepDirController::getPositionInSteps(size_t channel)
 int32_t StepDirController::getVelocityInHz(size_t channel)
 {
   int32_t velocity = 0;
-  if (channel < getChannelCount())
+  if (channel >= getChannelCount())
   {
     size_t controller_index = channelToControllerIndex(channel);
     size_t motor_index = channelToMotorIndex(channel);
@@ -1336,6 +1432,51 @@ void StepDirController::atTargetVelocitiesHandler()
   {
     at_target_velocity = atTargetVelocity(channel);
     modular_server_.response().write(at_target_velocity);
+  }
+  modular_server_.response().endArray();
+}
+
+void StepDirController::getVelocityUpperLimitsHandler()
+{
+  long velocity_upper_limit;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    velocity_upper_limit = getVelocityUpperLimit(channel);
+    modular_server_.response().write(velocity_upper_limit);
+  }
+  modular_server_.response().endArray();
+}
+
+void StepDirController::getAccelerationUpperLimitsHandler()
+{
+  long velocity;
+  modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
+
+  long acceleration_upper_limit;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    acceleration_upper_limit = getAccelerationUpperLimit(channel,velocity);
+    modular_server_.response().write(acceleration_upper_limit);
+  }
+  modular_server_.response().endArray();
+}
+
+void StepDirController::getAccelerationLowerLimitsHandler()
+{
+  long velocity;
+  modular_server_.parameter(constants::velocity_parameter_name).getValue(velocity);
+
+  long acceleration_lower_limit;
+  modular_server_.response().writeResultKey();
+  modular_server_.response().beginArray();
+  for (size_t channel=0; channel<getChannelCount(); ++channel)
+  {
+    acceleration_lower_limit = getAccelerationLowerLimit(channel,velocity);
+    modular_server_.response().write(acceleration_lower_limit);
   }
   modular_server_.response().endArray();
 }

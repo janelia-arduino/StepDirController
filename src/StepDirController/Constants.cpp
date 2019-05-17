@@ -20,7 +20,7 @@ const modular_server::FirmwareInfo firmware_info =
 {
   .name_ptr=&firmware_name,
   .version_major=2,
-  .version_minor=6,
+  .version_minor=7,
   .version_patch=0,
 };
 
@@ -124,6 +124,9 @@ CONSTANT_STRING(zero_all_function_name,"zeroAll");
 CONSTANT_STRING(get_positions_function_name,"getPositions");
 CONSTANT_STRING(get_target_positions_function_name,"getTargetPositions");
 CONSTANT_STRING(at_target_positions_function_name,"atTargetPositions");
+CONSTANT_STRING(get_velocity_upper_limits_function_name,"getVelocityUpperLimits");
+CONSTANT_STRING(get_acceleration_upper_limits_function_name,"getAccelerationUpperLimits");
+CONSTANT_STRING(get_acceleration_lower_limits_function_name,"getAccelerationLowerLimits");
 CONSTANT_STRING(get_velocities_function_name,"getVelocities");
 CONSTANT_STRING(get_target_velocities_function_name,"getTargetVelocities");
 CONSTANT_STRING(at_target_velocities_function_name,"atTargetVelocities");

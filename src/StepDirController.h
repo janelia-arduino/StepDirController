@@ -64,6 +64,12 @@ public:
   long getVelocity(size_t channel);
   long getTargetVelocity(size_t channel);
   bool atTargetVelocity(size_t channel);
+  long getVelocityUpperLimit(size_t channel);
+
+  long getAccelerationUpperLimit(size_t channel,
+    long velocity_max);
+  long getAccelerationLowerLimit(size_t channel,
+    long velocity_max);
 
   bool leftSwitchActive(size_t channel);
   bool rightSwitchActive(size_t channel);
@@ -160,6 +166,9 @@ private:
   void getVelocitiesHandler();
   void getTargetVelocitiesHandler();
   void atTargetVelocitiesHandler();
+  void getVelocityUpperLimitsHandler();
+  void getAccelerationUpperLimitsHandler();
+  void getAccelerationLowerLimitsHandler();
   void switchesActiveHandler();
   void homeHandler();
   void homingHandler();

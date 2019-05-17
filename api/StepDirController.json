@@ -98,14 +98,16 @@
         "name": "getPositions",
         "result_info": {
           "type": "array",
-          "array_element_type": "long"
+          "array_element_type": "long",
+          "units": "degrees"
         }
       },
       {
         "name": "getTargetPositions",
         "result_info": {
           "type": "array",
-          "array_element_type": "long"
+          "array_element_type": "long",
+          "units": "degrees"
         }
       },
       {
@@ -119,14 +121,16 @@
         "name": "getVelocities",
         "result_info": {
           "type": "array",
-          "array_element_type": "long"
+          "array_element_type": "long",
+          "units": "degrees/s"
         }
       },
       {
         "name": "getTargetVelocities",
         "result_info": {
           "type": "array",
-          "array_element_type": "bool"
+          "array_element_type": "bool",
+          "units": "degrees/s"
         }
       },
       {
@@ -134,6 +138,36 @@
         "result_info": {
           "type": "array",
           "array_element_type": "bool"
+        }
+      },
+      {
+        "name": "getVelocityUpperLimits",
+        "result_info": {
+          "type": "array",
+          "array_element_type": "long",
+          "units": "position_units/s"
+        }
+      },
+      {
+        "name": "getAccelerationUpperLimits",
+        "parameters": [
+          "velocity"
+        ],
+        "result_info": {
+          "type": "array",
+          "array_element_type": "long",
+          "units": "position_units/s/s"
+        }
+      },
+      {
+        "name": "getAccelerationLowerLimits",
+        "parameters": [
+          "velocity"
+        ],
+        "result_info": {
+          "type": "array",
+          "array_element_type": "long",
+          "units": "position_units/s/s"
         }
       },
       {
