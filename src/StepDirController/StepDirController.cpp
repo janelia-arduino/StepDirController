@@ -898,11 +898,12 @@ int32_t StepDirController::getPositionInSteps(size_t channel)
   int32_t position = 0;
   if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    position = controller.getActualPosition(motor_index);
+    return position;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  position = controller.getActualPosition(motor_index);
   return position;
 }
 
@@ -911,11 +912,12 @@ int32_t StepDirController::getVelocityInHz(size_t channel)
   int32_t velocity = 0;
   if (channel >= getChannelCount())
   {
-    size_t controller_index = channelToControllerIndex(channel);
-    size_t motor_index = channelToMotorIndex(channel);
-    Controller & controller = controllers_[controller_index];
-    velocity = controller.getActualVelocityInHz(motor_index);
+    return velocity;
   }
+  size_t controller_index = channelToControllerIndex(channel);
+  size_t motor_index = channelToMotorIndex(channel);
+  Controller & controller = controllers_[controller_index];
+  velocity = controller.getActualVelocityInHz(motor_index);
   return velocity;
 }
 
