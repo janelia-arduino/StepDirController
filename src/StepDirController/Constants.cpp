@@ -21,7 +21,7 @@ const modular_server::FirmwareInfo firmware_info =
   .name_ptr=&firmware_name,
   .version_major=2,
   .version_minor=7,
-  .version_patch=1,
+  .version_patch=2,
 };
 
 CONSTANT_STRING(hardware_name,"step_dir_controller");

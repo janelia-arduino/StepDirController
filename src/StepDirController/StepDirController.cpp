@@ -953,9 +953,9 @@ void StepDirController::setLimits(size_t channel,
   Controller & controller = controllers_[controller_index];
 
   controller.setLimitsInHz(motor_index,
-    positionUnitsToSteps(channel,velocity_min),
-    positionUnitsToSteps(channel,velocity_max),
-    positionUnitsToSteps(channel,acceleration_max));
+    positionUnitsToSteps(channel,abs(velocity_min)),
+    positionUnitsToSteps(channel,abs(velocity_max)),
+    positionUnitsToSteps(channel,abs(acceleration_max)));
 }
 
 // Handlers must be non-blocking (avoid 'delay')
