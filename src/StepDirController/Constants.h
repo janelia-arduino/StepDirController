@@ -3,7 +3,7 @@
 //
 //
 // Authors:
-// Peter Polidoro peterpolidoro@gmail.com
+// Peter Polidoro peter@polidoro.io
 // ----------------------------------------------------------------------------
 #ifndef STEP_DIR_CONTROLLER_CONSTANTS_H
 #define STEP_DIR_CONTROLLER_CONSTANTS_H
