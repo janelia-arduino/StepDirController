@@ -144,6 +144,8 @@ extern ConstantString homed_function_name;
 // Errors
 }
 }
+#include "TEENSY40.h"
+#include "TEENSY41.h"
 #include "5x3.h"
 #include "3x2.h"
 #endif
