@@ -30,13 +30,13 @@ public:
   virtual void setup();
   virtual void update();
 
-  virtual void reinitialize();
+  void reinitialize();
 
   virtual size_t getChannelCount();
   virtual size_t getControllerCount();
 
-  void enable(size_t channel);
-  void disable(size_t channel);
+  virtual void enable(size_t channel);
+  virtual void disable(size_t channel);
   void enableAll();
   void disableAll();
   uint32_t enabled();
@@ -89,6 +89,8 @@ public:
   void restoreLimits(size_t channel);
 
 protected:
+  bool enabled_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
+
   virtual size_t getControllerChipSelectPin(size_t controller);
   virtual size_t getEnablePin(size_t channel);
   virtual long stepsToPositionUnits(size_t channel,
@@ -117,7 +119,6 @@ private:
 
   typedef TMC429 Controller;
   Controller controllers_[step_dir_controller::constants::CONTROLLER_COUNT_MAX];
-  bool enabled_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   bool pre_homing_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   bool homing_[step_dir_controller::constants::CHANNEL_COUNT_MAX];
   bool homed_[step_dir_controller::constants::CHANNEL_COUNT_MAX];

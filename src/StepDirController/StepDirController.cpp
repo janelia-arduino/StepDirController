@@ -329,7 +329,6 @@ void StepDirController::reinitialize()
     setSwitchSoftStopEnabledHandler(channel);
     setLimitsHandler(channel);
   }
-  enableAll();
 }
 
 size_t StepDirController::getChannelCount()
