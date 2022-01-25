@@ -30,7 +30,7 @@ public:
   virtual void setup();
   virtual void update();
 
-  void reinitialize();
+  virtual void reinitialize();
 
   virtual size_t getChannelCount();
   virtual size_t getControllerCount();

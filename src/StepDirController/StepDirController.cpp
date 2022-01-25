@@ -129,7 +129,7 @@ void StepDirController::setup()
   velocity_parameter.setTypeLong();
 
   setChannelCountHandler();
-  reinitialize();
+  StepDirController::reinitialize();
 
   // Functions
   modular_server::Function & reinitialize_function = modular_server_.createFunction(constants::reinitialize_function_name);
