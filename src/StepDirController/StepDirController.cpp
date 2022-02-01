@@ -10,15 +10,6 @@
 
 using namespace step_dir_controller;
 
-StepDirController::StepDirController()
-{
-}
-
-StepDirController::~StepDirController()
-{
-  // disable();
-}
-
 void StepDirController::setup()
 {
   // Parent Setup
@@ -28,6 +19,13 @@ void StepDirController::setup()
   resetWatchdog();
 
   // Variable Setup
+  for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
+  {
+    enabled_[channel] = false;
+    pre_homing_[channel] = false;
+    homing_[channel] = false;
+    homed_[channel] = false;
+  }
 
   // Controller Setup
   for (size_t controller_index=0; controller_index<constants::CONTROLLER_COUNT_MAX; ++controller_index)
@@ -40,10 +38,6 @@ void StepDirController::setup()
   for (size_t channel=0; channel<constants::CHANNEL_COUNT_MAX; ++channel)
   {
     pinMode(getEnablePin(channel),OUTPUT);
-    enabled_[channel] = false;
-    pre_homing_[channel] = false;
-    homing_[channel] = false;
-    homed_[channel] = false;
   }
 
   // Pins

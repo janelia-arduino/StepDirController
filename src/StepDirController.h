@@ -25,8 +25,6 @@
 class StepDirController : public ModularDeviceBase
 {
 public:
-  StepDirController();
-  ~StepDirController();
   virtual void setup();
   virtual void update();
 
