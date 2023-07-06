@@ -309,8 +309,6 @@ void StepDirController::reinitialize()
 {
   for (size_t controller_index=0; controller_index<getControllerCount(); ++controller_index)
   {
-    Controller & controller = controllers_[controller_index];
-    controller.initialize();
     setStepPolarityInvertedHandler(controller_index);
     setDirPolarityInvertedHandler(controller_index);
     setSwitchActivePolarityHandler(controller_index);
